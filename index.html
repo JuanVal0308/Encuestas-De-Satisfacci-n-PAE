@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Encuestas PAE - Envigado</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <img src="https://www.jotform.com/uploads/juanpamartinezro/form_files/alcaldia_envigado_salud.68925c2d63e0c2.16743275.png" alt="Logo Alcaldía de Envigado" class="logo">
+                <h1>Sistema de Encuestas PAE</h1>
+                <p>Programa de Alimentación Escolar - Envigado</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="navigation">
+            <button class="nav-btn active" data-section="home">Inicio</button>
+            <button class="nav-btn" data-section="surveys">Encuestas</button>
+            <button class="nav-btn" data-section="results">Resultados</button>
+            <button class="nav-btn" data-section="admin">Administración</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="welcome-card">
+                    <h2>Bienvenido al Sistema de Encuestas PAE</h2>
+                    <p>Este sistema le permite realizar encuestas de satisfacción del Programa de Alimentación Escolar (PAE) y visualizar los resultados obtenidos.</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <h3>📝 Realizar Encuestas</h3>
+                            <p>Complete las encuestas de satisfacción disponibles</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>📊 Ver Resultados</h3>
+                            <p>Visualice gráficos y estadísticas de las respuestas</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>📥 Descargar Datos</h3>
+                            <p>Exporte todos los datos a archivos Excel</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Surveys Section -->
+            <section id="surveys" class="section">
+                <h2>Seleccionar Encuesta</h2>
+                <div class="survey-selector">
+                    <div class="survey-card" data-survey="racion-servida">
+                        <h3>🍽️ Ración Servida</h3>
+                        <p>Evaluación de satisfacción del consumidor - Ración servida en comedor</p>
+                        <button class="btn-primary">Realizar Encuesta</button>
+                    </div>
+                    <div class="survey-card" data-survey="racion-industrializada">
+                        <h3>🍪 Ración Industrializada</h3>
+                        <p>Evaluación de satisfacción de la entrega de ración industrializada (RI)</p>
+                        <button class="btn-primary">Realizar Encuesta</button>
+                    </div>
+                    <div class="survey-card" data-survey="coordinadores">
+                        <h3>👨‍💼 Coordinadores PAE</h3>
+                        <p>Evaluación del servicio PAE para coordinadores en sedes e instituciones educativas</p>
+                        <button class="btn-primary">Realizar Encuesta</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results" class="section">
+                <h2>Resultados de Encuestas</h2>
+                <div class="results-controls">
+                    <select id="survey-select" class="form-control">
+                        <option value="">Seleccionar encuesta</option>
+                        <option value="racion-servida">Ración Servida</option>
+                        <option value="racion-industrializada">Ración Industrializada</option>
+                        <option value="coordinadores">Coordinadores PAE</option>
+                    </select>
+                    <button id="load-results" class="btn-primary">Cargar Resultados</button>
+                </div>
+                
+                <div id="results-content" class="results-content">
+                    <div class="no-results">
+                        <p>Seleccione una encuesta para ver los resultados</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Section -->
+            <section id="admin" class="section">
+                <h2>Administración</h2>
+                <div class="admin-controls">
+                    <div class="admin-card">
+                        <h3>📊 Estadísticas Generales</h3>
+                        <div id="general-stats" class="stats-grid">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    
+                    <div class="admin-card">
+                        <h3>📥 Exportar Datos</h3>
+                        <p>Descargue todos los datos de las encuestas en formato Excel</p>
+                        <button id="export-all" class="btn-success">Exportar Todo</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Survey Modal -->
+    <div id="survey-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Encuesta</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="survey-content">
+                    <!-- Se llenará dinámicamente con el contenido de la encuesta -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

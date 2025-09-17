@@ -1,0 +1,22 @@
+{
+  "name": "sistema-encuestas-pae-envigado",
+  "version": "1.0.0",
+  "description": "Sistema web para gestión de encuestas de satisfacción del Programa de Alimentación Escolar (PAE) de Envigado",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx http-server -p 8000 -c-1"
+  },
+  "keywords": [
+    "encuestas",
+    "pae",
+    "envigado",
+    "alimentacion-escolar",
+    "satisfaccion"
+  ],
+  "author": "Alcaldía de Envigado",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
