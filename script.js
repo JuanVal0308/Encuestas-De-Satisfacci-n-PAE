@@ -16,6 +16,7 @@ class EncuestasPAE {
             }
         };
         this.responses = JSON.parse(localStorage.getItem('paesurvey_responses')) || [];
+        this.deletedResponses = JSON.parse(localStorage.getItem('paesurvey_deleted_responses')) || [];
         this.init();
     }
 
@@ -150,7 +151,7 @@ class EncuestasPAE {
         };
         
         this.responses.push(response);
-        localStorage.setItem('paesurvey_responses', JSON.stringify(this.responses));
+        this.saveData();
         
         alert('¡Encuesta guardada exitosamente!');
         document.getElementById('survey-modal').style.display = 'none';
@@ -199,6 +200,40 @@ class EncuestasPAE {
             <button class="btn-success" onclick="app.exportSurveyData('${surveyType}')">
                 📥 Exportar Excel
             </button>
+        </div>`;
+
+        // Agregar tabla de respuestas con opciones de eliminación
+        html += `<div class="responses-table-container">
+            <h4>Respuestas Individuales</h4>
+            <div class="table-responsive">
+                <table class="responses-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Institución</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        responses.forEach(response => {
+            const institution = response.data.institucion || response.data.institucion_educativa || 'No especificada';
+            const date = new Date(response.date).toLocaleDateString('es-ES');
+            
+            html += `<tr>
+                <td>${date}</td>
+                <td>${institution}</td>
+                <td>
+                    <button class="btn-danger btn-sm" onclick="app.deleteResponse(${response.id})" title="Eliminar respuesta">
+                        🗑️ Eliminar
+                    </button>
+                </td>
+            </tr>`;
+        });
+
+        html += `</tbody>
+                </table>
+            </div>
         </div>`;
 
         setTimeout(() => {
@@ -263,6 +298,53 @@ class EncuestasPAE {
         document.getElementById('export-all').addEventListener('click', () => {
             this.exportAllData();
         });
+
+        document.getElementById('view-trash').addEventListener('click', () => {
+            this.showTrash();
+        });
+    }
+
+    showTrash() {
+        const trashSection = document.getElementById('trash-section');
+        const trashContent = document.getElementById('trash-content');
+        
+        if (this.deletedResponses.length === 0) {
+            trashContent.innerHTML = '<div class="empty-trash"><p>🗑️ La papelera está vacía</p></div>';
+        } else {
+            let html = '';
+            this.deletedResponses.forEach(response => {
+                const institution = response.data.institucion || response.data.institucion_educativa || 'No especificada';
+                const date = new Date(response.date).toLocaleDateString('es-ES');
+                const deletedDate = new Date(response.deletedAt).toLocaleDateString('es-ES');
+                const surveyType = this.getSurveyTypeName(response.type);
+                
+                html += `<div class="trash-item">
+                    <div class="trash-item-info">
+                        <h5>${surveyType}</h5>
+                        <p><strong>Institución:</strong> ${institution}</p>
+                        <p><strong>Fecha de respuesta:</strong> ${date}</p>
+                        <p><strong>Eliminada el:</strong> ${deletedDate}</p>
+                    </div>
+                    <div class="trash-item-actions">
+                        <button class="btn-restore" onclick="app.restoreResponse(${response.id})" title="Restaurar respuesta">
+                            🔄 Restaurar
+                        </button>
+                    </div>
+                </div>`;
+            });
+            trashContent.innerHTML = html;
+        }
+        
+        trashSection.style.display = trashSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    getSurveyTypeName(type) {
+        const names = {
+            'racion-servida': 'Ración Servida',
+            'racion-industrializada': 'Ración Industrializada',
+            'coordinadores': 'Coordinadores PAE'
+        };
+        return names[type] || type;
     }
 
     updateStats() {
@@ -290,6 +372,10 @@ class EncuestasPAE {
                 <div class="stat-number">${stats.coordinadores}</div>
                 <div class="stat-label">Coordinadores</div>
             </div>
+            <div class="stat-item">
+                <div class="stat-number">${this.deletedResponses.length}</div>
+                <div class="stat-label">En Papelera</div>
+            </div>
         `;
     }
 
@@ -307,6 +393,58 @@ class EncuestasPAE {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Respuestas');
         XLSX.writeFile(workbook, filename);
+    }
+
+    // Métodos para manejo de respuestas eliminadas
+    deleteResponse(responseId) {
+        const responseIndex = this.responses.findIndex(r => r.id === responseId);
+        if (responseIndex !== -1) {
+            const deletedResponse = this.responses[responseIndex];
+            deletedResponse.deletedAt = new Date().toISOString();
+            deletedResponse.deletedBy = 'user'; // Podría ser el nombre del usuario
+            
+            // Mover a papelera
+            this.deletedResponses.push(deletedResponse);
+            
+            // Eliminar de respuestas activas
+            this.responses.splice(responseIndex, 1);
+            
+            // Guardar cambios
+            this.saveData();
+            this.updateStats();
+            
+            return true;
+        }
+        return false;
+    }
+
+    restoreResponse(responseId) {
+        const responseIndex = this.deletedResponses.findIndex(r => r.id === responseId);
+        if (responseIndex !== -1) {
+            const restoredResponse = this.deletedResponses[responseIndex];
+            
+            // Remover campos de eliminación
+            delete restoredResponse.deletedAt;
+            delete restoredResponse.deletedBy;
+            
+            // Mover de vuelta a respuestas activas
+            this.responses.push(restoredResponse);
+            
+            // Eliminar de papelera
+            this.deletedResponses.splice(responseIndex, 1);
+            
+            // Guardar cambios
+            this.saveData();
+            this.updateStats();
+            
+            return true;
+        }
+        return false;
+    }
+
+    saveData() {
+        localStorage.setItem('paesurvey_responses', JSON.stringify(this.responses));
+        localStorage.setItem('paesurvey_deleted_responses', JSON.stringify(this.deletedResponses));
     }
 
     // Métodos para obtener los formularios de las encuestas

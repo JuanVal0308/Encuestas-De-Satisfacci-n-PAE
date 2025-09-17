@@ -113,6 +113,20 @@
                         <p>Descargue todos los datos de las encuestas en formato Excel</p>
                         <button id="export-all" class="btn-success">Exportar Todo</button>
                     </div>
+                    
+                    <div class="admin-card">
+                        <h3>🗑️ Papelera</h3>
+                        <p>Respuestas eliminadas (no se pueden borrar definitivamente)</p>
+                        <button id="view-trash" class="btn-warning">Ver Papelera</button>
+                    </div>
+                </div>
+                
+                <!-- Sección de Papelera -->
+                <div id="trash-section" class="trash-section" style="display: none;">
+                    <h3>🗑️ Respuestas Eliminadas</h3>
+                    <div id="trash-content">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
                 </div>
             </section>
         </main>
