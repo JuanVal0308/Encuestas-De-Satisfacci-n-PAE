@@ -24,6 +24,7 @@ class EncuestasPAE {
         this.setupSurveyCards();
         this.setupResults();
         this.setupAdmin();
+        this.setupFeatureCards();
         this.updateStats();
     }
 
@@ -46,6 +47,52 @@ class EncuestasPAE {
                 this.openSurvey(surveyType);
             });
         });
+    }
+
+    setupFeatureCards() {
+        // Botón "Ir a Encuestas" - redirige a la sección de encuestas
+        const surveyButton = document.querySelector('.feature-card:nth-child(1) .btn-primary');
+        if (surveyButton) {
+            surveyButton.addEventListener('click', () => {
+                this.navigateToSection('surveys');
+            });
+        }
+
+        // Botón "Ver Resultados" - redirige a la sección de resultados
+        const resultsButton = document.querySelector('.feature-card:nth-child(2) .btn-primary');
+        if (resultsButton) {
+            resultsButton.addEventListener('click', () => {
+                this.navigateToSection('results');
+            });
+        }
+
+        // Botón "Administración" - redirige a la sección de administración
+        const adminButton = document.querySelector('.feature-card:nth-child(3) .btn-primary');
+        if (adminButton) {
+            adminButton.addEventListener('click', () => {
+                this.navigateToSection('admin');
+            });
+        }
+    }
+
+    navigateToSection(sectionId) {
+        // Remover clase active de todos los botones de navegación
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Remover clase active de todas las secciones
+        document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+        
+        // Activar el botón correspondiente
+        const targetButton = document.querySelector(`[data-section="${sectionId}"]`);
+        if (targetButton) {
+            targetButton.classList.add('active');
+        }
+        
+        // Mostrar la sección correspondiente
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
     }
 
     async openSurvey(surveyType) {
