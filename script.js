@@ -26,6 +26,7 @@ class EncuestasPAE {
         this.setupResults();
         this.setupAdmin();
         this.setupFeatureCards();
+        this.setupDateFilters();
         this.updateStats();
     }
 
@@ -162,7 +163,17 @@ class EncuestasPAE {
         document.getElementById('load-results').addEventListener('click', () => {
             const surveyType = document.getElementById('survey-select').value;
             if (surveyType) {
-                this.loadResults(surveyType);
+                // Verificar si hay filtros de fecha aplicados
+                const dateFrom = document.getElementById('date-from').value;
+                const dateTo = document.getElementById('date-to').value;
+                
+                if (dateFrom && dateTo) {
+                    // Usar análisis específico con filtros de fecha
+                    this.showSpecificAnalysis(dateFrom, dateTo);
+                } else {
+                    // Mostrar todos los resultados sin filtros
+                    this.loadResults(surveyType);
+                }
             }
         });
     }
@@ -345,6 +356,236 @@ class EncuestasPAE {
             'coordinadores': 'Coordinadores PAE'
         };
         return names[type] || type;
+    }
+
+    setupDateFilters() {
+        // Configurar filtros de fecha
+        const periodSelect = document.getElementById('period-select');
+        const dateFrom = document.getElementById('date-from');
+        const dateTo = document.getElementById('date-to');
+        const applyFilters = document.getElementById('apply-filters');
+        const clearFilters = document.getElementById('clear-filters');
+
+        // Manejar cambio de período
+        periodSelect.addEventListener('change', () => {
+            this.handlePeriodChange();
+        });
+
+        // Aplicar filtros
+        applyFilters.addEventListener('click', () => {
+            this.applyDateFilters();
+        });
+
+        // Limpiar filtros
+        clearFilters.addEventListener('click', () => {
+            this.clearDateFilters();
+        });
+
+        // Configurar fechas por defecto
+        this.setDefaultDates();
+    }
+
+    handlePeriodChange() {
+        const periodSelect = document.getElementById('period-select');
+        const dateFrom = document.getElementById('date-from');
+        const dateTo = document.getElementById('date-to');
+        const today = new Date();
+
+        switch (periodSelect.value) {
+            case 'today':
+                dateFrom.value = this.formatDate(today);
+                dateTo.value = this.formatDate(today);
+                break;
+            case 'week':
+                const weekStart = new Date(today);
+                weekStart.setDate(today.getDate() - today.getDay());
+                dateFrom.value = this.formatDate(weekStart);
+                dateTo.value = this.formatDate(today);
+                break;
+            case 'month':
+                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+                dateFrom.value = this.formatDate(monthStart);
+                dateTo.value = this.formatDate(today);
+                break;
+            case 'quarter':
+                const quarterStart = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1);
+                dateFrom.value = this.formatDate(quarterStart);
+                dateTo.value = this.formatDate(today);
+                break;
+            case 'year':
+                const yearStart = new Date(today.getFullYear(), 0, 1);
+                dateFrom.value = this.formatDate(yearStart);
+                dateTo.value = this.formatDate(today);
+                break;
+            case 'custom':
+                // Habilitar edición manual
+                break;
+        }
+    }
+
+    setDefaultDates() {
+        const today = new Date();
+        const dateTo = document.getElementById('date-to');
+        dateTo.value = this.formatDate(today);
+    }
+
+    formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    applyDateFilters() {
+        const dateFrom = document.getElementById('date-from').value;
+        const dateTo = document.getElementById('date-to').value;
+        const analysisType = document.querySelector('input[name="analysis-type"]:checked').value;
+
+        if (!dateFrom || !dateTo) {
+            alert('Por favor seleccione un rango de fechas válido');
+            return;
+        }
+
+        if (analysisType === 'general') {
+            this.showGeneralAnalysis(dateFrom, dateTo);
+        } else {
+            this.showSpecificAnalysis(dateFrom, dateTo);
+        }
+    }
+
+    clearDateFilters() {
+        document.getElementById('date-from').value = '';
+        document.getElementById('date-to').value = '';
+        document.getElementById('period-select').value = 'all';
+        document.querySelector('input[name="analysis-type"][value="general"]').checked = true;
+        
+        // Limpiar contenido de resultados
+        document.getElementById('results-content').innerHTML = `
+            <div class="no-results">
+                <p>Seleccione una encuesta para ver los resultados</p>
+            </div>
+        `;
+    }
+
+    getFilteredResponses(dateFrom, dateTo) {
+        const startDate = new Date(dateFrom);
+        const endDate = new Date(dateTo);
+        endDate.setHours(23, 59, 59, 999); // Incluir todo el día final
+
+        return this.responses.filter(response => {
+            const responseDate = new Date(response.date);
+            return responseDate >= startDate && responseDate <= endDate;
+        });
+    }
+
+    showGeneralAnalysis(dateFrom, dateTo) {
+        const filteredResponses = this.getFilteredResponses(dateFrom, dateTo);
+        
+        let html = `
+            <div class="general-analysis">
+                <div class="period-info">
+                    <h4>📊 Análisis General del Período</h4>
+                    <p><strong>Período:</strong> ${this.formatDateDisplay(dateFrom)} - ${this.formatDateDisplay(dateTo)}</p>
+                    <p><strong>Total de respuestas:</strong> ${filteredResponses.length}</p>
+                </div>
+                
+                <div class="analysis-summary">
+                    <div class="summary-card">
+                        <h4>Total Respuestas</h4>
+                        <div class="number">${filteredResponses.length}</div>
+                        <div class="label">En el período seleccionado</div>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Ración Servida</h4>
+                        <div class="number">${filteredResponses.filter(r => r.type === 'racion-servida').length}</div>
+                        <div class="label">Respuestas</div>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Ración Industrializada</h4>
+                        <div class="number">${filteredResponses.filter(r => r.type === 'racion-industrializada').length}</div>
+                        <div class="label">Respuestas</div>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Coordinadores</h4>
+                        <div class="number">${filteredResponses.filter(r => r.type === 'coordinadores').length}</div>
+                        <div class="label">Respuestas</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Agregar gráficos por tipo de encuesta
+        const surveyTypes = ['racion-servida', 'racion-industrializada', 'coordinadores'];
+        surveyTypes.forEach(surveyType => {
+            const typeResponses = filteredResponses.filter(r => r.type === surveyType);
+            if (typeResponses.length > 0) {
+                html += this.generateResultsHTML(surveyType, typeResponses);
+            }
+        });
+
+        document.getElementById('results-content').innerHTML = html;
+        
+        // Generar gráficos después de insertar HTML
+        setTimeout(() => {
+            surveyTypes.forEach(surveyType => {
+                const typeResponses = filteredResponses.filter(r => r.type === surveyType);
+                if (typeResponses.length > 0) {
+                    this.generateChartsForSurvey(surveyType, typeResponses);
+                }
+            });
+        }, 100);
+    }
+
+    showSpecificAnalysis(dateFrom, dateTo) {
+        const surveySelect = document.getElementById('survey-select');
+        const selectedSurvey = surveySelect.value;
+        
+        if (!selectedSurvey) {
+            alert('Por favor seleccione una encuesta específica para el análisis');
+            return;
+        }
+
+        const filteredResponses = this.getFilteredResponses(dateFrom, dateTo);
+        const surveyResponses = filteredResponses.filter(r => r.type === selectedSurvey);
+        
+        let html = `
+            <div class="period-info">
+                <h4>📊 Análisis Específico: ${this.getSurveyTypeName(selectedSurvey)}</h4>
+                <p><strong>Período:</strong> ${this.formatDateDisplay(dateFrom)} - ${this.formatDateDisplay(dateTo)}</p>
+                <p><strong>Respuestas en el período:</strong> ${surveyResponses.length}</p>
+            </div>
+        `;
+
+        if (surveyResponses.length > 0) {
+            html += this.generateResultsHTML(selectedSurvey, surveyResponses);
+        } else {
+            html += '<div class="no-results"><p>No hay respuestas para este período y encuesta seleccionada</p></div>';
+        }
+
+        document.getElementById('results-content').innerHTML = html;
+        
+        if (surveyResponses.length > 0) {
+            setTimeout(() => {
+                this.generateChartsForSurvey(selectedSurvey, surveyResponses);
+            }, 100);
+        }
+    }
+
+    formatDateDisplay(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    generateChartsForSurvey(surveyType, responses) {
+        // Generar estadísticas y gráficos para la encuesta específica
+        const questionStats = this.calculateQuestionStats(responses);
+        
+        Object.keys(questionStats).forEach(question => {
+            const stats = questionStats[question];
+            const chartId = `chart-${question.replace(/\s+/g, '-')}`;
+            this.createChart(chartId, stats);
+        });
     }
 
     updateStats() {

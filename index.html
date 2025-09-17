@@ -80,6 +80,52 @@
             <!-- Results Section -->
             <section id="results" class="section">
                 <h2>Resultados de Encuestas</h2>
+                
+                <!-- Filtros de Análisis -->
+                <div class="analysis-filters">
+                    <div class="filter-card">
+                        <h3>📅 Filtros de Fecha</h3>
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="date-from">Desde:</label>
+                                <input type="date" id="date-from" class="filter-input">
+                            </div>
+                            <div class="filter-group">
+                                <label for="date-to">Hasta:</label>
+                                <input type="date" id="date-to" class="filter-input">
+                            </div>
+                            <div class="filter-group">
+                                <label for="period-select">Período:</label>
+                                <select id="period-select" class="filter-select">
+                                    <option value="all">Todos los períodos</option>
+                                    <option value="today">Hoy</option>
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mes</option>
+                                    <option value="quarter">Este trimestre</option>
+                                    <option value="year">Este año</option>
+                                    <option value="custom">Personalizado</option>
+                                </select>
+                            </div>
+                            <button id="apply-filters" class="btn-primary">Aplicar Filtros</button>
+                            <button id="clear-filters" class="btn-secondary">Limpiar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-card">
+                        <h3>📊 Tipo de Análisis</h3>
+                        <div class="analysis-type-controls">
+                            <label class="radio-option">
+                                <input type="radio" name="analysis-type" value="general" checked>
+                                <span>Análisis General</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="analysis-type" value="specific">
+                                <span>Análisis por Encuesta</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="results-controls">
                     <select id="survey-select" class="form-control">
                         <option value="">Seleccionar encuesta</option>
