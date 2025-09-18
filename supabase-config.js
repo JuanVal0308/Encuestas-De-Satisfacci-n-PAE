@@ -5,17 +5,58 @@
 const supabaseUrl = 'https://algrkzpmqvpmylszcrrk.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZ3JrenBtcXZwbXlsc3pjcnJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjIyMTIsImV4cCI6MjA3Mzc5ODIxMn0.RZv3EiuAWBhWor1w07-twotlgBvIU-mtedHMdzhqZBU'
 
-// Crear cliente de Supabase usando la versión global
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
+// Función para esperar a que Supabase esté disponible
+function waitForSupabase() {
+    return new Promise((resolve, reject) => {
+        let attempts = 0;
+        const maxAttempts = 50; // 5 segundos máximo
+        
+        const checkSupabase = () => {
+            attempts++;
+            if (window.supabase && window.supabase.createClient) {
+                resolve();
+            } else if (attempts >= maxAttempts) {
+                reject(new Error('Supabase no se cargó después de 5 segundos'));
+            } else {
+                setTimeout(checkSupabase, 100);
+            }
+        };
+        
+        checkSupabase();
+    });
+}
 
-// Exportar para uso en otros módulos
-window.supabaseClient = supabase
+// Crear cliente de Supabase de forma segura
+let supabase = null;
+
+async function initializeSupabase() {
+    try {
+        await waitForSupabase();
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        console.log('✅ Supabase inicializado correctamente');
+        return supabase;
+    } catch (error) {
+        console.error('❌ Error inicializando Supabase:', error);
+        throw error;
+    }
+}
+
+// Inicializar inmediatamente
+initializeSupabase().then(() => {
+    window.supabaseClient = supabase;
+}).catch(error => {
+    console.error('Error en inicialización:', error);
+});
 
 // Servicio para manejar las respuestas de las encuestas
 class SupabaseService {
     // Guardar una nueva respuesta
     async saveResponse(surveyData) {
         try {
+            if (!supabase) {
+                throw new Error('Supabase no está inicializado');
+            }
+
             const { data, error } = await supabase
                 .from('survey_responses')
                 .insert([
@@ -40,6 +81,10 @@ class SupabaseService {
     // Obtener todas las respuestas
     async getAllResponses() {
         try {
+            if (!supabase) {
+                throw new Error('Supabase no está inicializado');
+            }
+
             const { data, error } = await supabase
                 .from('survey_responses')
                 .select('*')
