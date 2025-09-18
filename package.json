@@ -1,22 +1,31 @@
 {
-  "name": "sistema-encuestas-pae-envigado",
+  "name": "sistema-encuestas-pae",
   "version": "1.0.0",
-  "description": "Sistema web para gestión de encuestas de satisfacción del Programa de Alimentación Escolar (PAE) de Envigado",
+  "description": "Sistema de Encuestas del Programa de Alimentación Escolar (PAE) - Envigado",
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "start": "python -m http.server 8000",
-    "serve": "npx http-server -p 8000 -c-1"
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build process needed for static files'",
+    "deploy": "echo 'Deploy to your preferred hosting service'"
   },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {},
   "keywords": [
     "encuestas",
     "pae",
-    "envigado",
     "alimentacion-escolar",
-    "satisfaccion"
+    "envigado",
+    "supabase"
   ],
-  "author": "Alcaldía de Envigado",
+  "author": "Sistema PAE Envigado",
   "license": "MIT",
-  "devDependencies": {
-    "http-server": "^14.1.1"
-  }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/sistema-encuestas-pae.git"
+  },
+  "homepage": "https://tu-dominio.com/sistema-encuestas-pae"
 }
