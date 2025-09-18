@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Encuestas PAE - Versión 2</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/index.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- XLSX -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            padding: 30px;
+            max-width: 1200px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-custom {
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 200px;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success-custom {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+        
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(86, 171, 47, 0.3);
+        }
+        
+        .survey-selector {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .survey-selector select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+        }
+        
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            border: none;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .form-section h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .rating-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .rating-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: white;
+            border: 2px solid #e9ecef;
+            min-width: 80px;
+        }
+        
+        .rating-option:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+        
+        .rating-option input[type="radio"] {
+            display: none;
+        }
+        
+        .rating-option input[type="radio"]:checked + span {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .choice-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .choice-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .choice-option:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+        
+        .choice-option input[type="radio"],
+        .choice-option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .open-question textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .open-question textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .analysis-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .question-analysis {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-analysis h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .rating-bar, .choice-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 15px;
+        }
+        
+        .bar {
+            flex: 1;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+        
+        .text-responses {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .text-response {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-custom {
+                min-width: 100%;
+            }
+            
+            .rating-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .choice-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="main-container">
+            <!-- Header -->
+            <div class="header">
+                <h1>🏫 Sistema de Encuestas PAE</h1>
+                <p>Gestión de encuestas de satisfacción para el Programa de Alimentación Escolar</p>
+            </div>
+            
+            <!-- Selector de Encuesta -->
+            <div class="survey-selector">
+                <label for="survey-selector" class="form-label">
+                    <strong>Selecciona una encuesta:</strong>
+                </label>
+                <select id="survey-selector" class="form-select" onchange="loadSurvey()">
+                    <option value="">Cargando encuestas...</option>
+                </select>
+            </div>
+            
+            <!-- Botones de Acción -->
+            <div class="action-buttons">
+                <button class="btn btn-primary-custom btn-custom" onclick="loadSurvey()">
+                    📋 Responder Encuesta
+                </button>
+                <button class="btn btn-success-custom btn-custom" onclick="showAnalysis()">
+                    📊 Ver Análisis
+                </button>
+            </div>
+            
+            <!-- Estado del Sistema -->
+            <div id="system-status" class="text-center">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Inicializando sistema...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Encuesta -->
+    <div id="surveyModal" class="modal" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="surveyModalTitle" class="modal-title">Encuesta</h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="closeSurveyModal()"></button>
+                </div>
+                <div class="modal-body" id="surveyModalBody">
+                    <!-- Contenido dinámico -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Análisis -->
+    <div id="analysisModal" class="modal" style="display: none;">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📊 Análisis de Respuestas</h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="closeAnalysisModal()"></button>
+                </div>
+                <div class="modal-body" id="analysisModalBody">
+                    <!-- Contenido dinámico -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="supabase-service-v2.js"></script>
+    <script src="script-v2.js"></script>
+    
+    <script>
+        // Actualizar estado del sistema
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const statusDiv = document.getElementById('system-status');
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <strong>✅ Sistema listo</strong><br>
+                            Selecciona una encuesta para comenzar
+                        </div>
+                    `;
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
