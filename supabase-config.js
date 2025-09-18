@@ -42,10 +42,14 @@ async function initializeSupabase() {
 }
 
 // Inicializar inmediatamente
-initializeSupabase().then(() => {
-    window.supabaseClient = supabase;
+initializeSupabase().then((client) => {
+    window.supabaseClient = client;
+    window.supabaseService = new SupabaseService();
+    console.log('✅ Servicio de Supabase listo');
 }).catch(error => {
-    console.error('Error en inicialización:', error);
+    console.error('❌ Error en inicialización:', error);
+    // Crear servicio con fallback
+    window.supabaseService = new SupabaseService();
 });
 
 // Servicio para manejar las respuestas de las encuestas
@@ -53,11 +57,12 @@ class SupabaseService {
     // Guardar una nueva respuesta
     async saveResponse(surveyData) {
         try {
-            if (!supabase) {
+            const client = window.supabaseClient;
+            if (!client) {
                 throw new Error('Supabase no está inicializado');
             }
 
-            const { data, error } = await supabase
+            const { data, error } = await client
                 .from('survey_responses')
                 .insert([
                     {
@@ -81,11 +86,12 @@ class SupabaseService {
     // Obtener todas las respuestas
     async getAllResponses() {
         try {
-            if (!supabase) {
+            const client = window.supabaseClient;
+            if (!client) {
                 throw new Error('Supabase no está inicializado');
             }
 
-            const { data, error } = await supabase
+            const { data, error } = await client
                 .from('survey_responses')
                 .select('*')
                 .order('created_at', { ascending: false })
@@ -101,7 +107,12 @@ class SupabaseService {
     // Obtener respuestas filtradas
     async getFilteredResponses(filters = {}) {
         try {
-            let query = supabase
+            const client = window.supabaseClient;
+            if (!client) {
+                throw new Error('Supabase no está inicializado');
+            }
+
+            let query = client
                 .from('survey_responses')
                 .select('*')
 
@@ -136,7 +147,12 @@ class SupabaseService {
 
     // Escuchar cambios en tiempo real
     onResponsesChange(callback) {
-        return supabase
+        const client = window.supabaseClient;
+        if (!client) {
+            throw new Error('Supabase no está inicializado');
+        }
+
+        return client
             .channel('survey_responses_changes')
             .on('postgres_changes', 
                 { 
@@ -156,8 +172,13 @@ class SupabaseService {
     // Eliminar respuesta (mover a papelera)
     async deleteResponse(responseId) {
         try {
+            const client = window.supabaseClient;
+            if (!client) {
+                throw new Error('Supabase no está inicializado');
+            }
+
             // Marcar como eliminada en lugar de eliminar físicamente
-            const { data, error } = await supabase
+            const { data, error } = await client
                 .from('survey_responses')
                 .update({ 
                     deleted_at: new Date().toISOString(),
@@ -177,7 +198,12 @@ class SupabaseService {
     // Restaurar respuesta
     async restoreResponse(responseId) {
         try {
-            const { data, error } = await supabase
+            const client = window.supabaseClient;
+            if (!client) {
+                throw new Error('Supabase no está inicializado');
+            }
+
+            const { data, error } = await client
                 .from('survey_responses')
                 .update({ 
                     deleted_at: null,
@@ -197,7 +223,12 @@ class SupabaseService {
     // Obtener respuestas eliminadas
     async getDeletedResponses() {
         try {
-            const { data, error } = await supabase
+            const client = window.supabaseClient;
+            if (!client) {
+                throw new Error('Supabase no está inicializado');
+            }
+
+            const { data, error } = await client
                 .from('survey_responses')
                 .select('*')
                 .not('deleted_at', 'is', null)
@@ -214,7 +245,12 @@ class SupabaseService {
     // Obtener estadísticas generales
     async getStats() {
         try {
-            const { data, error } = await supabase
+            const client = window.supabaseClient;
+            if (!client) {
+                throw new Error('Supabase no está inicializado');
+            }
+
+            const { data, error } = await client
                 .from('survey_responses')
                 .select('type, created_at')
                 .is('deleted_at', null)
@@ -236,8 +272,4 @@ class SupabaseService {
     }
 }
 
-// Crear instancia del servicio
-const supabaseService = new SupabaseService()
-
-// Exportar para uso global
-window.supabaseService = supabaseService
+// El servicio se crea automáticamente cuando Supabase se inicializa
