@@ -1,12 +1,15 @@
 // Configuración de Supabase para Sistema de Encuestas PAE
-import { createClient } from '@supabase/supabase-js'
+// Usando la versión CDN de Supabase
 
 // 🔧 CONFIGURACIÓN - Reemplaza estos valores con los de tu proyecto Supabase
 const supabaseUrl = 'https://algrkzpmqvpmylszcrrk.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZ3JrenBtcXZwbXlsc3pjcnJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjIyMTIsImV4cCI6MjA3Mzc5ODIxMn0.RZv3EiuAWBhWor1w07-twotlgBvIU-mtedHMdzhqZBU'
 
-// Crear cliente de Supabase
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Crear cliente de Supabase usando la versión global
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
+
+// Exportar para uso en otros módulos
+window.supabaseClient = supabase
 
 // Servicio para manejar las respuestas de las encuestas
 class SupabaseService {
@@ -188,5 +191,8 @@ class SupabaseService {
     }
 }
 
-// Exportar la instancia del servicio
-export const supabaseService = new SupabaseService()
+// Crear instancia del servicio
+const supabaseService = new SupabaseService()
+
+// Exportar para uso global
+window.supabaseService = supabaseService

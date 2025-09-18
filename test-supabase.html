@@ -67,8 +67,9 @@
         <div id="sample-data"></div>
     </div>
 
-    <script type="module">
-        import { supabaseService } from './supabase-config.js';
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/index.min.js"></script>
+    <script src="./supabase-config.js"></script>
+    <script>
 
         let testResponses = [];
 
@@ -76,7 +77,7 @@
         window.testConnection = async () => {
             const resultsDiv = document.getElementById('test-results');
             try {
-                const responses = await supabaseService.getAllResponses();
+                const responses = await window.supabaseService.getAllResponses();
                 resultsDiv.innerHTML = `
                     <div class="result">
                         ✅ <strong>Conexión exitosa!</strong><br>
@@ -113,7 +114,7 @@
                     }
                 };
 
-                const savedResponse = await supabaseService.saveResponse(testData);
+                const savedResponse = await window.supabaseService.saveResponse(testData);
                 testResponses.push(savedResponse);
                 
                 resultsDiv.innerHTML = `
@@ -136,7 +137,7 @@
         window.testGetResponses = async () => {
             const resultsDiv = document.getElementById('test-results');
             try {
-                const responses = await supabaseService.getAllResponses();
+                const responses = await window.supabaseService.getAllResponses();
                 testResponses = responses;
                 
                 resultsDiv.innerHTML = `
@@ -171,7 +172,7 @@
 
             try {
                 const responseToDelete = testResponses[0];
-                await supabaseService.deleteResponse(responseToDelete.id);
+                await window.supabaseService.deleteResponse(responseToDelete.id);
                 
                 resultsDiv.innerHTML = `
                     <div class="result">
@@ -192,7 +193,7 @@
         // Cargar datos de muestra
         const loadSampleData = async () => {
             try {
-                const responses = await supabaseService.getAllResponses();
+                const responses = await window.supabaseService.getAllResponses();
                 const sampleDiv = document.getElementById('sample-data');
                 
                 if (responses.length === 0) {

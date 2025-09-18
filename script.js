@@ -40,15 +40,40 @@ class EncuestasPAE {
 
     async initializeSupabase() {
         try {
-            // Importar dinámicamente el servicio de Supabase
-            const { supabaseService } = await import('./supabase-config.js');
-            this.supabaseService = supabaseService;
+            // Verificar que Supabase esté disponible globalmente
+            if (typeof window.supabase === 'undefined') {
+                throw new Error('Supabase no está disponible');
+            }
+
+            // Cargar el servicio de Supabase
+            await this.loadSupabaseService();
+            this.supabaseService = window.supabaseService;
             console.log('Supabase inicializado correctamente');
         } catch (error) {
             console.error('Error inicializando Supabase:', error);
             // Fallback a localStorage si Supabase falla
             this.loadFromLocalStorage();
         }
+    }
+
+    async loadSupabaseService() {
+        // Cargar el script de configuración de Supabase
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = './supabase-config.js';
+            script.onload = () => {
+                // Esperar un poco para que se inicialice
+                setTimeout(() => {
+                    if (window.supabaseService) {
+                        resolve();
+                    } else {
+                        reject(new Error('No se pudo cargar el servicio de Supabase'));
+                    }
+                }, 100);
+            };
+            script.onerror = () => reject(new Error('Error cargando supabase-config.js'));
+            document.head.appendChild(script);
+        });
     }
 
     async loadDataFromSupabase() {
