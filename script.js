@@ -280,25 +280,58 @@ class EncuestasPAE {
         const values = Object.values(data);
 
         new Chart(ctx, {
-            type: 'doughnut',
+            type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
+                    label: 'Respuestas',
                     data: values,
                     backgroundColor: [
                         '#EA5B0C',
                         '#F29100',
                         '#6EB3A6',
                         '#4A9B8E',
-                        '#28a745'
-                    ]
+                        '#28a745',
+                        '#17a2b8',
+                        '#6c757d',
+                        '#fd7e14'
+                    ],
+                    borderColor: [
+                        '#d44a0a',
+                        '#d17a00',
+                        '#5a9b8e',
+                        '#3a7b6e',
+                        '#1e7e34',
+                        '#138496',
+                        '#5a6268',
+                        '#e55a00'
+                    ],
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribución de Respuestas'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
                     }
                 }
             }
@@ -365,6 +398,7 @@ class EncuestasPAE {
         const dateTo = document.getElementById('date-to');
         const applyFilters = document.getElementById('apply-filters');
         const clearFilters = document.getElementById('clear-filters');
+        const loadInstitutions = document.getElementById('load-institutions');
 
         // Manejar cambio de período
         periodSelect.addEventListener('change', () => {
@@ -379,6 +413,11 @@ class EncuestasPAE {
         // Limpiar filtros
         clearFilters.addEventListener('click', () => {
             this.clearDateFilters();
+        });
+
+        // Cargar instituciones
+        loadInstitutions.addEventListener('click', () => {
+            this.loadInstitutionsList();
         });
 
         // Configurar fechas por defecto
@@ -437,6 +476,10 @@ class EncuestasPAE {
         const dateFrom = document.getElementById('date-from').value;
         const dateTo = document.getElementById('date-to').value;
         const analysisType = document.querySelector('input[name="analysis-type"]:checked').value;
+        const institutionFilter = document.getElementById('institution-filter').value;
+        const gradeFilter = document.getElementById('grade-filter').value;
+        const ageRangeFilter = document.getElementById('age-range-filter').value;
+        const sexFilter = document.getElementById('sex-filter').value;
 
         if (!dateFrom || !dateTo) {
             alert('Por favor seleccione un rango de fechas válido');
@@ -444,9 +487,9 @@ class EncuestasPAE {
         }
 
         if (analysisType === 'general') {
-            this.showGeneralAnalysis(dateFrom, dateTo);
+            this.showGeneralAnalysis(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
         } else {
-            this.showSpecificAnalysis(dateFrom, dateTo);
+            this.showSpecificAnalysis(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
         }
     }
 
@@ -454,6 +497,10 @@ class EncuestasPAE {
         document.getElementById('date-from').value = '';
         document.getElementById('date-to').value = '';
         document.getElementById('period-select').value = 'all';
+        document.getElementById('institution-filter').value = '';
+        document.getElementById('grade-filter').value = '';
+        document.getElementById('age-range-filter').value = '';
+        document.getElementById('sex-filter').value = '';
         document.querySelector('input[name="analysis-type"][value="general"]').checked = true;
         
         // Limpiar contenido de resultados
@@ -464,19 +511,61 @@ class EncuestasPAE {
         `;
     }
 
-    getFilteredResponses(dateFrom, dateTo) {
+    getFilteredResponses(dateFrom, dateTo, institutionFilter = '', gradeFilter = '', ageRangeFilter = '', sexFilter = '') {
         const startDate = new Date(dateFrom);
         const endDate = new Date(dateTo);
         endDate.setHours(23, 59, 59, 999); // Incluir todo el día final
 
         return this.responses.filter(response => {
             const responseDate = new Date(response.date);
-            return responseDate >= startDate && responseDate <= endDate;
+            const dateMatch = responseDate >= startDate && responseDate <= endDate;
+            
+            // Filtro por institución
+            const institutionMatch = !institutionFilter || 
+                (response.data.institucion && response.data.institucion === institutionFilter);
+            
+            // Filtro por grado
+            const gradeMatch = !gradeFilter || 
+                (response.data.grado && response.data.grado === gradeFilter);
+            
+            // Filtro por sexo
+            const sexMatch = !sexFilter || 
+                (response.data.sexo && response.data.sexo === sexFilter);
+            
+            // Filtro por rango de edad
+            let ageMatch = true;
+            if (ageRangeFilter && response.data.fecha_nacimiento) {
+                const birthDate = new Date(response.data.fecha_nacimiento);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                switch (ageRangeFilter) {
+                    case '5-8':
+                        ageMatch = age >= 5 && age <= 8;
+                        break;
+                    case '9-12':
+                        ageMatch = age >= 9 && age <= 12;
+                        break;
+                    case '13-16':
+                        ageMatch = age >= 13 && age <= 16;
+                        break;
+                    case '17-20':
+                        ageMatch = age >= 17 && age <= 20;
+                        break;
+                }
+            }
+            
+            return dateMatch && institutionMatch && gradeMatch && sexMatch && ageMatch;
         });
     }
 
-    showGeneralAnalysis(dateFrom, dateTo) {
-        const filteredResponses = this.getFilteredResponses(dateFrom, dateTo);
+    showGeneralAnalysis(dateFrom, dateTo, institutionFilter = '', gradeFilter = '', ageRangeFilter = '', sexFilter = '') {
+        const filteredResponses = this.getFilteredResponses(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
         
         let html = `
             <div class="general-analysis">
@@ -484,6 +573,8 @@ class EncuestasPAE {
                     <h4>📊 Análisis General del Período</h4>
                     <p><strong>Período:</strong> ${this.formatDateDisplay(dateFrom)} - ${this.formatDateDisplay(dateTo)}</p>
                     <p><strong>Total de respuestas:</strong> ${filteredResponses.length}</p>
+                    ${institutionFilter ? `<p><strong>Institución:</strong> ${institutionFilter}</p>` : ''}
+                    ${gradeFilter ? `<p><strong>Grado:</strong> ${gradeFilter}°</p>` : ''}
                 </div>
                 
                 <div class="analysis-summary">
@@ -533,7 +624,7 @@ class EncuestasPAE {
         }, 100);
     }
 
-    showSpecificAnalysis(dateFrom, dateTo) {
+    showSpecificAnalysis(dateFrom, dateTo, institutionFilter = '', gradeFilter = '', ageRangeFilter = '', sexFilter = '') {
         const surveySelect = document.getElementById('survey-select');
         const selectedSurvey = surveySelect.value;
         
@@ -542,7 +633,7 @@ class EncuestasPAE {
             return;
         }
 
-        const filteredResponses = this.getFilteredResponses(dateFrom, dateTo);
+        const filteredResponses = this.getFilteredResponses(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
         const surveyResponses = filteredResponses.filter(r => r.type === selectedSurvey);
         
         let html = `
@@ -550,6 +641,8 @@ class EncuestasPAE {
                 <h4>📊 Análisis Específico: ${this.getSurveyTypeName(selectedSurvey)}</h4>
                 <p><strong>Período:</strong> ${this.formatDateDisplay(dateFrom)} - ${this.formatDateDisplay(dateTo)}</p>
                 <p><strong>Respuestas en el período:</strong> ${surveyResponses.length}</p>
+                ${institutionFilter ? `<p><strong>Institución:</strong> ${institutionFilter}</p>` : ''}
+                ${gradeFilter ? `<p><strong>Grado:</strong> ${gradeFilter}°</p>` : ''}
             </div>
         `;
 
@@ -586,6 +679,29 @@ class EncuestasPAE {
             const chartId = `chart-${question.replace(/\s+/g, '-')}`;
             this.createChart(chartId, stats);
         });
+    }
+
+    loadInstitutionsList() {
+        const institutionSelect = document.getElementById('institution-filter');
+        
+        // Obtener todas las instituciones únicas de las respuestas
+        const institutions = [...new Set(this.responses
+            .filter(r => r.data.institucion)
+            .map(r => r.data.institucion)
+        )].sort();
+        
+        // Limpiar opciones existentes (excepto la primera)
+        institutionSelect.innerHTML = '<option value="">Todas las instituciones</option>';
+        
+        // Agregar instituciones
+        institutions.forEach(institution => {
+            const option = document.createElement('option');
+            option.value = institution;
+            option.textContent = institution;
+            institutionSelect.appendChild(option);
+        });
+        
+        alert(`Se cargaron ${institutions.length} instituciones disponibles`);
     }
 
     updateStats() {
@@ -630,10 +746,62 @@ class EncuestasPAE {
     }
 
     exportToExcel(data, filename) {
-        const worksheet = XLSX.utils.json_to_sheet(data);
+        if (!data || data.length === 0) {
+            alert('No hay datos para exportar');
+            return;
+        }
+
+        // Formatear datos para Excel
+        const formattedData = data.map(response => {
+            const formatted = {
+                'ID': response.id,
+                'Tipo de Encuesta': this.getSurveyTypeName(response.type),
+                'Fecha': new Date(response.date).toLocaleDateString('es-ES'),
+                'Hora': new Date(response.date).toLocaleTimeString('es-ES')
+            };
+
+            // Agregar todos los campos del formulario
+            Object.keys(response.data).forEach(key => {
+                const value = response.data[key];
+                // Formatear el nombre del campo para que sea más legible
+                const formattedKey = this.formatFieldName(key);
+                formatted[formattedKey] = value;
+            });
+
+            return formatted;
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Respuestas');
+        
+        // Ajustar ancho de columnas
+        const colWidths = [];
+        const headers = Object.keys(formattedData[0] || {});
+        headers.forEach(header => {
+            colWidths.push({ wch: Math.max(header.length, 15) });
+        });
+        worksheet['!cols'] = colWidths;
+        
         XLSX.writeFile(workbook, filename);
+        alert(`Se exportaron ${data.length} respuestas exitosamente`);
+    }
+
+    formatFieldName(fieldName) {
+        const fieldMap = {
+            'institucion': 'Institución',
+            'grado': 'Grado',
+            'nombre': 'Nombre',
+            'apellido': 'Apellido',
+            'edad': 'Edad',
+            'telefono': 'Teléfono',
+            'email': 'Email',
+            'observaciones': 'Observaciones',
+            'alimentos_gustan': 'Alimentos que más gustan',
+            'alimentos_no_gustan': 'Alimentos que menos gustan'
+        };
+
+        return fieldMap[fieldName] || fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
 
     // Métodos para manejo de respuestas eliminadas

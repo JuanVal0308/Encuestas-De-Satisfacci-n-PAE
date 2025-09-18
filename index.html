@@ -126,6 +126,75 @@
                     </div>
                 </div>
                 
+                <!-- Filtros Adicionales -->
+                <div class="additional-filters">
+                    <div class="filter-card">
+                        <h3>🏫 Filtros por Institución</h3>
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="institution-filter">Institución:</label>
+                                <select id="institution-filter" class="filter-select">
+                                    <option value="">Todas las instituciones</option>
+                                </select>
+                            </div>
+                            <button id="load-institutions" class="btn-secondary">Cargar Instituciones</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-card">
+                        <h3>🎓 Filtros por Grado</h3>
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="grade-filter">Grado:</label>
+                                <select id="grade-filter" class="filter-select">
+                                    <option value="">Todos los grados</option>
+                                    <option value="1">1°</option>
+                                    <option value="2">2°</option>
+                                    <option value="3">3°</option>
+                                    <option value="4">4°</option>
+                                    <option value="5">5°</option>
+                                    <option value="6">6°</option>
+                                    <option value="7">7°</option>
+                                    <option value="8">8°</option>
+                                    <option value="9">9°</option>
+                                    <option value="10">10°</option>
+                                    <option value="11">11°</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-card">
+                        <h3>👤 Filtros por Edad</h3>
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="age-range-filter">Rango de edad:</label>
+                                <select id="age-range-filter" class="filter-select">
+                                    <option value="">Todas las edades</option>
+                                    <option value="5-8">5-8 años</option>
+                                    <option value="9-12">9-12 años</option>
+                                    <option value="13-16">13-16 años</option>
+                                    <option value="17-20">17-20 años</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-card">
+                        <h3>👥 Filtros por Sexo</h3>
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="sex-filter">Sexo:</label>
+                                <select id="sex-filter" class="filter-select">
+                                    <option value="">Todos</option>
+                                    <option value="Hombre">Hombre</option>
+                                    <option value="Mujer">Mujer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="results-controls">
                     <select id="survey-select" class="form-control">
                         <option value="">Seleccionar encuesta</option>
