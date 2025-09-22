@@ -17,11 +17,10 @@ class EncuestasPAE {
         };
         this.responses = [];
         this.deletedResponses = [];
-        this.supabaseService = null;
         this.init();
     }
 
-    async init() {
+    init() {
         this.setupNavigation();
         this.setupSurveyCards();
         this.setupResults();
@@ -29,77 +28,17 @@ class EncuestasPAE {
         this.setupFeatureCards();
         this.setupDateFilters();
         
-        // Inicializar Supabase
-        await this.initializeSupabase();
-        
-        // Cargar datos desde Supabase
-        await this.loadDataFromSupabase();
+        // Cargar datos desde localStorage
+        this.loadFromLocalStorage();
         
         this.updateStats();
     }
 
-    async initializeSupabase() {
-        try {
-            // Verificar que Supabase esté disponible globalmente
-            if (typeof window.supabase === 'undefined') {
-                throw new Error('Supabase no está disponible');
-            }
-
-            // Cargar el servicio de Supabase
-            await this.loadSupabaseService();
-            this.supabaseService = window.supabaseService;
-            console.log('Supabase inicializado correctamente');
-        } catch (error) {
-            console.error('Error inicializando Supabase:', error);
-            // Fallback a localStorage si Supabase falla
-            this.loadFromLocalStorage();
-        }
-    }
-
-    async loadSupabaseService() {
-        // Cargar el script de configuración de Supabase
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = './supabase-config.js';
-            script.onload = () => {
-                // Esperar un poco para que se inicialice
-                setTimeout(() => {
-                    if (window.supabaseService) {
-                        resolve();
-                    } else {
-                        reject(new Error('No se pudo cargar el servicio de Supabase'));
-                    }
-                }, 100);
-            };
-            script.onerror = () => reject(new Error('Error cargando supabase-config.js'));
-            document.head.appendChild(script);
-        });
-    }
-
-    async loadDataFromSupabase() {
-        if (!this.supabaseService) {
-            this.loadFromLocalStorage();
-            return;
-        }
-
-        try {
-            // Cargar respuestas activas
-            this.responses = await this.supabaseService.getAllResponses();
-            
-            // Cargar respuestas eliminadas
-            this.deletedResponses = await this.supabaseService.getDeletedResponses();
-            
-            console.log(`Cargadas ${this.responses.length} respuestas desde Supabase`);
-        } catch (error) {
-            console.error('Error cargando datos desde Supabase:', error);
-            this.loadFromLocalStorage();
-        }
-    }
 
     loadFromLocalStorage() {
         this.responses = JSON.parse(localStorage.getItem('paesurvey_responses')) || [];
         this.deletedResponses = JSON.parse(localStorage.getItem('paesurvey_deleted_responses')) || [];
-        console.log('Usando localStorage como fallback');
+        console.log('Datos cargados desde localStorage');
     }
 
     setupNavigation() {
@@ -215,28 +154,17 @@ class EncuestasPAE {
         };
     }
 
-    async saveResponse(surveyType, formData) {
+    saveResponse(surveyType, formData) {
         const response = {
+            id: Date.now(),
             type: surveyType,
-            data: Object.fromEntries(formData.entries())
+            data: Object.fromEntries(formData.entries()),
+            date: new Date().toISOString()
         };
         
         try {
-            if (this.supabaseService) {
-                // Guardar en Supabase
-                const savedResponse = await this.supabaseService.saveResponse(response);
-                this.responses.unshift(savedResponse);
-                console.log('Respuesta guardada en Supabase:', savedResponse);
-            } else {
-                // Fallback a localStorage
-                const localResponse = {
-                    id: Date.now(),
-                    ...response,
-                    date: new Date().toISOString()
-                };
-                this.responses.push(localResponse);
-                this.saveData();
-            }
+            this.responses.push(response);
+            this.saveData();
             
             alert('¡Encuesta guardada exitosamente!');
             document.getElementById('survey-modal').style.display = 'none';
@@ -1088,72 +1016,44 @@ class EncuestasPAE {
     }
 
     // Métodos para manejo de respuestas eliminadas
-    async deleteResponse(responseId) {
+    deleteResponse(responseId) {
         try {
-            if (this.supabaseService) {
-                // Eliminar en Supabase
-                await this.supabaseService.deleteResponse(responseId);
+            const responseIndex = this.responses.findIndex(r => r.id === responseId);
+            if (responseIndex !== -1) {
+                const deletedResponse = this.responses[responseIndex];
+                deletedResponse.deletedAt = new Date().toISOString();
+                deletedResponse.deletedBy = 'user';
                 
-                // Actualizar arrays locales
-                const responseIndex = this.responses.findIndex(r => r.id === responseId);
-                if (responseIndex !== -1) {
-                    const deletedResponse = this.responses[responseIndex];
-                    deletedResponse.deleted_at = new Date().toISOString();
-                    this.deletedResponses.push(deletedResponse);
-                    this.responses.splice(responseIndex, 1);
-                }
-            } else {
-                // Fallback a localStorage
-                const responseIndex = this.responses.findIndex(r => r.id === responseId);
-                if (responseIndex !== -1) {
-                    const deletedResponse = this.responses[responseIndex];
-                    deletedResponse.deletedAt = new Date().toISOString();
-                    deletedResponse.deletedBy = 'user';
-                    
-                    this.deletedResponses.push(deletedResponse);
-                    this.responses.splice(responseIndex, 1);
-                    this.saveData();
-                }
+                this.deletedResponses.push(deletedResponse);
+                this.responses.splice(responseIndex, 1);
+                this.saveData();
+                
+                this.updateStats();
+                return true;
             }
-            
-            this.updateStats();
-            return true;
+            return false;
         } catch (error) {
             console.error('Error eliminando respuesta:', error);
             return false;
         }
     }
 
-    async restoreResponse(responseId) {
+    restoreResponse(responseId) {
         try {
-            if (this.supabaseService) {
-                // Restaurar en Supabase
-                await this.supabaseService.restoreResponse(responseId);
+            const responseIndex = this.deletedResponses.findIndex(r => r.id === responseId);
+            if (responseIndex !== -1) {
+                const restoredResponse = this.deletedResponses[responseIndex];
+                delete restoredResponse.deletedAt;
+                delete restoredResponse.deletedBy;
                 
-                // Actualizar arrays locales
-                const responseIndex = this.deletedResponses.findIndex(r => r.id === responseId);
-                if (responseIndex !== -1) {
-                    const restoredResponse = this.deletedResponses[responseIndex];
-                    delete restoredResponse.deleted_at;
-                    this.responses.push(restoredResponse);
-                    this.deletedResponses.splice(responseIndex, 1);
-                }
-            } else {
-                // Fallback a localStorage
-                const responseIndex = this.deletedResponses.findIndex(r => r.id === responseId);
-                if (responseIndex !== -1) {
-                    const restoredResponse = this.deletedResponses[responseIndex];
-                    delete restoredResponse.deletedAt;
-                    delete restoredResponse.deletedBy;
-                    
-                    this.responses.push(restoredResponse);
-                    this.deletedResponses.splice(responseIndex, 1);
-                    this.saveData();
-                }
+                this.responses.push(restoredResponse);
+                this.deletedResponses.splice(responseIndex, 1);
+                this.saveData();
+                
+                this.updateStats();
+                return true;
             }
-            
-            this.updateStats();
-            return true;
+            return false;
         } catch (error) {
             console.error('Error restaurando respuesta:', error);
             return false;
