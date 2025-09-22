@@ -20,7 +20,7 @@ class EncuestasPAE {
         this.init();
     }
 
-    init() {
+    async init() {
         this.setupNavigation();
         this.setupSurveyCards();
         this.setupResults();
@@ -28,12 +28,57 @@ class EncuestasPAE {
         this.setupFeatureCards();
         this.setupDateFilters();
         
-        // Cargar datos desde localStorage
-        this.loadFromLocalStorage();
+        // Inicializar Supabase
+        await this.initializeSupabase();
+        
+        // Cargar datos
+        await this.loadData();
         
         this.updateStats();
     }
 
+
+    async initializeSupabase() {
+        try {
+            // Esperar a que Supabase esté disponible
+            if (typeof window.supabaseService === 'undefined') {
+                console.warn('Supabase no está disponible, usando localStorage');
+                return false;
+            }
+
+            this.supabaseService = window.supabaseService;
+            const isConnected = await this.supabaseService.init();
+            
+            if (isConnected) {
+                console.log('Supabase inicializado correctamente');
+                return true;
+            } else {
+                console.warn('Error conectando a Supabase, usando localStorage');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error inicializando Supabase:', error);
+            return false;
+        }
+    }
+
+    async loadData() {
+        try {
+            if (this.supabaseService && this.supabaseService.isConnected) {
+                // Cargar desde Supabase
+                const data = await this.supabaseService.syncWithLocalStorage();
+                this.responses = data.responses;
+                this.deletedResponses = data.deletedResponses;
+                console.log(`Cargadas ${this.responses.length} respuestas desde Supabase`);
+            } else {
+                // Fallback a localStorage
+                this.loadFromLocalStorage();
+            }
+        } catch (error) {
+            console.error('Error cargando datos:', error);
+            this.loadFromLocalStorage();
+        }
+    }
 
     loadFromLocalStorage() {
         this.responses = JSON.parse(localStorage.getItem('paesurvey_responses')) || [];
@@ -154,17 +199,32 @@ class EncuestasPAE {
         };
     }
 
-    saveResponse(surveyType, formData) {
-        const response = {
-            id: Date.now(),
+    async saveResponse(surveyType, formData) {
+        const responseData = {
             type: surveyType,
-            data: Object.fromEntries(formData.entries()),
-            date: new Date().toISOString()
+            data: Object.fromEntries(formData.entries())
         };
         
         try {
-            this.responses.push(response);
-            this.saveData();
+            let savedResponse;
+            
+            if (this.supabaseService && this.supabaseService.isConnected) {
+                // Guardar en Supabase
+                savedResponse = await this.supabaseService.saveResponse(responseData);
+                console.log('Respuesta guardada en Supabase:', savedResponse);
+            } else {
+                // Fallback a localStorage
+                savedResponse = {
+                    id: Date.now(),
+                    ...responseData,
+                    date: new Date().toISOString()
+                };
+                this.responses.push(savedResponse);
+                this.saveData();
+            }
+            
+            // Actualizar array local
+            this.responses.unshift(savedResponse);
             
             alert('¡Encuesta guardada exitosamente!');
             document.getElementById('survey-modal').style.display = 'none';
@@ -1016,44 +1076,72 @@ class EncuestasPAE {
     }
 
     // Métodos para manejo de respuestas eliminadas
-    deleteResponse(responseId) {
+    async deleteResponse(responseId) {
         try {
-            const responseIndex = this.responses.findIndex(r => r.id === responseId);
-            if (responseIndex !== -1) {
-                const deletedResponse = this.responses[responseIndex];
-                deletedResponse.deletedAt = new Date().toISOString();
-                deletedResponse.deletedBy = 'user';
+            if (this.supabaseService && this.supabaseService.isConnected) {
+                // Eliminar en Supabase
+                await this.supabaseService.deleteResponse(responseId);
                 
-                this.deletedResponses.push(deletedResponse);
-                this.responses.splice(responseIndex, 1);
-                this.saveData();
-                
-                this.updateStats();
-                return true;
+                // Actualizar arrays locales
+                const responseIndex = this.responses.findIndex(r => r.id === responseId);
+                if (responseIndex !== -1) {
+                    const deletedResponse = this.responses[responseIndex];
+                    deletedResponse.deletedAt = new Date().toISOString();
+                    this.deletedResponses.push(deletedResponse);
+                    this.responses.splice(responseIndex, 1);
+                }
+            } else {
+                // Fallback a localStorage
+                const responseIndex = this.responses.findIndex(r => r.id === responseId);
+                if (responseIndex !== -1) {
+                    const deletedResponse = this.responses[responseIndex];
+                    deletedResponse.deletedAt = new Date().toISOString();
+                    deletedResponse.deletedBy = 'user';
+                    
+                    this.deletedResponses.push(deletedResponse);
+                    this.responses.splice(responseIndex, 1);
+                    this.saveData();
+                }
             }
-            return false;
+            
+            this.updateStats();
+            return true;
         } catch (error) {
             console.error('Error eliminando respuesta:', error);
             return false;
         }
     }
 
-    restoreResponse(responseId) {
+    async restoreResponse(responseId) {
         try {
-            const responseIndex = this.deletedResponses.findIndex(r => r.id === responseId);
-            if (responseIndex !== -1) {
-                const restoredResponse = this.deletedResponses[responseIndex];
-                delete restoredResponse.deletedAt;
-                delete restoredResponse.deletedBy;
+            if (this.supabaseService && this.supabaseService.isConnected) {
+                // Restaurar en Supabase
+                await this.supabaseService.restoreResponse(responseId);
                 
-                this.responses.push(restoredResponse);
-                this.deletedResponses.splice(responseIndex, 1);
-                this.saveData();
-                
-                this.updateStats();
-                return true;
+                // Actualizar arrays locales
+                const responseIndex = this.deletedResponses.findIndex(r => r.id === responseId);
+                if (responseIndex !== -1) {
+                    const restoredResponse = this.deletedResponses[responseIndex];
+                    delete restoredResponse.deletedAt;
+                    this.responses.push(restoredResponse);
+                    this.deletedResponses.splice(responseIndex, 1);
+                }
+            } else {
+                // Fallback a localStorage
+                const responseIndex = this.deletedResponses.findIndex(r => r.id === responseId);
+                if (responseIndex !== -1) {
+                    const restoredResponse = this.deletedResponses[responseIndex];
+                    delete restoredResponse.deletedAt;
+                    delete restoredResponse.deletedBy;
+                    
+                    this.responses.push(restoredResponse);
+                    this.deletedResponses.splice(responseIndex, 1);
+                    this.saveData();
+                }
             }
-            return false;
+            
+            this.updateStats();
+            return true;
         } catch (error) {
             console.error('Error restaurando respuesta:', error);
             return false;
