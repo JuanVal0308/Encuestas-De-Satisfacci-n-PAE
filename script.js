@@ -486,30 +486,96 @@ class EncuestasPAE {
         const dateTo = document.getElementById('date-to');
         const applyFilters = document.getElementById('apply-filters');
         const clearFilters = document.getElementById('clear-filters');
-        const loadInstitutions = document.getElementById('load-institutions');
+        const autoLoadInstitutions = document.getElementById('auto-load-institutions');
+        const toggleFilters = document.getElementById('toggle-filters');
+
+        // Configurar toggle de filtros
+        if (toggleFilters) {
+            toggleFilters.addEventListener('click', () => {
+                this.toggleFiltersVisibility();
+            });
+        }
+
+        // Configurar grupos colapsables
+        this.setupCollapsibleGroups();
 
         // Manejar cambio de período
-        periodSelect.addEventListener('change', () => {
-            this.handlePeriodChange();
-        });
+        if (periodSelect) {
+            periodSelect.addEventListener('change', () => {
+                this.handlePeriodChange();
+            });
+        }
 
         // Aplicar filtros
-        applyFilters.addEventListener('click', () => {
-            this.applyDateFilters();
-        });
+        if (applyFilters) {
+            applyFilters.addEventListener('click', () => {
+                this.applyDateFilters();
+            });
+        }
 
         // Limpiar filtros
-        clearFilters.addEventListener('click', () => {
-            this.clearDateFilters();
-        });
+        if (clearFilters) {
+            clearFilters.addEventListener('click', () => {
+                this.clearDateFilters();
+            });
+        }
 
-        // Cargar instituciones
-        loadInstitutions.addEventListener('click', () => {
-            this.loadInstitutionsList();
-        });
+        // Cargar instituciones automáticamente
+        if (autoLoadInstitutions) {
+            autoLoadInstitutions.addEventListener('click', () => {
+                this.loadInstitutionsList();
+            });
+        }
 
         // Configurar fechas por defecto
         this.setDefaultDates();
+
+        // Cargar instituciones automáticamente al inicializar
+        this.autoLoadInstitutions();
+    }
+
+    setupCollapsibleGroups() {
+        // Configurar grupos colapsables
+        document.querySelectorAll('.filter-group-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const targetId = header.dataset.target;
+                const content = document.getElementById(targetId);
+                const icon = header.querySelector('.collapse-icon');
+                
+                if (content && icon) {
+                    content.classList.toggle('collapsed');
+                    header.classList.toggle('collapsed');
+                    
+                    if (content.classList.contains('collapsed')) {
+                        icon.style.transform = 'rotate(-90deg)';
+                    } else {
+                        icon.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+        });
+    }
+
+    toggleFiltersVisibility() {
+        const filtersContent = document.getElementById('filters-content');
+        const toggleIcon = document.querySelector('.toggle-icon');
+        
+        if (filtersContent && toggleIcon) {
+            filtersContent.classList.toggle('collapsed');
+            
+            if (filtersContent.classList.contains('collapsed')) {
+                toggleIcon.textContent = '▶';
+            } else {
+                toggleIcon.textContent = '▼';
+            }
+        }
+    }
+
+    autoLoadInstitutions() {
+        // Cargar instituciones automáticamente al inicializar
+        setTimeout(() => {
+            this.loadInstitutionsList();
+        }, 1000);
     }
 
     handlePeriodChange() {
@@ -569,34 +635,117 @@ class EncuestasPAE {
         const ageRangeFilter = document.getElementById('age-range-filter').value;
         const sexFilter = document.getElementById('sex-filter').value;
 
+        // Validar fechas
         if (!dateFrom || !dateTo) {
-            alert('Por favor seleccione un rango de fechas válido');
+            this.showNotification('⚠️ Por favor seleccione un rango de fechas válido', 'warning');
             return;
         }
 
-        if (analysisType === 'general') {
-            this.showGeneralAnalysis(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
-        } else {
-            this.showSpecificAnalysis(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
+        // Validar que la fecha de inicio no sea mayor que la fecha final
+        if (new Date(dateFrom) > new Date(dateTo)) {
+            this.showNotification('⚠️ La fecha de inicio no puede ser mayor que la fecha final', 'warning');
+            return;
+        }
+
+        // Mostrar indicador de carga
+        this.showLoadingIndicator();
+
+        // Aplicar filtros con un pequeño delay para mejor UX
+        setTimeout(() => {
+            try {
+                if (analysisType === 'general') {
+                    this.showGeneralAnalysis(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
+                } else {
+                    this.showSpecificAnalysis(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
+                }
+                
+                // Mostrar resumen de filtros aplicados
+                this.showFiltersSummary(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter);
+                
+            } catch (error) {
+                console.error('Error aplicando filtros:', error);
+                this.showNotification('❌ Error aplicando filtros. Intente nuevamente.', 'error');
+            } finally {
+                this.hideLoadingIndicator();
+            }
+        }, 500);
+    }
+
+    showLoadingIndicator() {
+        const resultsContent = document.getElementById('results-content');
+        if (resultsContent) {
+            resultsContent.innerHTML = `
+                <div class="loading-analysis">
+                    <div class="spinner"></div>
+                    <p>Aplicando filtros y generando análisis...</p>
+                </div>
+            `;
         }
     }
 
+    hideLoadingIndicator() {
+        // El contenido se reemplazará automáticamente por el análisis
+    }
+
+    showFiltersSummary(dateFrom, dateTo, institutionFilter, gradeFilter, ageRangeFilter, sexFilter) {
+        const activeFilters = [];
+        
+        if (institutionFilter) activeFilters.push(`Institución: ${institutionFilter}`);
+        if (gradeFilter) activeFilters.push(`Grado: ${gradeFilter}°`);
+        if (ageRangeFilter) activeFilters.push(`Edad: ${ageRangeFilter} años`);
+        if (sexFilter) activeFilters.push(`Sexo: ${sexFilter}`);
+        
+        const periodText = `${this.formatDateDisplay(dateFrom)} - ${this.formatDateDisplay(dateTo)}`;
+        
+        let summaryText = `📊 Análisis del período: ${periodText}`;
+        if (activeFilters.length > 0) {
+            summaryText += ` | Filtros: ${activeFilters.join(', ')}`;
+        }
+        
+        this.showNotification(summaryText, 'info');
+    }
+
     clearDateFilters() {
-        document.getElementById('date-from').value = '';
-        document.getElementById('date-to').value = '';
-        document.getElementById('period-select').value = 'all';
-        document.getElementById('institution-filter').value = '';
-        document.getElementById('grade-filter').value = '';
-        document.getElementById('age-range-filter').value = '';
-        document.getElementById('sex-filter').value = '';
-        document.querySelector('input[name="analysis-type"][value="general"]').checked = true;
+        // Limpiar todos los campos de filtros
+        const filtersToClear = [
+            'date-from', 'date-to', 'period-select', 
+            'institution-filter', 'grade-filter', 
+            'age-range-filter', 'sex-filter'
+        ];
+        
+        filtersToClear.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.value = '';
+            }
+        });
+        
+        // Resetear tipo de análisis
+        const generalRadio = document.querySelector('input[name="analysis-type"][value="general"]');
+        if (generalRadio) {
+            generalRadio.checked = true;
+        }
+        
+        // Resetear período
+        const periodSelect = document.getElementById('period-select');
+        if (periodSelect) {
+            periodSelect.value = 'all';
+        }
         
         // Limpiar contenido de resultados
-        document.getElementById('results-content').innerHTML = `
-            <div class="no-results">
-                <p>Seleccione una encuesta para ver los resultados</p>
-            </div>
-        `;
+        const resultsContent = document.getElementById('results-content');
+        if (resultsContent) {
+            resultsContent.innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon">📊</div>
+                    <h3>Seleccione filtros para ver los resultados</h3>
+                    <p>Use los filtros de arriba para analizar las encuestas por período, institución, grado y otros criterios.</p>
+                </div>
+            `;
+        }
+        
+        // Mostrar notificación de confirmación
+        this.showNotification('✅ Filtros limpiados correctamente', 'success');
     }
 
     getFilteredResponses(dateFrom, dateTo, institutionFilter = '', gradeFilter = '', ageRangeFilter = '', sexFilter = '') {
@@ -772,10 +921,16 @@ class EncuestasPAE {
     loadInstitutionsList() {
         const institutionSelect = document.getElementById('institution-filter');
         
+        if (!institutionSelect) {
+            console.warn('No se encontró el elemento institution-filter');
+            return;
+        }
+        
         // Obtener todas las instituciones únicas de las respuestas
         const institutions = [...new Set(this.responses
-            .filter(r => r.data.institucion)
-            .map(r => r.data.institucion)
+            .filter(r => r.data.institucion || r.data.institucion_educativa)
+            .map(r => r.data.institucion || r.data.institucion_educativa)
+            .filter(inst => inst && inst.trim() !== '')
         )].sort();
         
         // Limpiar opciones existentes (excepto la primera)
@@ -789,7 +944,47 @@ class EncuestasPAE {
             institutionSelect.appendChild(option);
         });
         
-        alert(`Se cargaron ${institutions.length} instituciones disponibles`);
+        // Mostrar notificación más elegante
+        if (institutions.length > 0) {
+            this.showNotification(`✅ Se cargaron ${institutions.length} instituciones disponibles`, 'success');
+        } else {
+            this.showNotification('⚠️ No se encontraron instituciones en las respuestas', 'warning');
+        }
+        
+        console.log(`Instituciones cargadas: ${institutions.length}`, institutions);
+    }
+
+    showNotification(message, type = 'info') {
+        // Crear notificación temporal
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#17a2b8'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: 600;
+            max-width: 300px;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Remover después de 3 segundos
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
     }
 
     updateStats() {

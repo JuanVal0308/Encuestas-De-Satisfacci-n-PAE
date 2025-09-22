@@ -82,115 +82,158 @@
             <section id="results" class="section">
                 <h2>Resultados de Encuestas</h2>
                 
-                <!-- Filtros de Análisis -->
-                <div class="analysis-filters">
-                    <div class="filter-card">
-                        <h3>📅 Filtros de Fecha</h3>
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="date-from">Desde:</label>
-                                <input type="date" id="date-from" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label for="date-to">Hasta:</label>
-                                <input type="date" id="date-to" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label for="period-select">Período:</label>
-                                <select id="period-select" class="filter-select">
-                                    <option value="all">Todos los períodos</option>
-                                    <option value="today">Hoy</option>
-                                    <option value="week">Esta semana</option>
-                                    <option value="month">Este mes</option>
-                                    <option value="quarter">Este trimestre</option>
-                                    <option value="year">Este año</option>
-                                    <option value="custom">Personalizado</option>
-                                </select>
-                            </div>
-                            <button id="apply-filters" class="btn-primary">Aplicar Filtros</button>
-                            <button id="clear-filters" class="btn-secondary">Limpiar</button>
+                <!-- Filtros de Análisis Mejorados -->
+                <div class="filters-container">
+                    <!-- Filtros Principales -->
+                    <div class="filters-section">
+                        <div class="filters-header">
+                            <h3>🔍 Filtros de Análisis</h3>
+                            <button class="toggle-filters-btn" id="toggle-filters">
+                                <span class="toggle-icon">▼</span> Mostrar/Ocultar Filtros
+                            </button>
                         </div>
-                    </div>
-                    
-                    <div class="filter-card">
-                        <h3>📊 Tipo de Análisis</h3>
-                        <div class="analysis-type-controls">
-                            <label class="radio-option">
-                                <input type="radio" name="analysis-type" value="general" checked>
-                                <span>Análisis General</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="analysis-type" value="specific">
-                                <span>Análisis por Encuesta</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Filtros Adicionales -->
-                <div class="additional-filters">
-                    <div class="filter-card">
-                        <h3>🏫 Filtros por Institución</h3>
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="institution-filter">Institución:</label>
-                                <select id="institution-filter" class="filter-select">
-                                    <option value="">Todas las instituciones</option>
-                                </select>
+                        
+                        <div class="filters-content" id="filters-content">
+                            <!-- Filtros de Fecha -->
+                            <div class="filter-group-collapsible">
+                                <div class="filter-group-header" data-target="date-filters">
+                                    <h4>📅 Filtros de Fecha</h4>
+                                    <span class="collapse-icon">▼</span>
+                                </div>
+                                <div class="filter-group-content" id="date-filters">
+                                    <div class="filter-controls">
+                                        <div class="filter-row">
+                                            <div class="filter-item">
+                                                <label for="date-from">Desde:</label>
+                                                <input type="date" id="date-from" class="filter-input">
+                                            </div>
+                                            <div class="filter-item">
+                                                <label for="date-to">Hasta:</label>
+                                                <input type="date" id="date-to" class="filter-input">
+                                            </div>
+                                        </div>
+                                        <div class="filter-row">
+                                            <div class="filter-item">
+                                                <label for="period-select">Período:</label>
+                                                <select id="period-select" class="filter-select">
+                                                    <option value="all">Todos los períodos</option>
+                                                    <option value="today">Hoy</option>
+                                                    <option value="week">Esta semana</option>
+                                                    <option value="month">Este mes</option>
+                                                    <option value="quarter">Este trimestre</option>
+                                                    <option value="year">Este año</option>
+                                                    <option value="custom">Personalizado</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <button id="load-institutions" class="btn-secondary">Cargar Instituciones</button>
-                        </div>
-                    </div>
-                    
-                    <div class="filter-card">
-                        <h3>🎓 Filtros por Grado</h3>
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="grade-filter">Grado:</label>
-                                <select id="grade-filter" class="filter-select">
-                                    <option value="">Todos los grados</option>
-                                    <option value="1">1°</option>
-                                    <option value="2">2°</option>
-                                    <option value="3">3°</option>
-                                    <option value="4">4°</option>
-                                    <option value="5">5°</option>
-                                    <option value="6">6°</option>
-                                    <option value="7">7°</option>
-                                    <option value="8">8°</option>
-                                    <option value="9">9°</option>
-                                    <option value="10">10°</option>
-                                    <option value="11">11°</option>
-                                </select>
+
+                            <!-- Filtros de Institución -->
+                            <div class="filter-group-collapsible">
+                                <div class="filter-group-header" data-target="institution-filters">
+                                    <h4>🏫 Filtros por Institución</h4>
+                                    <span class="collapse-icon">▼</span>
+                                </div>
+                                <div class="filter-group-content" id="institution-filters">
+                                    <div class="filter-controls">
+                                        <div class="filter-row">
+                                            <div class="filter-item">
+                                                <label for="institution-filter">Institución:</label>
+                                                <select id="institution-filter" class="filter-select">
+                                                    <option value="">Todas las instituciones</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="filter-row">
+                                            <div class="filter-item">
+                                                <label for="grade-filter">Grado:</label>
+                                                <select id="grade-filter" class="filter-select">
+                                                    <option value="">Todos los grados</option>
+                                                    <option value="1">1°</option>
+                                                    <option value="2">2°</option>
+                                                    <option value="3">3°</option>
+                                                    <option value="4">4°</option>
+                                                    <option value="5">5°</option>
+                                                    <option value="6">6°</option>
+                                                    <option value="7">7°</option>
+                                                    <option value="8">8°</option>
+                                                    <option value="9">9°</option>
+                                                    <option value="10">10°</option>
+                                                    <option value="11">11°</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="filter-card">
-                        <h3>👤 Filtros por Edad</h3>
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="age-range-filter">Rango de edad:</label>
-                                <select id="age-range-filter" class="filter-select">
-                                    <option value="">Todas las edades</option>
-                                    <option value="5-8">5-8 años</option>
-                                    <option value="9-12">9-12 años</option>
-                                    <option value="13-16">13-16 años</option>
-                                    <option value="17-20">17-20 años</option>
-                                </select>
+
+                            <!-- Filtros Demográficos -->
+                            <div class="filter-group-collapsible">
+                                <div class="filter-group-header" data-target="demographic-filters">
+                                    <h4>👥 Filtros Demográficos</h4>
+                                    <span class="collapse-icon">▼</span>
+                                </div>
+                                <div class="filter-group-content" id="demographic-filters">
+                                    <div class="filter-controls">
+                                        <div class="filter-row">
+                                            <div class="filter-item">
+                                                <label for="age-range-filter">Rango de edad:</label>
+                                                <select id="age-range-filter" class="filter-select">
+                                                    <option value="">Todas las edades</option>
+                                                    <option value="5-8">5-8 años</option>
+                                                    <option value="9-12">9-12 años</option>
+                                                    <option value="13-16">13-16 años</option>
+                                                    <option value="17-20">17-20 años</option>
+                                                </select>
+                                            </div>
+                                            <div class="filter-item">
+                                                <label for="sex-filter">Sexo:</label>
+                                                <select id="sex-filter" class="filter-select">
+                                                    <option value="">Todos</option>
+                                                    <option value="Hombre">Hombre</option>
+                                                    <option value="Mujer">Mujer</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="filter-card">
-                        <h3>👥 Filtros por Sexo</h3>
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="sex-filter">Sexo:</label>
-                                <select id="sex-filter" class="filter-select">
-                                    <option value="">Todos</option>
-                                    <option value="Hombre">Hombre</option>
-                                    <option value="Mujer">Mujer</option>
-                                </select>
+
+                            <!-- Tipo de Análisis -->
+                            <div class="filter-group-collapsible">
+                                <div class="filter-group-header" data-target="analysis-type-filters">
+                                    <h4>📊 Tipo de Análisis</h4>
+                                    <span class="collapse-icon">▼</span>
+                                </div>
+                                <div class="filter-group-content" id="analysis-type-filters">
+                                    <div class="filter-controls">
+                                        <div class="analysis-type-controls">
+                                            <label class="radio-option">
+                                                <input type="radio" name="analysis-type" value="general" checked>
+                                                <span>Análisis General</span>
+                                            </label>
+                                            <label class="radio-option">
+                                                <input type="radio" name="analysis-type" value="specific">
+                                                <span>Análisis por Encuesta</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="filter-actions">
+                                <button id="apply-filters" class="btn-primary">
+                                    <span class="btn-icon">🔍</span> Aplicar Filtros
+                                </button>
+                                <button id="clear-filters" class="btn-secondary">
+                                    <span class="btn-icon">🗑️</span> Limpiar Filtros
+                                </button>
+                                <button id="auto-load-institutions" class="btn-info">
+                                    <span class="btn-icon">🔄</span> Cargar Instituciones
+                                </button>
                             </div>
                         </div>
                     </div>
