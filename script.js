@@ -415,10 +415,30 @@ class EncuestasPAE {
     }
 
     setupAdmin() {
+        // Botón exportar todo
         document.getElementById('export-all').addEventListener('click', () => {
             this.exportAllData();
         });
 
+        // Botón resumen ejecutivo
+        document.getElementById('export-summary').addEventListener('click', () => {
+            this.exportSummary();
+        });
+
+        // Botones de exportación por tipo
+        document.getElementById('export-racion-servida').addEventListener('click', () => {
+            this.exportByType('racion-servida');
+        });
+
+        document.getElementById('export-racion-industrializada').addEventListener('click', () => {
+            this.exportByType('racion-industrializada');
+        });
+
+        document.getElementById('export-coordinadores').addEventListener('click', () => {
+            this.exportByType('coordinadores');
+        });
+
+        // Botón ver papelera
         document.getElementById('view-trash').addEventListener('click', () => {
             this.showTrash();
         });
@@ -1007,44 +1027,84 @@ class EncuestasPAE {
         `;
     }
 
+    exportByType(surveyType) {
+        const responses = this.responses.filter(r => r.type === surveyType);
+        const surveyName = this.getSurveyTypeName(surveyType);
+        
+        if (responses.length === 0) {
+            this.showNotification(`⚠️ No hay respuestas para ${surveyName}`, 'warning');
+            return;
+        }
+        
+        this.exportToExcel(responses, `encuesta-${surveyName.replace(/\s+/g, '-').toLowerCase()}.xlsx`, surveyName);
+    }
+
     exportSurveyData(surveyType) {
         const responses = this.responses.filter(r => r.type === surveyType);
         this.exportToExcel(responses, `encuesta-${surveyType}.xlsx`);
     }
 
     exportAllData() {
-        this.exportToExcel(this.responses, 'todas-las-encuestas.xlsx');
+        if (this.responses.length === 0) {
+            this.showNotification('⚠️ No hay respuestas para exportar', 'warning');
+            return;
+        }
+        this.exportToExcel(this.responses, 'todas-las-encuestas.xlsx', 'Todas las Encuestas');
     }
 
-    exportToExcel(data, filename) {
+    exportSummary() {
+        if (this.responses.length === 0) {
+            this.showNotification('⚠️ No hay datos para generar resumen', 'warning');
+            return;
+        }
+        
+        const summaryData = this.generateSummaryData();
+        this.exportSummaryToExcel(summaryData, 'resumen-ejecutivo-encuestas.xlsx');
+    }
+
+    exportToExcel(data, filename, surveyName = '') {
         if (!data || data.length === 0) {
-            alert('No hay datos para exportar');
+            this.showNotification('⚠️ No hay datos para exportar', 'warning');
             return;
         }
 
-        // Formatear datos para Excel
-        const formattedData = data.map(response => {
+        // Ordenar datos por fecha (más recientes primero)
+        const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Formatear datos para Excel con mejor organización
+        const formattedData = sortedData.map((response, index) => {
             const formatted = {
+                'N°': index + 1,
                 'ID': response.id,
                 'Tipo de Encuesta': this.getSurveyTypeName(response.type),
                 'Fecha': new Date(response.date).toLocaleDateString('es-ES'),
-                'Hora': new Date(response.date).toLocaleTimeString('es-ES')
+                'Hora': new Date(response.date).toLocaleTimeString('es-ES'),
+                'Día de la Semana': this.getDayOfWeek(response.date)
             };
 
-            // Agregar todos los campos del formulario
-            Object.keys(response.data).forEach(key => {
-                const value = response.data[key];
-                // Formatear el nombre del campo para que sea más legible
-                const formattedKey = this.formatFieldName(key);
-                formatted[formattedKey] = value;
+            // Agregar campos del formulario organizados por categorías
+            const organizedFields = this.organizeFieldsByCategory(response.data);
+            Object.keys(organizedFields).forEach(category => {
+                Object.keys(organizedFields[category]).forEach(field => {
+                    const formattedKey = `${category} - ${this.formatFieldName(field)}`;
+                    formatted[formattedKey] = organizedFields[category][field];
+                });
             });
 
             return formatted;
         });
 
-        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+        // Crear workbook con múltiples hojas
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Respuestas');
+        
+        // Hoja principal con datos
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, surveyName || 'Respuestas');
+        
+        // Hoja de resumen estadístico
+        const summaryData = this.generateSheetSummary(sortedData);
+        const summarySheet = XLSX.utils.json_to_sheet(summaryData);
+        XLSX.utils.book_append_sheet(workbook, summarySheet, 'Resumen');
         
         // Ajustar ancho de columnas
         const colWidths = [];
@@ -1053,9 +1113,151 @@ class EncuestasPAE {
             colWidths.push({ wch: Math.max(header.length, 15) });
         });
         worksheet['!cols'] = colWidths;
+        summarySheet['!cols'] = [{ wch: 25 }, { wch: 15 }];
         
         XLSX.writeFile(workbook, filename);
-        alert(`Se exportaron ${data.length} respuestas exitosamente`);
+        this.showNotification(`✅ Se exportaron ${data.length} respuestas exitosamente`, 'success');
+    }
+
+    getDayOfWeek(dateString) {
+        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const date = new Date(dateString);
+        return days[date.getDay()];
+    }
+
+    organizeFieldsByCategory(data) {
+        const categories = {
+            'Información Personal': {},
+            'Información Académica': {},
+            'Evaluación': {},
+            'Comentarios': {}
+        };
+
+        Object.keys(data).forEach(key => {
+            const value = data[key];
+            
+            // Categorizar campos
+            if (['nombre', 'apellido', 'edad', 'sexo', 'telefono', 'email'].includes(key)) {
+                categories['Información Personal'][key] = value;
+            } else if (['institucion', 'grado', 'fecha_nacimiento'].includes(key)) {
+                categories['Información Académica'][key] = value;
+            } else if (key.includes('satisfaccion') || key.includes('calidad') || key.includes('cantidad') || key.includes('temperatura') || key.includes('presentacion')) {
+                categories['Evaluación'][key] = value;
+            } else if (['observaciones', 'comentarios', 'sugerencias', 'alimentos_gustan', 'alimentos_no_gustan'].includes(key)) {
+                categories['Comentarios'][key] = value;
+            } else {
+                categories['Evaluación'][key] = value;
+            }
+        });
+
+        return categories;
+    }
+
+    generateSheetSummary(data) {
+        const summary = [
+            ['Métrica', 'Valor'],
+            ['Total de Respuestas', data.length],
+            ['Fecha de Primera Respuesta', data.length > 0 ? new Date(data[data.length - 1].date).toLocaleDateString('es-ES') : 'N/A'],
+            ['Fecha de Última Respuesta', data.length > 0 ? new Date(data[0].date).toLocaleDateString('es-ES') : 'N/A'],
+            ['', ''],
+            ['Por Tipo de Encuesta', ''],
+        ];
+
+        // Estadísticas por tipo
+        const typeStats = {};
+        data.forEach(response => {
+            typeStats[response.type] = (typeStats[response.type] || 0) + 1;
+        });
+
+        Object.keys(typeStats).forEach(type => {
+            summary.push([this.getSurveyTypeName(type), typeStats[type]]);
+        });
+
+        return summary;
+    }
+
+    generateSummaryData() {
+        const totalResponses = this.responses.length;
+        const typeStats = {};
+        
+        this.responses.forEach(response => {
+            typeStats[response.type] = (typeStats[response.type] || 0) + 1;
+        });
+
+        return {
+            total: totalResponses,
+            byType: typeStats,
+            dateRange: this.getDateRange(),
+            institutions: this.getInstitutionsList()
+        };
+    }
+
+    exportSummaryToExcel(summaryData, filename) {
+        const workbook = XLSX.utils.book_new();
+        
+        // Hoja de resumen ejecutivo
+        const summarySheet = [
+            ['RESUMEN EJECUTIVO - ENCUESTAS PAE'],
+            [''],
+            ['Fecha de Generación:', new Date().toLocaleDateString('es-ES')],
+            ['Total de Respuestas:', summaryData.total],
+            [''],
+            ['ESTADÍSTICAS POR TIPO DE ENCUESTA'],
+            ['Tipo de Encuesta', 'Cantidad', 'Porcentaje']
+        ];
+
+        Object.keys(summaryData.byType).forEach(type => {
+            const count = summaryData.byType[type];
+            const percentage = ((count / summaryData.total) * 100).toFixed(1);
+            summarySheet.push([this.getSurveyTypeName(type), count, `${percentage}%`]);
+        });
+
+        summarySheet.push(['']);
+        summarySheet.push(['RANGO DE FECHAS']);
+        summarySheet.push(['Desde:', summaryData.dateRange.start]);
+        summarySheet.push(['Hasta:', summaryData.dateRange.end]);
+
+        if (summaryData.institutions.length > 0) {
+            summarySheet.push(['']);
+            summarySheet.push(['INSTITUCIONES PARTICIPANTES']);
+            summaryData.institutions.forEach(institution => {
+                summarySheet.push([institution]);
+            });
+        }
+
+        const worksheet = XLSX.utils.aoa_to_sheet(summarySheet);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Resumen Ejecutivo');
+        
+        // Ajustar ancho de columnas
+        worksheet['!cols'] = [{ wch: 30 }, { wch: 15 }, { wch: 15 }];
+        
+        XLSX.writeFile(workbook, filename);
+        this.showNotification('✅ Resumen ejecutivo exportado exitosamente', 'success');
+    }
+
+    getDateRange() {
+        if (this.responses.length === 0) {
+            return { start: 'N/A', end: 'N/A' };
+        }
+
+        const dates = this.responses.map(r => new Date(r.date));
+        const start = new Date(Math.min(...dates));
+        const end = new Date(Math.max(...dates));
+
+        return {
+            start: start.toLocaleDateString('es-ES'),
+            end: end.toLocaleDateString('es-ES')
+        };
+    }
+
+    getInstitutionsList() {
+        const institutions = [...new Set(this.responses
+            .filter(r => r.data.institucion || r.data.institucion_educativa)
+            .map(r => r.data.institucion || r.data.institucion_educativa)
+            .filter(inst => inst && inst.trim() !== '')
+        )].sort();
+
+        return institutions;
     }
 
     formatFieldName(fieldName) {
@@ -1069,7 +1271,12 @@ class EncuestasPAE {
             'email': 'Email',
             'observaciones': 'Observaciones',
             'alimentos_gustan': 'Alimentos que más gustan',
-            'alimentos_no_gustan': 'Alimentos que menos gustan'
+            'alimentos_no_gustan': 'Alimentos que menos gustan',
+            'satisfaccion': 'Nivel de Satisfacción',
+            'calidad': 'Calidad',
+            'cantidad': 'Cantidad',
+            'temperatura': 'Temperatura',
+            'presentacion': 'Presentación'
         };
 
         return fieldMap[fieldName] || fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());

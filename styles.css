@@ -1307,3 +1307,112 @@ a[href*="jotform.io"] {
     font-size: 1.1rem;
     line-height: 1.6;
 }
+
+/* Estilos para sección de exportación mejorada */
+.export-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #F8F9FA;
+    border-radius: 10px;
+    border-left: 4px solid #6EB3A6;
+}
+
+.export-section h4 {
+    color: #0F3A31;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.export-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.btn-export {
+    background: linear-gradient(135deg, #6EB3A6 0%, #4A9B8E 100%);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(110, 179, 166, 0.3);
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(110, 179, 166, 0.4);
+    background: linear-gradient(135deg, #5A9B8E 0%, #3A7B6E 100%);
+}
+
+.btn-export-all {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-export-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+}
+
+.btn-export-summary {
+    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+}
+
+.btn-export-summary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+    background: linear-gradient(135deg, #138496 0%, #5a32a3 100%);
+}
+
+.btn-export .btn-icon,
+.btn-export-all .btn-icon,
+.btn-export-summary .btn-icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+}
+
+/* Responsive para botones de exportación */
+@media (max-width: 768px) {
+    .export-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-export,
+    .btn-export-all,
+    .btn-export-summary {
+        width: 100%;
+        justify-content: center;
+    }
+}

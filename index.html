@@ -272,8 +272,39 @@
                     
                     <div class="admin-card">
                         <h3>📥 Exportar Datos</h3>
-                        <p>Descargue todos los datos de las encuestas en formato Excel</p>
-                        <button id="export-all" class="btn-success">Exportar Todo</button>
+                        <p>Descargue los datos de las encuestas en formato Excel organizado</p>
+                        
+                        <div class="export-section">
+                            <h4>📊 Exportar por Tipo de Encuesta</h4>
+                            <div class="export-buttons">
+                                <button id="export-racion-servida" class="btn-export">
+                                    <span class="btn-icon">🍽️</span>
+                                    Ración Servida
+                                </button>
+                                <button id="export-racion-industrializada" class="btn-export">
+                                    <span class="btn-icon">🍪</span>
+                                    Ración Industrializada
+                                </button>
+                                <button id="export-coordinadores" class="btn-export">
+                                    <span class="btn-icon">👨‍💼</span>
+                                    Coordinadores PAE
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="export-section">
+                            <h4>📋 Exportar Todo</h4>
+                            <div class="export-buttons">
+                                <button id="export-all" class="btn-export-all">
+                                    <span class="btn-icon">📥</span>
+                                    Exportar Todas las Encuestas
+                                </button>
+                                <button id="export-summary" class="btn-export-summary">
+                                    <span class="btn-icon">📊</span>
+                                    Resumen Ejecutivo
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="admin-card">
