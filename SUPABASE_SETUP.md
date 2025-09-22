@@ -29,14 +29,16 @@
 
 ### 4. Configurar la aplicación
 
-1. Abre el archivo `js/config/supabase-config.js`
-2. Reemplaza las siguientes líneas:
+✅ **YA CONFIGURADO** - Las credenciales ya están configuradas en el archivo `js/config/supabase-config.js`:
 
 ```javascript
-// Línea 8-9: Reemplazar con tus credenciales
-const supabaseUrl = 'TU_SUPABASE_URL';  // ← Tu Project URL aquí
-const supabaseKey = 'TU_SUPABASE_ANON_KEY';  // ← Tu anon public key aquí
+// Configuración de Supabase
+const supabaseUrl = 'https://algrkzpmqvpmylszcrrk.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZ3JrenBtcXZwbXlsc3pjcnJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjIyMTIsImV4cCI6MjA3Mzc5ODIxMn0.RZv3EiuAWBhWor1w07-twotlgBvIU-mtedHMdzhqZBU';
 ```
+
+**Proyecto ID**: `algrkzpmqvpmylszcrrk`
+**URL del Proyecto**: `https://algrkzpmqvpmylszcrrk.supabase.co`
 
 ### 5. Configurar políticas de seguridad (RLS)
 
