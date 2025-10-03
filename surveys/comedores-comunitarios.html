@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta Comedores Comunitarios - PAE Envigado</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<!-- EVALUACIÓN DEL SERVICIO - COMEDORES COMUNITARIOS -->
+<div class="survey-form">
+    <form id="comedores-comunitarios-form">
+        <div class="form-all">
+            <ul class="form-section page-section">
+                <li class="form-line" data-type="control_image">
+                    <div class="form-input-wide">
+                        <div style="text-align:center">
+                            <img alt="Logo" style="border:0" src="https://www.jotform.com/uploads/juanpamartinezro/form_files/alcaldia_envigado_salud.68925c2d63e0c2.16743275.png" height="100px" width="178px" />
+                        </div>
+                    </div>
+                </li>
+                <li class="form-input-wide" data-type="control_head">
+                    <div class="form-header-group hasImage header-large">
+                        <h1 class="form-header">Encuesta de Evaluación del Servicio</h1>
+                        <div class="form-subHeader">Usuarios de Comedores Comunitarios</div>
+                    </div>
+                </li>
+                
+                <!-- Datos básicos -->
+                <li class="form-line jf-required" data-type="control_text">
+                    <label class="form-label form-label-top">Nombre completo<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="text" name="nombre" class="form-textbox validate[required]" required />
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_text">
+                    <label class="form-label form-label-top">Edad<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="number" name="edad" class="form-textbox validate[required]" required />
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_datetime">
+                    <label class="form-label form-label-top">Fecha<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="date" name="fecha" class="form-textbox validate[required]" required />
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_widget">
+                    <label class="form-label form-label-top">Comedor comunitario<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <select name="comedor" class="form-dropdown validate[required]" required>
+                            <option value="">Seleccione un comedor</option>
+                            <option value="Comedor 1">Comedor 1</option>
+                            <option value="Comedor 2">Comedor 2</option>
+                            <option value="Comedor 3">Comedor 3</option>
+                            <option value="Comedor 4">Comedor 4</option>
+                            <option value="Comedor 5">Comedor 5</option>
+                        </select>
+                    </div>
+                </li>
+                
+                <li class="form-line" data-type="control_text">
+                    <div class="form-input-wide">
+                        <div class="form-html">
+                            <p>Califique cada aspecto según la siguiente escala:</p>
+                            <p>1 Malo</p>
+                            <p>2 Regular</p>
+                            <p>3 Bueno</p>
+                            <p>4 Excelente</p>
+                        </div>
+                    </div>
+                </li>
+                
+                <!-- Preguntas de evaluación -->
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">1. Calidad de los alimentos servidos<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item">
+                                <input type="radio" name="calidad" value="1 Malo" required />
+                                <label>1 Malo</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="calidad" value="2 Regular" required />
+                                <label>2 Regular</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="calidad" value="3 Bueno" required />
+                                <label>3 Bueno</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="calidad" value="4 Excelente" required />
+                                <label>4 Excelente</label>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">2. Variedad de los menús ofrecidos<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item">
+                                <input type="radio" name="variedad" value="1 Malo" required />
+                                <label>1 Malo</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="variedad" value="2 Regular" required />
+                                <label>2 Regular</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="variedad" value="3 Bueno" required />
+                                <label>3 Bueno</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="variedad" value="4 Excelente" required />
+                                <label>4 Excelente</label>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">3. Tamaño de las porciones<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item">
+                                <input type="radio" name="porcion" value="1 Malo" required />
+                                <label>1 Malo</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="porcion" value="2 Regular" required />
+                                <label>2 Regular</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="porcion" value="3 Bueno" required />
+                                <label>3 Bueno</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="porcion" value="4 Excelente" required />
+                                <label>4 Excelente</label>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">4. Aseo del comedor<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item">
+                                <input type="radio" name="aseo" value="1 Malo" required />
+                                <label>1 Malo</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="aseo" value="2 Regular" required />
+                                <label>2 Regular</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="aseo" value="3 Bueno" required />
+                                <label>3 Bueno</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="aseo" value="4 Excelente" required />
+                                <label>4 Excelente</label>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">5. Limpieza de los utensilios<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item">
+                                <input type="radio" name="utensilios" value="1 Malo" required />
+                                <label>1 Malo</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="utensilios" value="2 Regular" required />
+                                <label>2 Regular</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="utensilios" value="3 Bueno" required />
+                                <label>3 Bueno</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="utensilios" value="4 Excelente" required />
+                                <label>4 Excelente</label>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">6. Trato del personal del comedor<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item">
+                                <input type="radio" name="trato" value="1 Malo" required />
+                                <label>1 Malo</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="trato" value="2 Regular" required />
+                                <label>2 Regular</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="trato" value="3 Bueno" required />
+                                <label>3 Bueno</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="trato" value="4 Excelente" required />
+                                <label>4 Excelente</label>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                
+                <!-- Preguntas abiertas -->
+                <li class="form-line" data-type="control_textarea">
+                    <label class="form-label form-label-top">Aspectos positivos que quiera resaltar:</label>
+                    <div class="form-input-wide">
+                        <textarea name="positivo" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </li>
+                
+                <li class="form-line" data-type="control_textarea">
+                    <label class="form-label form-label-top">Aspectos por mejorar / sugerencias:</label>
+                    <div class="form-input-wide">
+                        <textarea name="mejorar" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </li>
+                
+                <li class="form-line" data-type="control_button">
+                    <div class="form-input-wide">
+                        <button type="submit" class="form-submit-button">Enviar Encuesta</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <div class="footer-logo">
+                <div class="logo-container">
+                    <div class="shield-icon">🛡️</div>
+                    <h3>SISTEMA PAE DIGITAL</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-section">
+            <h4>📞 Contacto PAE</h4>
+            <div class="contact-info">
+                <p><strong>Teléfono:</strong> (604) 339 40 00 Ext. 1234</p>
+                <p><strong>Celular:</strong> 300 123 4567</p>
+                <p><strong>Email:</strong> pae@envigado.gov.co</p>
+                <p><strong>Dirección:</strong> Calle 48 # 43-36, Envigado</p>
+            </div>
+        </div>
+        
+        <div class="footer-section">
+            <h4>👨‍💻 Desarrollado por</h4>
+            <div class="developer-info">
+                <div class="developer-card">
+                    <h5>Juan Pablo Martínez</h5>
+                    <p>Desarrollador Full Stack</p>
+                    <p>Especialista en Sistemas de Información</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="footer-stripes">
+            <div class="stripe orange"></div>
+            <div class="stripe green"></div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 Todos los derechos reservados - Sistema PAE Digital</p>
+            <p>Sistema desarrollado para la Alcaldía de Envigado - Programa de Alimentación Escolar (PAE)</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../script.js"></script>
+</body>
+</html>

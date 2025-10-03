@@ -13,6 +13,10 @@ class EncuestasPAE {
             'coordinadores': {
                 title: 'Evaluación para Coordinadores PAE',
                 form: this.getCoordinadoresForm()
+            },
+            'comedores-comunitarios': {
+                title: 'Evaluación del Servicio - Comedores Comunitarios',
+                form: this.getComedoresComunitariosForm()
             }
         };
         this.responses = [];
@@ -436,6 +440,10 @@ class EncuestasPAE {
 
         document.getElementById('export-coordinadores').addEventListener('click', () => {
             this.exportByType('coordinadores');
+        });
+
+        document.getElementById('export-comedores-comunitarios').addEventListener('click', () => {
+            this.exportByType('comedores-comunitarios');
         });
 
         // Botón ver papelera
@@ -1387,6 +1395,16 @@ class EncuestasPAE {
             return await response.text();
         } catch (error) {
             console.error('Error cargando formulario de coordinadores:', error);
+            return '<p>Error cargando el formulario</p>';
+        }
+    }
+
+    async getComedoresComunitariosForm() {
+        try {
+            const response = await fetch('surveys/comedores-comunitarios.html');
+            return await response.text();
+        } catch (error) {
+            console.error('Error cargando formulario de comedores comunitarios:', error);
             return '<p>Error cargando el formulario</p>';
         }
     }
