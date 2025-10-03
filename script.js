@@ -490,7 +490,8 @@ class EncuestasPAE {
         const names = {
             'racion-servida': 'Ración Servida',
             'racion-industrializada': 'Ración Industrializada',
-            'coordinadores': 'Coordinadores PAE'
+            'coordinadores': 'Coordinadores PAE',
+            'comedores-comunitarios': 'Comedores Comunitarios'
         };
         return names[type] || type;
     }
@@ -1008,7 +1009,8 @@ class EncuestasPAE {
             total: this.responses.length,
             racionServida: this.responses.filter(r => r.type === 'racion-servida').length,
             racionIndustrializada: this.responses.filter(r => r.type === 'racion-industrializada').length,
-            coordinadores: this.responses.filter(r => r.type === 'coordinadores').length
+            coordinadores: this.responses.filter(r => r.type === 'coordinadores').length,
+            comedoresComunitarios: this.responses.filter(r => r.type === 'comedores-comunitarios').length
         };
 
         document.getElementById('general-stats').innerHTML = `
@@ -1027,6 +1029,10 @@ class EncuestasPAE {
             <div class="stat-item">
                 <div class="stat-number">${stats.coordinadores}</div>
                 <div class="stat-label">Coordinadores</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${stats.comedoresComunitarios}</div>
+                <div class="stat-label">Comedores Comunitarios</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">${this.deletedResponses.length}</div>
