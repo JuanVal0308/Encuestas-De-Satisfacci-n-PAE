@@ -1012,6 +1012,8 @@ class EncuestasPAE {
             coordinadores: this.responses.filter(r => r.type === 'coordinadores').length,
             comedoresComunitarios: this.responses.filter(r => r.type === 'comedores-comunitarios').length
         };
+        
+        console.log('Estadísticas actualizadas:', stats);
 
         document.getElementById('general-stats').innerHTML = `
             <div class="stat-item">
