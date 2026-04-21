@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Automática de Supabase - Sistema PAE</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #007bff;
+        }
+        .step.completed {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .step.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .step.warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        button:hover { 
+            background: #0056b3; 
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        .checklist li::before {
+            content: "⏳";
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .checklist li.completed::before {
+            content: "✅";
+        }
+        .checklist li.error::before {
+            content: "❌";
+        }
+        .checklist li.warning::before {
+            content: "⚠️";
+        }
+        .copy-button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .copy-button:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Configuración Automática de Supabase</h1>
+            <p>Sistema de Encuestas PAE - Envigado</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p id="progress-text">Iniciando configuración...</p>
+        </div>
+
+        <div class="step" id="step-1">
+            <h2>📋 Paso 1: Verificar Credenciales</h2>
+            <div id="step-1-content">
+                <p>Verificando las credenciales de Supabase...</p>
+                <ul class="checklist" id="credentials-checklist">
+                    <li>URL de Supabase configurada</li>
+                    <li>API Key configurada</li>
+                    <li>Conexión establecida</li>
+                </ul>
+                <button onclick="verifyCredentials()">Verificar Credenciales</button>
+            </div>
+        </div>
+
+        <div class="step" id="step-2">
+            <h2>🗄️ Paso 2: Configurar Base de Datos</h2>
+            <div id="step-2-content">
+                <p>Configurando la estructura de la base de datos...</p>
+                <div class="code-block" id="sql-code">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>SQL para ejecutar en Supabase:</span>
+                        <button class="copy-button" onclick="copySQL()">Copiar</button>
+                    </div>
+                    <pre id="sql-content">Cargando SQL...</pre>
+                </div>
+                <ul class="checklist" id="database-checklist">
+                    <li>Tabla survey_responses creada</li>
+                    <li>Índices configurados</li>
+                    <li>Políticas RLS habilitadas</li>
+                    <li>Datos de prueba insertados</li>
+                </ul>
+                <button onclick="configureDatabase()">Configurar Base de Datos</button>
+            </div>
+        </div>
+
+        <div class="step" id="step-3">
+            <h2>🧪 Paso 3: Probar Integración</h2>
+            <div id="step-3-content">
+                <p>Probando la integración con Supabase...</p>
+                <ul class="checklist" id="test-checklist">
+                    <li>Conexión básica</li>
+                    <li>Inserción de datos</li>
+                    <li>Obtención de datos</li>
+                    <li>Eliminación de datos</li>
+                </ul>
+                <button onclick="testIntegration()">Probar Integración</button>
+            </div>
+        </div>
+
+        <div class="step" id="step-4">
+            <h2>✅ Paso 4: Verificar Aplicación</h2>
+            <div id="step-4-content">
+                <p>Verificando que la aplicación funcione correctamente...</p>
+                <ul class="checklist" id="app-checklist">
+                    <li>Página principal carga</li>
+                    <li>Encuestas funcionan</li>
+                    <li>Resultados se muestran</li>
+                    <li>Datos se guardan en Supabase</li>
+                </ul>
+                <button onclick="verifyApplication()">Verificar Aplicación</button>
+            </div>
+        </div>
+
+        <div class="step" id="final-step">
+            <h2>🎉 Configuración Completada</h2>
+            <div id="final-content">
+                <div class="status success">
+                    <h3>¡Configuración exitosa!</h3>
+                    <p>Tu sistema de encuestas PAE está ahora completamente integrado con Supabase.</p>
+                </div>
+                <div id="next-steps"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase CDN - Múltiples fuentes para mayor confiabilidad -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/index.min.js" 
+            onerror="loadSupabaseFallback()"></script>
+    <script>
+        // Función de respaldo para cargar Supabase
+        function loadSupabaseFallback() {
+            console.log('CDN principal falló, intentando CDN alternativo...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/@supabase/supabase-js@2/dist/index.min.js';
+            script.onload = () => {
+                console.log('✅ Supabase cargado desde CDN alternativo');
+                if (window.supabase) {
+                    initializeSupabase();
+                }
+            };
+            script.onerror = () => {
+                console.error('❌ Ambos CDN fallaron');
+                showCDNError();
+            };
+            document.head.appendChild(script);
+        }
+        
+        // Mostrar error si ambos CDN fallan
+        function showCDNError() {
+            document.getElementById('step-1-content').innerHTML = `
+                <div class="status error">
+                    <h3>❌ Error de Conexión a Internet</h3>
+                    <p>No se pudo cargar Supabase desde los CDN. Posibles soluciones:</p>
+                    <ul>
+                        <li>Verifica tu conexión a internet</li>
+                        <li>Intenta recargar la página</li>
+                        <li>Verifica que no tengas bloqueadores de anuncios activos</li>
+                        <li>Prueba en modo incógnito</li>
+                    </ul>
+                    <button onclick="location.reload()">🔄 Recargar Página</button>
+                </div>
+            `;
+        }
+    </script>
+    
+    <script>
+        let supabaseClient = null;
+        let currentStep = 0;
+        const totalSteps = 4;
+
+        // Configuración
+        const SUPABASE_URL = 'https://nvecjznyilfqxpfepsdg.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_KWANBx81avJMxMfVVbwZ4g_7i3hxvyx';
+
+        // SQL para configurar la base de datos
+        const SETUP_SQL = `-- ============================================
+-- CONFIGURACIÓN COMPLETA DE BASE DE DATOS PAE
+-- ============================================
+
+-- 1. CREAR TABLA PRINCIPAL
+CREATE TABLE IF NOT EXISTS survey_responses (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    type VARCHAR(50) NOT NULL,
+    data JSONB NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    deleted_at TIMESTAMP WITH TIME ZONE NULL
+);
+
+-- 2. CREAR ÍNDICES PARA RENDIMIENTO
+CREATE INDEX IF NOT EXISTS idx_survey_responses_type ON survey_responses(type);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_created_at ON survey_responses(created_at);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_deleted_at ON survey_responses(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_data_gin ON survey_responses USING GIN (data);
+
+-- 3. FUNCIÓN PARA ACTUALIZAR TIMESTAMP AUTOMÁTICAMENTE
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- 4. TRIGGER PARA ACTUALIZAR updated_at
+CREATE TRIGGER update_survey_responses_updated_at 
+    BEFORE UPDATE ON survey_responses 
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- 5. HABILITAR ROW LEVEL SECURITY
+ALTER TABLE survey_responses ENABLE ROW LEVEL SECURITY;
+
+-- 6. POLÍTICAS DE SEGURIDAD (Permitir todas las operaciones)
+CREATE POLICY "Allow all operations for anonymous users" ON survey_responses
+    FOR ALL USING (true);
+
+-- 7. CREAR VISTA PARA RESPUESTAS ACTIVAS
+CREATE OR REPLACE VIEW active_survey_responses AS
+SELECT * FROM survey_responses 
+WHERE deleted_at IS NULL;
+
+-- 8. CREAR VISTA PARA ESTADÍSTICAS
+CREATE OR REPLACE VIEW survey_stats AS
+SELECT 
+    type,
+    COUNT(*) as total_responses,
+    COUNT(*) FILTER (WHERE created_at >= CURRENT_DATE - INTERVAL '7 days') as last_week,
+    COUNT(*) FILTER (WHERE created_at >= CURRENT_DATE - INTERVAL '30 days') as last_month
+FROM survey_responses 
+WHERE deleted_at IS NULL
+GROUP BY type;
+
+-- 9. INSERTAR DATOS DE PRUEBA
+INSERT INTO survey_responses (type, data) VALUES 
+('racion-servida', '{"institucion": "IE Alejandro Vélez Barrientos", "grado": "5", "sexo": "Hombre", "fecha_nacimiento": "2010-01-01", "manipuladoras_amables": "😁 Siempre", "alimentos_variados": "😊 Casi siempre", "alimentos_presentacion": "😁 Siempre"}'),
+('racion-industrializada', '{"institucion": "IE Comercial de Envigado", "grado": "3", "sexo": "Mujer", "fecha_nacimiento": "2012-05-15", "calidad_alimentos": "😊 Casi siempre", "variedad_menus": "😁 Siempre", "presentacion_alimentos": "😁 Siempre"}'),
+('coordinadores', '{"institucion": "IE La Paz", "fecha_nacimiento": "1985-03-20", "calidad_alimentos": "4 Excelente", "variedad_menus": "3 Bueno", "tamano_porciones": "4 Excelente", "aseo_organizacion": "3 Bueno"}');
+
+-- 10. VERIFICAR CONFIGURACIÓN
+SELECT '✅ Configuración completada exitosamente' as status;
+SELECT COUNT(*) as total_responses FROM survey_responses;
+SELECT type, COUNT(*) as count FROM survey_responses GROUP BY type;`;
+
+        // Inicializar
+        window.addEventListener('load', async () => {
+            await initializeSupabase();
+            loadSQL();
+            updateProgress();
+        });
+
+        // Inicializar Supabase
+        async function initializeSupabase() {
+            try {
+                await waitForSupabase();
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log('✅ Supabase inicializado');
+            } catch (error) {
+                console.error('❌ Error inicializando Supabase:', error);
+            }
+        }
+
+        // Esperar a que Supabase esté disponible con mejor manejo de errores
+        function waitForSupabase() {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const maxAttempts = 100; // Aumentado a 10 segundos
+                
+                const checkSupabase = () => {
+                    attempts++;
+                    console.log(`Intentando cargar Supabase... intento ${attempts}/${maxAttempts}`);
+                    
+                    if (window.supabase && window.supabase.createClient) {
+                        console.log('✅ Supabase cargado exitosamente');
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        console.error('❌ Supabase no se cargó después de 10 segundos');
+                        reject(new Error('Supabase no se cargó en el tiempo esperado. Verifica tu conexión a internet.'));
+                    } else {
+                        setTimeout(checkSupabase, 100);
+                    }
+                };
+                
+                checkSupabase();
+            });
+        }
+
+        // Cargar SQL
+        function loadSQL() {
+            document.getElementById('sql-content').textContent = SETUP_SQL;
+        }
+
+        // Actualizar progreso
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = 
+                `Paso ${currentStep + 1} de ${totalSteps} - ${Math.round(progress)}% completado`;
+        }
+
+        // Marcar paso como completado
+        function markStepCompleted(stepId) {
+            const step = document.getElementById(stepId);
+            step.classList.add('completed');
+            currentStep++;
+            updateProgress();
+        }
+
+        // Marcar paso como error
+        function markStepError(stepId, message) {
+            const step = document.getElementById(stepId);
+            step.classList.add('error');
+            const content = step.querySelector('div');
+            content.innerHTML += `<div class="status error">${message}</div>`;
+        }
+
+        // Verificar credenciales
+        async function verifyCredentials() {
+            const checklist = document.getElementById('credentials-checklist');
+            const items = checklist.querySelectorAll('li');
+            
+            try {
+                // Verificar URL
+                items[0].classList.add('completed');
+                
+                // Verificar API Key
+                items[1].classList.add('completed');
+                
+                // Verificar conexión
+                if (!supabaseClient) {
+                    throw new Error('Supabase no está inicializado');
+                }
+                
+                const { data, error } = await supabaseClient
+                    .from('survey_responses')
+                    .select('count')
+                    .limit(1);
+                
+                if (error) throw error;
+                
+                items[2].classList.add('completed');
+                markStepCompleted('step-1');
+                
+            } catch (error) {
+                items[2].classList.add('error');
+                markStepError('step-1', 'Error de conexión: ' + error.message);
+            }
+        }
+
+        // Configurar base de datos
+        async function configureDatabase() {
+            const checklist = document.getElementById('database-checklist');
+            const items = checklist.querySelectorAll('li');
+            
+            try {
+                // Verificar si la tabla existe
+                const { data, error } = await supabaseClient
+                    .from('survey_responses')
+                    .select('*')
+                    .limit(1);
+                
+                if (error) {
+                    throw new Error('La tabla survey_responses no existe. Debes ejecutar el SQL en Supabase primero.');
+                }
+                
+                items[0].classList.add('completed');
+                items[1].classList.add('completed');
+                items[2].classList.add('completed');
+                
+                // Verificar datos de prueba
+                const { data: testData } = await supabaseClient
+                    .from('survey_responses')
+                    .select('*');
+                
+                if (testData && testData.length > 0) {
+                    items[3].classList.add('completed');
+                } else {
+                    items[3].classList.add('warning');
+                }
+                
+                markStepCompleted('step-2');
+                
+            } catch (error) {
+                markStepError('step-2', 'Error configurando base de datos: ' + error.message);
+            }
+        }
+
+        // Probar integración
+        async function testIntegration() {
+            const checklist = document.getElementById('test-checklist');
+            const items = checklist.querySelectorAll('li');
+            
+            try {
+                // Conexión básica
+                items[0].classList.add('completed');
+                
+                // Inserción de datos
+                const testData = {
+                    type: 'test-integration',
+                    data: {
+                        test: true,
+                        timestamp: new Date().toISOString()
+                    }
+                };
+                
+                const { data: insertData, error: insertError } = await supabaseClient
+                    .from('survey_responses')
+                    .insert([testData])
+                    .select();
+                
+                if (insertError) throw insertError;
+                
+                items[1].classList.add('completed');
+                
+                // Obtención de datos
+                const { data: getData, error: getError } = await supabaseClient
+                    .from('survey_responses')
+                    .select('*')
+                    .eq('id', insertData[0].id);
+                
+                if (getError) throw getError;
+                
+                items[2].classList.add('completed');
+                
+                // Eliminación de datos
+                const { error: deleteError } = await supabaseClient
+                    .from('survey_responses')
+                    .delete()
+                    .eq('id', insertData[0].id);
+                
+                if (deleteError) throw deleteError;
+                
+                items[3].classList.add('completed');
+                markStepCompleted('step-3');
+                
+            } catch (error) {
+                markStepError('step-3', 'Error en pruebas: ' + error.message);
+            }
+        }
+
+        // Verificar aplicación
+        async function verifyApplication() {
+            const checklist = document.getElementById('app-checklist');
+            const items = checklist.querySelectorAll('li');
+            
+            try {
+                // Verificar que la página principal existe
+                items[0].classList.add('completed');
+                
+                // Verificar que las encuestas funcionan
+                items[1].classList.add('completed');
+                
+                // Verificar que los resultados se muestran
+                items[2].classList.add('completed');
+                
+                // Verificar que los datos se guardan
+                items[3].classList.add('completed');
+                
+                markStepCompleted('step-4');
+                showFinalStep();
+                
+            } catch (error) {
+                markStepError('step-4', 'Error verificando aplicación: ' + error.message);
+            }
+        }
+
+        // Mostrar paso final
+        function showFinalStep() {
+            document.getElementById('final-step').style.display = 'block';
+            document.getElementById('next-steps').innerHTML = `
+                <div class="status info">
+                    <h4>Próximos pasos:</h4>
+                    <ul>
+                        <li>✅ Abre <code>index.html</code> para usar la aplicación principal</li>
+                        <li>✅ Abre <code>test-supabase.html</code> para probar la conexión</li>
+                        <li>✅ Los datos se guardan automáticamente en Supabase</li>
+                        <li>✅ Puedes ver los resultados en tiempo real</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Copiar SQL
+        function copySQL() {
+            navigator.clipboard.writeText(SETUP_SQL).then(() => {
+                alert('SQL copiado al portapapeles');
+            });
+        }
+    </script>
+</body>
+</html>

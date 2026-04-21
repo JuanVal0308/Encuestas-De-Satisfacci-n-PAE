@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Supabase - Sistema PAE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; border-left: 4px solid #28a745; }
+        .error { background: #f8d7da; border-left: 4px solid #dc3545; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; }
+        .info { background: #d1ecf1; border-left: 4px solid #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Verificación de Supabase - Sistema PAE</h1>
+        
+        <div class="test-section">
+            <h2>📋 Estado de la Configuración</h2>
+            <div id="config-status">
+                <div class="status info">
+                    <strong>URL:</strong> https://nvecjznyilfqxpfepsdg.supabase.co<br>
+                    <strong>Estado:</strong> <span id="connection-status">Verificando...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Pruebas de Conexión</h2>
+            <button onclick="testBasicConnection()">Probar Conexión Básica</button>
+            <button onclick="testDatabaseTables()">Verificar Tablas</button>
+            <button onclick="testDataInsert()">Probar Inserción de Datos</button>
+            <button onclick="testDataRetrieval()">Probar Obtención de Datos</button>
+            <div id="test-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Información de la Base de Datos</h2>
+            <div id="database-info"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🛠️ Instrucciones de Configuración</h2>
+            <div id="setup-instructions"></div>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/index.min.js"></script>
+    
+    <script>
+        let supabaseClient = null;
+        let testResults = [];
+
+        // Inicializar Supabase
+        async function initializeSupabase() {
+            try {
+                await waitForSupabase();
+                supabaseClient = window.supabase.createClient(
+                    'https://nvecjznyilfqxpfepsdg.supabase.co',
+                    'sb_publishable_KWANBx81avJMxMfVVbwZ4g_7i3hxvyx'
+                );
+                
+                document.getElementById('connection-status').textContent = '✅ Conectado';
+                document.getElementById('connection-status').style.color = 'green';
+                return true;
+            } catch (error) {
+                document.getElementById('connection-status').textContent = '❌ Error: ' + error.message;
+                document.getElementById('connection-status').style.color = 'red';
+                return false;
+            }
+        }
+
+        // Esperar a que Supabase esté disponible
+        function waitForSupabase() {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const maxAttempts = 50;
+                
+                const checkSupabase = () => {
+                    attempts++;
+                    if (window.supabase && window.supabase.createClient) {
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        reject(new Error('Supabase no se cargó en el tiempo esperado'));
+                    } else {
+                        setTimeout(checkSupabase, 100);
+                    }
+                };
+                
+                checkSupabase();
+            });
+        }
+
+        // Probar conexión básica
+        async function testBasicConnection() {
+            const resultsDiv = document.getElementById('test-results');
+            try {
+                if (!supabaseClient) {
+                    throw new Error('Supabase no está inicializado');
+                }
+
+                // Probar una consulta simple
+                const { data, error } = await supabaseClient
+                    .from('survey_responses')
+                    .select('count')
+                    .limit(1);
+
+                if (error) throw error;
+
+                addTestResult('✅ Conexión básica exitosa', 'success');
+            } catch (error) {
+                addTestResult('❌ Error en conexión básica: ' + error.message, 'error');
+            }
+        }
+
+        // Verificar tablas
+        async function testDatabaseTables() {
+            const resultsDiv = document.getElementById('test-results');
+            try {
+                if (!supabaseClient) {
+                    throw new Error('Supabase no está inicializado');
+                }
+
+                // Verificar tabla principal
+                const { data: responses, error: responsesError } = await supabaseClient
+                    .from('survey_responses')
+                    .select('*')
+                    .limit(1);
+
+                if (responsesError) {
+                    addTestResult('❌ Tabla survey_responses no existe o no es accesible: ' + responsesError.message, 'error');
+                    return;
+                }
+
+                addTestResult('✅ Tabla survey_responses verificada', 'success');
+
+                // Verificar estructura de la tabla
+                const { data: structure, error: structureError } = await supabaseClient
+                    .from('survey_responses')
+                    .select('id, type, data, created_at, updated_at, deleted_at')
+                    .limit(1);
+
+                if (structureError) {
+                    addTestResult('⚠️ Estructura de tabla puede estar incompleta: ' + structureError.message, 'warning');
+                } else {
+                    addTestResult('✅ Estructura de tabla verificada', 'success');
+                }
+
+            } catch (error) {
+                addTestResult('❌ Error verificando tablas: ' + error.message, 'error');
+            }
+        }
+
+        // Probar inserción de datos
+        async function testDataInsert() {
+            try {
+                if (!supabaseClient) {
+                    throw new Error('Supabase no está inicializado');
+                }
+
+                const testData = {
+                    type: 'test-connection',
+                    data: {
+                        test: true,
+                        timestamp: new Date().toISOString(),
+                        message: 'Prueba de conexión desde verificador'
+                    }
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('survey_responses')
+                    .insert([testData])
+                    .select();
+
+                if (error) throw error;
+
+                addTestResult('✅ Inserción de datos exitosa. ID: ' + data[0].id, 'success');
+                
+                // Limpiar datos de prueba
+                await supabaseClient
+                    .from('survey_responses')
+                    .delete()
+                    .eq('id', data[0].id);
+
+                addTestResult('✅ Datos de prueba eliminados', 'info');
+
+            } catch (error) {
+                addTestResult('❌ Error insertando datos: ' + error.message, 'error');
+            }
+        }
+
+        // Probar obtención de datos
+        async function testDataRetrieval() {
+            try {
+                if (!supabaseClient) {
+                    throw new Error('Supabase no está inicializado');
+                }
+
+                const { data, error } = await supabaseClient
+                    .from('survey_responses')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+
+                addTestResult('✅ Obtención de datos exitosa. Encontradas: ' + data.length + ' respuestas', 'success');
+                
+                if (data.length > 0) {
+                    addTestResult('📊 Última respuesta: ' + data[0].type + ' - ' + new Date(data[0].created_at).toLocaleString(), 'info');
+                }
+
+            } catch (error) {
+                addTestResult('❌ Error obteniendo datos: ' + error.message, 'error');
+            }
+        }
+
+        // Agregar resultado de prueba
+        function addTestResult(message, type) {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `status ${type}`;
+            resultDiv.innerHTML = message;
+            resultsDiv.appendChild(resultDiv);
+            
+            testResults.push({ message, type, timestamp: new Date() });
+        }
+
+        // Cargar información de la base de datos
+        async function loadDatabaseInfo() {
+            try {
+                if (!supabaseClient) {
+                    document.getElementById('database-info').innerHTML = '<div class="status error">Supabase no está inicializado</div>';
+                    return;
+                }
+
+                const { data, error } = await supabaseClient
+                    .from('survey_responses')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    document.getElementById('database-info').innerHTML = 
+                        '<div class="status error">Error cargando información: ' + error.message + '</div>';
+                    return;
+                }
+
+                const totalResponses = data.length;
+                const responsesByType = {};
+                data.forEach(r => {
+                    responsesByType[r.type] = (responsesByType[r.type] || 0) + 1;
+                });
+
+                document.getElementById('database-info').innerHTML = `
+                    <div class="status success">
+                        <strong>Total de respuestas:</strong> ${totalResponses}<br>
+                        <strong>Por tipo:</strong><br>
+                        ${Object.entries(responsesByType).map(([type, count]) => 
+                            `• ${type}: ${count}`).join('<br>')}
+                    </div>
+                `;
+
+            } catch (error) {
+                document.getElementById('database-info').innerHTML = 
+                    '<div class="status error">Error: ' + error.message + '</div>';
+            }
+        }
+
+        // Cargar instrucciones de configuración
+        function loadSetupInstructions() {
+            document.getElementById('setup-instructions').innerHTML = `
+                <div class="status info">
+                    <h3>📋 Pasos para Configurar Supabase:</h3>
+                    <ol>
+                        <li><strong>Ejecutar SQL en Supabase:</strong>
+                            <pre>1. Ve a: https://supabase.com/dashboard
+2. Selecciona tu proyecto
+3. Ve a "SQL Editor"
+4. Copia y pega el contenido de: setup-database.sql
+5. Haz clic en "Run"</pre>
+                        </li>
+                        <li><strong>Verificar configuración:</strong>
+                            <pre>1. Ve a "Table Editor" en Supabase
+2. Busca la tabla: survey_responses
+3. Deberías ver las columnas: id, type, data, created_at, updated_at, deleted_at</pre>
+                        </li>
+                        <li><strong>Probar la aplicación:</strong>
+                            <pre>1. Abre: test-supabase.html
+2. Haz clic en "Probar Conexión"
+3. Deberías ver: "✅ Conexión exitosa!"</pre>
+                        </li>
+                    </ol>
+                </div>
+            `;
+        }
+
+        // Inicializar cuando se carga la página
+        window.addEventListener('load', async () => {
+            await initializeSupabase();
+            await loadDatabaseInfo();
+            loadSetupInstructions();
+        });
+    </script>
+</body>
+</html>

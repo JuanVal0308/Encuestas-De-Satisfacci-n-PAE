@@ -17,8 +17,8 @@ class SupabaseService {
             }
 
             // Configuración de Supabase
-            const supabaseUrl = 'https://algrkzpmqvpmylszcrrk.supabase.co';
-            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZ3JrenBtcXZwbXlsc3pjcnJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjIyMTIsImV4cCI6MjA3Mzc5ODIxMn0.RZv3EiuAWBhWor1w07-twotlgBvIU-mtedHMdzhqZBU';
+            const supabaseUrl = 'https://nvecjznyilfqxpfepsdg.supabase.co';
+            const supabaseKey = 'sb_publishable_KWANBx81avJMxMfVVbwZ4g_7i3hxvyx';
 
             this.supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             this.isConnected = true;

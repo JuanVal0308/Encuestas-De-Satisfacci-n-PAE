@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Supabase - Versión Local</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #007bff;
+        }
+        .step.completed {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .step.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .step.warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        button:hover { 
+            background: #0056b3; 
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        .checklist li::before {
+            content: "⏳";
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .checklist li.completed::before {
+            content: "✅";
+        }
+        .checklist li.error::before {
+            content: "❌";
+        }
+        .checklist li.warning::before {
+            content: "⚠️";
+        }
+        .copy-button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .copy-button:hover {
+            background: #5a6268;
+        }
+        .manual-steps {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Configuración Manual de Supabase</h1>
+            <p>Sistema de Encuestas PAE - Envigado</p>
+            <div class="status info">
+                <strong>⚠️ Nota:</strong> Esta versión no requiere cargar Supabase desde CDN. 
+                Te guiará paso a paso para configurar tu base de datos manualmente.
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>📋 Paso 1: Acceder a Supabase</h2>
+            <div class="manual-steps">
+                <ol>
+                    <li>Ve a: <a href="https://supabase.com/dashboard" target="_blank">https://supabase.com/dashboard</a></li>
+                    <li>Inicia sesión con tu cuenta</li>
+                    <li>Selecciona tu proyecto (o crea uno nuevo si no tienes)</li>
+                    <li>Anota la URL y API Key de tu proyecto</li>
+                </ol>
+            </div>
+            <button onclick="showCredentials()">Mostrar Credenciales Actuales</button>
+            <div id="credentials-info"></div>
+        </div>
+
+        <div class="step">
+            <h2>🗄️ Paso 2: Ejecutar SQL en Supabase</h2>
+            <div class="manual-steps">
+                <ol>
+                    <li>En el panel de Supabase, ve a <strong>"SQL Editor"</strong></li>
+                    <li>Haz clic en <strong>"New query"</strong></li>
+                    <li>Copia el SQL que aparece abajo</li>
+                    <li>Pégalo en el editor SQL</li>
+                    <li>Haz clic en <strong>"Run"</strong> (botón verde)</li>
+                </ol>
+            </div>
+            
+            <div class="code-block">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>SQL para ejecutar en Supabase:</span>
+                    <button class="copy-button" onclick="copySQL()">Copiar SQL</button>
+                </div>
+                <pre id="sql-content">Cargando SQL...</pre>
+            </div>
+            
+            <button onclick="verifySQLExecution()">Verificar Ejecución del SQL</button>
+            <div id="sql-verification"></div>
+        </div>
+
+        <div class="step">
+            <h2>🧪 Paso 3: Probar la Conexión</h2>
+            <div class="manual-steps">
+                <p>Una vez ejecutado el SQL, prueba la conexión:</p>
+                <ol>
+                    <li>Abre <code>test-supabase.html</code> en tu navegador</li>
+                    <li>Haz clic en "Probar Conexión"</li>
+                    <li>Deberías ver: "✅ Conexión exitosa!"</li>
+                </ol>
+            </div>
+            <button onclick="openTestPage()">Abrir Página de Prueba</button>
+        </div>
+
+        <div class="step">
+            <h2>✅ Paso 4: Usar la Aplicación</h2>
+            <div class="manual-steps">
+                <p>Una vez que la conexión funcione:</p>
+                <ol>
+                    <li>Abre <code>index.html</code> para la aplicación principal</li>
+                    <li>O <code>index-v2.html</code> para la versión mejorada</li>
+                    <li>Ve a la sección "Encuestas"</li>
+                    <li>Completa una encuesta de prueba</li>
+                    <li>Verifica que los datos se guarden en Supabase</li>
+                </ol>
+            </div>
+            <button onclick="openMainApp()">Abrir Aplicación Principal</button>
+            <button onclick="openV2App()">Abrir Aplicación V2</button>
+        </div>
+
+        <div class="step">
+            <h2>🚨 Solución de Problemas</h2>
+            <div id="troubleshooting">
+                <div class="status info">
+                    <h3>Problemas Comunes:</h3>
+                    <ul>
+                        <li><strong>Error "relation does not exist":</strong> La tabla no se creó. Ejecuta el SQL nuevamente.</li>
+                        <li><strong>Error "permission denied":</strong> Las políticas RLS no están configuradas. Ejecuta el SQL completo.</li>
+                        <li><strong>Error "Failed to fetch":</strong> Verifica que la URL y API Key sean correctas.</li>
+                        <li><strong>Los datos no aparecen:</strong> Verifica que el SQL se ejecutó correctamente.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SQL para configurar la base de datos
+        const SETUP_SQL = `-- ============================================
+-- CONFIGURACIÓN COMPLETA DE BASE DE DATOS PAE
+-- ============================================
+
+-- 1. CREAR TABLA PRINCIPAL
+CREATE TABLE IF NOT EXISTS survey_responses (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    type VARCHAR(50) NOT NULL,
+    data JSONB NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    deleted_at TIMESTAMP WITH TIME ZONE NULL
+);
+
+-- 2. CREAR ÍNDICES PARA RENDIMIENTO
+CREATE INDEX IF NOT EXISTS idx_survey_responses_type ON survey_responses(type);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_created_at ON survey_responses(created_at);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_deleted_at ON survey_responses(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_data_gin ON survey_responses USING GIN (data);
+
+-- 3. FUNCIÓN PARA ACTUALIZAR TIMESTAMP AUTOMÁTICAMENTE
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- 4. TRIGGER PARA ACTUALIZAR updated_at
+CREATE TRIGGER update_survey_responses_updated_at 
+    BEFORE UPDATE ON survey_responses 
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- 5. HABILITAR ROW LEVEL SECURITY
+ALTER TABLE survey_responses ENABLE ROW LEVEL SECURITY;
+
+-- 6. POLÍTICAS DE SEGURIDAD (Permitir todas las operaciones)
+CREATE POLICY "Allow all operations for anonymous users" ON survey_responses
+    FOR ALL USING (true);
+
+-- 7. CREAR VISTA PARA RESPUESTAS ACTIVAS
+CREATE OR REPLACE VIEW active_survey_responses AS
+SELECT * FROM survey_responses 
+WHERE deleted_at IS NULL;
+
+-- 8. CREAR VISTA PARA ESTADÍSTICAS
+CREATE OR REPLACE VIEW survey_stats AS
+SELECT 
+    type,
+    COUNT(*) as total_responses,
+    COUNT(*) FILTER (WHERE created_at >= CURRENT_DATE - INTERVAL '7 days') as last_week,
+    COUNT(*) FILTER (WHERE created_at >= CURRENT_DATE - INTERVAL '30 days') as last_month
+FROM survey_responses 
+WHERE deleted_at IS NULL
+GROUP BY type;
+
+-- 9. INSERTAR DATOS DE PRUEBA
+INSERT INTO survey_responses (type, data) VALUES 
+('racion-servida', '{"institucion": "IE Alejandro Vélez Barrientos", "grado": "5", "sexo": "Hombre", "fecha_nacimiento": "2010-01-01", "manipuladoras_amables": "😁 Siempre", "alimentos_variados": "😊 Casi siempre", "alimentos_presentacion": "😁 Siempre"}'),
+('racion-industrializada', '{"institucion": "IE Comercial de Envigado", "grado": "3", "sexo": "Mujer", "fecha_nacimiento": "2012-05-15", "calidad_alimentos": "😊 Casi siempre", "variedad_menus": "😁 Siempre", "presentacion_alimentos": "😁 Siempre"}'),
+('coordinadores', '{"institucion": "IE La Paz", "fecha_nacimiento": "1985-03-20", "calidad_alimentos": "4 Excelente", "variedad_menus": "3 Bueno", "tamano_porciones": "4 Excelente", "aseo_organizacion": "3 Bueno"}');
+
+-- 10. VERIFICAR CONFIGURACIÓN
+SELECT '✅ Configuración completada exitosamente' as status;
+SELECT COUNT(*) as total_responses FROM survey_responses;
+SELECT type, COUNT(*) as count FROM survey_responses GROUP BY type;`;
+
+        // Configuración actual
+        const SUPABASE_URL = 'https://nvecjznyilfqxpfepsdg.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_KWANBx81avJMxMfVVbwZ4g_7i3hxvyx';
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            document.getElementById('sql-content').textContent = SETUP_SQL;
+        });
+
+        // Mostrar credenciales
+        function showCredentials() {
+            document.getElementById('credentials-info').innerHTML = `
+                <div class="status info">
+                    <h3>Credenciales Actuales:</h3>
+                    <p><strong>URL:</strong> ${SUPABASE_URL}</p>
+                    <p><strong>API Key:</strong> ${SUPABASE_KEY.substring(0, 50)}...</p>
+                    <p><strong>Estado:</strong> Configuradas en el proyecto</p>
+                </div>
+            `;
+        }
+
+        // Copiar SQL
+        function copySQL() {
+            navigator.clipboard.writeText(SETUP_SQL).then(() => {
+                alert('✅ SQL copiado al portapapeles');
+            }).catch(() => {
+                // Fallback para navegadores que no soportan clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = SETUP_SQL;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('✅ SQL copiado al portapapeles');
+            });
+        }
+
+        // Verificar ejecución del SQL
+        function verifySQLExecution() {
+            document.getElementById('sql-verification').innerHTML = `
+                <div class="status info">
+                    <h3>Para verificar que el SQL se ejecutó correctamente:</h3>
+                    <ol>
+                        <li>Ve a "Table Editor" en Supabase</li>
+                        <li>Busca la tabla <code>survey_responses</code></li>
+                        <li>Deberías ver las columnas: id, type, data, created_at, updated_at, deleted_at</li>
+                        <li>Deberías ver 3 filas de datos de prueba</li>
+                    </ol>
+                    <p><strong>Si ves la tabla y los datos, el SQL se ejecutó correctamente.</strong></p>
+                </div>
+            `;
+        }
+
+        // Abrir página de prueba
+        function openTestPage() {
+            window.open('test-supabase.html', '_blank');
+        }
+
+        // Abrir aplicación principal
+        function openMainApp() {
+            window.open('index.html', '_blank');
+        }
+
+        // Abrir aplicación V2
+        function openV2App() {
+            window.open('index-v2.html', '_blank');
+        }
+    </script>
+</body>
+</html>

@@ -32,13 +32,13 @@
 ✅ **YA CONFIGURADO** - Las credenciales ya están configuradas en el archivo `js/config/supabase-config.js`:
 
 ```javascript
-// Configuración de Supabase
-const supabaseUrl = 'https://algrkzpmqvpmylszcrrk.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZ3JrenBtcXZwbXlsc3pjcnJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjIyMTIsImV4cCI6MjA3Mzc5ODIxMn0.RZv3EiuAWBhWor1w07-twotlgBvIU-mtedHMdzhqZBU';
+// Configuración de Supabase (en js/config/supabase-config.js)
+const supabaseUrl = 'https://nvecjznyilfqxpfepsdg.supabase.co';
+const supabaseKey = 'sb_publishable_KWANBx81avJMxMfVVbwZ4g_7i3hxvyx';
 ```
 
-**Proyecto ID**: `algrkzpmqvpmylszcrrk`
-**URL del Proyecto**: `https://algrkzpmqvpmylszcrrk.supabase.co`
+**Proyecto ID**: `nvecjznyilfqxpfepsdg`
+**URL del Proyecto**: `https://nvecjznyilfqxpfepsdg.supabase.co`
 
 ### 5. Configurar políticas de seguridad (RLS)
 
@@ -108,6 +108,7 @@ Retorna respuestas filtradas por tipo y rango de fechas.
 - **Acceso público**: Cualquiera puede ver y crear encuestas
 - **RLS habilitado**: Las políticas controlan el acceso
 - **Backup automático**: Los datos se guardan en localStorage como respaldo
+- Si ya tienes datos en localStorage, se migrarán automáticamente la primera vez que uses Supabase.
 
 ## Monitoreo
 
