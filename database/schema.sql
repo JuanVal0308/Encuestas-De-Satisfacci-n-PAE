@@ -39,12 +39,26 @@ ALTER TABLE deleted_responses ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para permitir acceso público (sin autenticación)
 -- Política para survey_responses: permitir todo
+DROP POLICY IF EXISTS "Allow public access to survey_responses" ON survey_responses;
 CREATE POLICY "Allow public access to survey_responses" ON survey_responses
-    FOR ALL USING (true) WITH CHECK (true);
+    FOR ALL
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- Política para deleted_responses: permitir todo
+DROP POLICY IF EXISTS "Allow public access to deleted_responses" ON deleted_responses;
 CREATE POLICY "Allow public access to deleted_responses" ON deleted_responses
-    FOR ALL USING (true) WITH CHECK (true);
+    FOR ALL
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Permisos (por si el proyecto nuevo no los tiene por defecto)
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE survey_responses TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE deleted_responses TO anon, authenticated;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
 
 -- Función para actualizar updated_at automáticamente
 CREATE OR REPLACE FUNCTION update_updated_at_column()
