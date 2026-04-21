@@ -5,29 +5,45 @@ class SupabaseService {
     constructor() {
         this.supabase = null;
         this.isConnected = false;
-        this.init();
+        /** Evita varias instancias de GoTrueClient (createClient solo una vez). */
+        this._initPromise = null;
     }
 
     async init() {
+        if (this.isConnected && this.supabase) {
+            return true;
+        }
+        if (this._initPromise) {
+            return this._initPromise;
+        }
+
+        this._initPromise = this._doInit();
         try {
-            // Verificar si Supabase está disponible
+            return await this._initPromise;
+        } finally {
+            this._initPromise = null;
+        }
+    }
+
+    async _doInit() {
+        try {
             if (typeof window.supabase === 'undefined') {
                 console.warn('Supabase no está disponible, usando localStorage');
                 return false;
             }
 
-            // Configuración de Supabase
             const supabaseUrl = 'https://nvecjznyilfqxpfepsdg.supabase.co';
             const supabaseKey = 'sb_publishable_KWANBx81avJMxMfVVbwZ4g_7i3hxvyx';
 
             this.supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             this.isConnected = true;
-            
+
             console.log('Supabase conectado correctamente');
             return true;
         } catch (error) {
             console.error('Error conectando a Supabase:', error);
             this.isConnected = false;
+            this.supabase = null;
             return false;
         }
     }
