@@ -9,6 +9,29 @@ class SupabaseService {
         this._initPromise = null;
     }
 
+    async _fetchAllPaged(buildQuery, pageSize = 1000) {
+        const all = [];
+        let from = 0;
+
+        while (true) {
+            const to = from + pageSize - 1;
+            const { data, error } = await buildQuery().range(from, to);
+            if (error) throw error;
+
+            if (Array.isArray(data) && data.length > 0) {
+                all.push(...data);
+            }
+
+            if (!Array.isArray(data) || data.length < pageSize) {
+                break;
+            }
+
+            from += pageSize;
+        }
+
+        return all;
+    }
+
     async init() {
         if (this.isConnected && this.supabase) {
             return true;
@@ -87,15 +110,15 @@ class SupabaseService {
         }
 
         try {
-            const { data, error } = await this.supabase
-                .from('survey_responses')
-                .select('*')
-                .eq('is_deleted', false)
-                .order('created_at', { ascending: false });
+            const data = await this._fetchAllPaged(() =>
+                this.supabase
+                    .from('survey_responses')
+                    .select('*')
+                    .eq('is_deleted', false)
+                    .order('created_at', { ascending: false })
+            );
 
-            if (error) throw error;
-
-            return data.map(item => ({
+            return (data || []).map(item => ({
                 id: item.id,
                 type: item.survey_type,
                 data: item.response_data,
@@ -114,16 +137,16 @@ class SupabaseService {
         }
 
         try {
-            const { data, error } = await this.supabase
-                .from('survey_responses')
-                .select('*')
-                .eq('survey_type', surveyType)
-                .eq('is_deleted', false)
-                .order('created_at', { ascending: false });
+            const data = await this._fetchAllPaged(() =>
+                this.supabase
+                    .from('survey_responses')
+                    .select('*')
+                    .eq('survey_type', surveyType)
+                    .eq('is_deleted', false)
+                    .order('created_at', { ascending: false })
+            );
 
-            if (error) throw error;
-
-            return data.map(item => ({
+            return (data || []).map(item => ({
                 id: item.id,
                 type: item.survey_type,
                 data: item.response_data,
@@ -142,22 +165,24 @@ class SupabaseService {
         }
 
         try {
-            let query = this.supabase
-                .from('survey_responses')
-                .select('*')
-                .eq('is_deleted', false)
-                .gte('created_at', startDate)
-                .lte('created_at', endDate);
+            const build = () => {
+                let query = this.supabase
+                    .from('survey_responses')
+                    .select('*')
+                    .eq('is_deleted', false)
+                    .gte('created_at', startDate)
+                    .lte('created_at', endDate);
 
-            if (surveyType) {
-                query = query.eq('survey_type', surveyType);
-            }
+                if (surveyType) {
+                    query = query.eq('survey_type', surveyType);
+                }
 
-            const { data, error } = await query.order('created_at', { ascending: false });
+                return query.order('created_at', { ascending: false });
+            };
 
-            if (error) throw error;
+            const data = await this._fetchAllPaged(build);
 
-            return data.map(item => ({
+            return (data || []).map(item => ({
                 id: item.id,
                 type: item.survey_type,
                 data: item.response_data,
@@ -267,14 +292,14 @@ class SupabaseService {
         }
 
         try {
-            const { data, error } = await this.supabase
-                .from('deleted_responses')
-                .select('*')
-                .order('deleted_at', { ascending: false });
+            const data = await this._fetchAllPaged(() =>
+                this.supabase
+                    .from('deleted_responses')
+                    .select('*')
+                    .order('deleted_at', { ascending: false })
+            );
 
-            if (error) throw error;
-
-            return data.map(item => ({
+            return (data || []).map(item => ({
                 id: item.original_id,
                 type: item.survey_type,
                 data: item.response_data,
