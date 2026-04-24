@@ -115,10 +115,17 @@ class SupabaseService {
                     .from('survey_responses')
                     .select('*')
                     .eq('is_deleted', false)
-                    .order('created_at', { ascending: false })
+                    // Paginación estable: ordenar por PK (id) y ordenar por fecha en cliente
+                    .order('id', { ascending: true })
             );
 
-            return (data || []).map(item => ({
+            const sorted = (data || []).slice().sort((a, b) => {
+                const ad = new Date(a.created_at).getTime();
+                const bd = new Date(b.created_at).getTime();
+                return bd - ad;
+            });
+
+            return sorted.map(item => ({
                 id: item.id,
                 type: item.survey_type,
                 data: item.response_data,
@@ -143,10 +150,16 @@ class SupabaseService {
                     .select('*')
                     .eq('survey_type', surveyType)
                     .eq('is_deleted', false)
-                    .order('created_at', { ascending: false })
+                    .order('id', { ascending: true })
             );
 
-            return (data || []).map(item => ({
+            const sorted = (data || []).slice().sort((a, b) => {
+                const ad = new Date(a.created_at).getTime();
+                const bd = new Date(b.created_at).getTime();
+                return bd - ad;
+            });
+
+            return sorted.map(item => ({
                 id: item.id,
                 type: item.survey_type,
                 data: item.response_data,
@@ -177,12 +190,18 @@ class SupabaseService {
                     query = query.eq('survey_type', surveyType);
                 }
 
-                return query.order('created_at', { ascending: false });
+                return query.order('id', { ascending: true });
             };
 
             const data = await this._fetchAllPaged(build);
 
-            return (data || []).map(item => ({
+            const sorted = (data || []).slice().sort((a, b) => {
+                const ad = new Date(a.created_at).getTime();
+                const bd = new Date(b.created_at).getTime();
+                return bd - ad;
+            });
+
+            return sorted.map(item => ({
                 id: item.id,
                 type: item.survey_type,
                 data: item.response_data,
@@ -296,10 +315,16 @@ class SupabaseService {
                 this.supabase
                     .from('deleted_responses')
                     .select('*')
-                    .order('deleted_at', { ascending: false })
+                    .order('id', { ascending: true })
             );
 
-            return (data || []).map(item => ({
+            const sorted = (data || []).slice().sort((a, b) => {
+                const ad = new Date(a.deleted_at).getTime();
+                const bd = new Date(b.deleted_at).getTime();
+                return bd - ad;
+            });
+
+            return sorted.map(item => ({
                 id: item.original_id,
                 type: item.survey_type,
                 data: item.response_data,
