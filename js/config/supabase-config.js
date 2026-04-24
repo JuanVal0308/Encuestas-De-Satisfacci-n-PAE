@@ -114,14 +114,14 @@ class SupabaseService {
                 this.supabase
                     .from('survey_responses')
                     .select('*')
-                    // Algunos registros importados pueden traer is_deleted = NULL.
-                    // Los tratamos como "no eliminados".
-                    .or('is_deleted.is.null,is_deleted.eq.false')
                     // Paginación estable: ordenar por PK (id) y ordenar por fecha en cliente
                     .order('id', { ascending: true })
             );
 
-            const sorted = (data || []).slice().sort((a, b) => {
+            // Filtrado en cliente: incluye NULL/false y excluye solo true
+            const active = (data || []).filter(r => r.is_deleted !== true);
+
+            const sorted = active.slice().sort((a, b) => {
                 const ad = new Date(a.created_at).getTime();
                 const bd = new Date(b.created_at).getTime();
                 return bd - ad;
@@ -151,11 +151,12 @@ class SupabaseService {
                     .from('survey_responses')
                     .select('*')
                     .eq('survey_type', surveyType)
-                    .or('is_deleted.is.null,is_deleted.eq.false')
                     .order('id', { ascending: true })
             );
 
-            const sorted = (data || []).slice().sort((a, b) => {
+            const active = (data || []).filter(r => r.is_deleted !== true);
+
+            const sorted = active.slice().sort((a, b) => {
                 const ad = new Date(a.created_at).getTime();
                 const bd = new Date(b.created_at).getTime();
                 return bd - ad;
@@ -184,7 +185,6 @@ class SupabaseService {
                 let query = this.supabase
                     .from('survey_responses')
                     .select('*')
-                    .or('is_deleted.is.null,is_deleted.eq.false')
                     .gte('created_at', startDate)
                     .lte('created_at', endDate);
 
@@ -197,7 +197,9 @@ class SupabaseService {
 
             const data = await this._fetchAllPaged(build);
 
-            const sorted = (data || []).slice().sort((a, b) => {
+            const active = (data || []).filter(r => r.is_deleted !== true);
+
+            const sorted = active.slice().sort((a, b) => {
                 const ad = new Date(a.created_at).getTime();
                 const bd = new Date(b.created_at).getTime();
                 return bd - ad;
