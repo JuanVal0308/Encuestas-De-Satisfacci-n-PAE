@@ -114,7 +114,9 @@ class SupabaseService {
                 this.supabase
                     .from('survey_responses')
                     .select('*')
-                    .eq('is_deleted', false)
+                    // Algunos registros importados pueden traer is_deleted = NULL.
+                    // Los tratamos como "no eliminados".
+                    .or('is_deleted.is.null,is_deleted.eq.false')
                     // Paginación estable: ordenar por PK (id) y ordenar por fecha en cliente
                     .order('id', { ascending: true })
             );
@@ -149,7 +151,7 @@ class SupabaseService {
                     .from('survey_responses')
                     .select('*')
                     .eq('survey_type', surveyType)
-                    .eq('is_deleted', false)
+                    .or('is_deleted.is.null,is_deleted.eq.false')
                     .order('id', { ascending: true })
             );
 
@@ -182,7 +184,7 @@ class SupabaseService {
                 let query = this.supabase
                     .from('survey_responses')
                     .select('*')
-                    .eq('is_deleted', false)
+                    .or('is_deleted.is.null,is_deleted.eq.false')
                     .gte('created_at', startDate)
                     .lte('created_at', endDate);
 
