@@ -1311,7 +1311,7 @@ class EncuestasPAE {
                 categories['Información Académica'][key] = value;
             } else if (key.includes('satisfaccion') || key.includes('calidad') || key.includes('cantidad') || key.includes('temperatura') || key.includes('presentacion')) {
                 categories['Evaluación'][key] = value;
-            } else if (['observaciones', 'comentarios', 'sugerencias', 'alimentos_gustan', 'alimentos_no_gustan'].includes(key)) {
+            } else if (['observaciones', 'observaciones_sugerencias', 'comentarios', 'sugerencias', 'alimentos_gustan', 'alimentos_no_gustan', 'positivo', 'mejorar'].includes(key)) {
                 categories['Comentarios'][key] = value;
             } else {
                 categories['Evaluación'][key] = value;
@@ -1470,6 +1470,7 @@ class EncuestasPAE {
             'pa_oportunidad_entrega': 'Paquete — Oportunidad en la entrega',
             'espacio_condiciones_comedor': 'Espacio y condiciones del comedor',
             'satisfaccion_general_programa': 'Satisfacción general con el Programa',
+            'observaciones_sugerencias': 'Observaciones/sugerencias',
             'positivo': 'Aspectos positivos a destacar',
             'mejorar': 'Recomendaciones'
         };

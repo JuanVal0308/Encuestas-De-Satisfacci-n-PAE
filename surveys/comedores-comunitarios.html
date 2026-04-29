@@ -12,23 +12,11 @@
                 </li>
                 <li class="form-input-wide" data-type="control_head">
                     <div class="form-header-group hasImage header-large">
-                        <h1 class="form-header">Evaluación del servicio para usuarios del Programa de Comedores Comunitarios</h1>
-                        <div class="form-subHeader">Código: GS-F-086 · Versión 04</div>
+                        <h1 class="form-header">EVALUACION DEL SERVICIO PARA USUARIOS DEL PROGRAMA DE COMEDORES COMUNITARIOS</h1>
+                        <div class="form-subHeader">Código: GS-F-086 · Versión 04 · Formato impreso: Página 1 de 2 / Página 2 de 2</div>
                     </div>
                 </li>
 
-                <li class="form-line jf-required" data-type="control_text">
-                    <label class="form-label form-label-top">Nombre completo<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <input type="text" name="nombre" class="form-textbox validate[required]" required />
-                    </div>
-                </li>
-                <li class="form-line jf-required" data-type="control_text">
-                    <label class="form-label form-label-top">Edad<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <input type="number" name="edad" class="form-textbox validate[required]" required />
-                    </div>
-                </li>
                 <li class="form-line jf-required" data-type="control_datetime">
                     <label class="form-label form-label-top">Fecha<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
@@ -56,19 +44,30 @@
                         <input type="text" name="barrio" class="form-textbox validate[required]" required placeholder="Escriba el barrio en el cual reside" />
                     </div>
                 </li>
+                <li class="form-line jf-required" data-type="control_text">
+                    <label class="form-label form-label-top">Nombre completo<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="text" name="nombre" class="form-textbox validate[required]" required />
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_text">
+                    <label class="form-label form-label-top">Edad<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="number" name="edad" class="form-textbox validate[required]" required />
+                    </div>
+                </li>
 
                 <li class="form-line" data-type="control_text">
                     <div class="form-input-wide">
                         <div class="form-html">
-                            <p><strong>Escala:</strong> califique cada aspecto siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo.</p>
-                            <p>1 Malo · 2 Regular · 3 Bueno · 4 Excelente</p>
-                            <p>Ubique el recuadro de la modalidad señalada y califique cada aspecto según corresponda.</p>
+                            <p><strong>Marque con una «X» la modalidad que recibe</strong> (si recibe varias modalidades, marque todas las que correspondan).</p>
+                            <p><strong>Ubique el recuadro de la modalidad señalada y califique cada aspecto con una «X»</strong>, siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo.</p>
                         </div>
                     </div>
                 </li>
 
                 <li class="form-line jf-required" data-type="control_checkbox">
-                    <label class="form-label form-label-top">Marque la(s) modalidad(es) que recibe (puede elegir una o varias)<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">Modalidad<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
@@ -76,12 +75,12 @@
                                 <label for="mod-almuerzo-sitio">Almuerzo ración en sitio</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="checkbox" name="mod_racion_industrializada" value="si" id="mod-racion-industrializada" />
-                                <label for="mod-racion-industrializada">Ración industrializada</label>
-                            </span>
-                            <span class="form-radio-item">
                                 <input type="checkbox" name="mod_paquete_alimentos" value="si" id="mod-paquete-alimentos" />
                                 <label for="mod-paquete-alimentos">Paquete de alimentos</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="checkbox" name="mod_racion_industrializada" value="si" id="mod-racion-industrializada" />
+                                <label for="mod-racion-industrializada">Ración industrializada</label>
                             </span>
                         </div>
                     </div>
@@ -90,7 +89,19 @@
                 <!-- Almuerzo ración en sitio (9 preguntas — Excel Hoja1) -->
                 <li class="form-line comedores-mod-block" data-comedores-mod="almuerzo-sitio" style="display:none" data-type="control_head">
                     <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Cómo califica el servicio en la modalidad de <strong>Almuerzo ración en sitio</strong></p>
+                        <p class="form-subHeader" style="margin-bottom:0.5rem">Como califica el servicio en la modalidad de <strong>Almuerzo ración en sitio</strong>:</p>
+                    </div>
+                </li>
+                <li class="form-line comedores-mod-block" data-comedores-mod="almuerzo-sitio" style="display:none" data-type="control_widget">
+                    <div class="form-input-wide comedores-matriz-leyenda" aria-hidden="true">
+                        <div class="comedores-matriz-fila comedores-matriz-fila-head">
+                            <span class="comedores-matriz-n">N°</span>
+                            <span class="comedores-matriz-item">Aspecto</span>
+                            <span class="comedores-matriz-col">1 <small>(Malo)</small></span>
+                            <span class="comedores-matriz-col">2 <small>(Regular)</small></span>
+                            <span class="comedores-matriz-col">3 <small>(Bueno)</small></span>
+                            <span class="comedores-matriz-col">4 <small>(Excelente)</small></span>
+                        </div>
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" style="display:none" data-type="control_radio">
@@ -196,7 +207,19 @@
                 <!-- Ración industrializada (3 preguntas) -->
                 <li class="form-line comedores-mod-block" data-comedores-mod="racion-industrializada" style="display:none" data-type="control_head">
                     <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Cómo califica el servicio la modalidad de <strong>ración industrializada</strong></p>
+                        <p class="form-subHeader" style="margin-bottom:0.5rem">Como califica el servicio la modalidad de <strong>ración industrializada</strong>:</p>
+                    </div>
+                </li>
+                <li class="form-line comedores-mod-block" data-comedores-mod="racion-industrializada" style="display:none" data-type="control_widget">
+                    <div class="form-input-wide comedores-matriz-leyenda" aria-hidden="true">
+                        <div class="comedores-matriz-fila comedores-matriz-fila-head">
+                            <span class="comedores-matriz-n">N°</span>
+                            <span class="comedores-matriz-item">Aspecto</span>
+                            <span class="comedores-matriz-col">1 <small>(Malo)</small></span>
+                            <span class="comedores-matriz-col">2 <small>(Regular)</small></span>
+                            <span class="comedores-matriz-col">3 <small>(Bueno)</small></span>
+                            <span class="comedores-matriz-col">4 <small>(Excelente)</small></span>
+                        </div>
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="racion-industrializada" style="display:none" data-type="control_radio">
@@ -236,7 +259,19 @@
                 <!-- Paquete de alimentos (4 preguntas — Excel) -->
                 <li class="form-line comedores-mod-block" data-comedores-mod="paquete-alimentos" style="display:none" data-type="control_head">
                     <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Cómo califica el servicio de la modalidad de <strong>Paquete de alimentos</strong></p>
+                        <p class="form-subHeader" style="margin-bottom:0.5rem">Como califica el servicio de la modalidad de <strong>Paquete de Alimentos</strong>:</p>
+                    </div>
+                </li>
+                <li class="form-line comedores-mod-block" data-comedores-mod="paquete-alimentos" style="display:none" data-type="control_widget">
+                    <div class="form-input-wide comedores-matriz-leyenda" aria-hidden="true">
+                        <div class="comedores-matriz-fila comedores-matriz-fila-head">
+                            <span class="comedores-matriz-n">N°</span>
+                            <span class="comedores-matriz-item">Aspecto</span>
+                            <span class="comedores-matriz-col">1 <small>(Malo)</small></span>
+                            <span class="comedores-matriz-col">2 <small>(Regular)</small></span>
+                            <span class="comedores-matriz-col">3 <small>(Bueno)</small></span>
+                            <span class="comedores-matriz-col">4 <small>(Excelente)</small></span>
+                        </div>
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" style="display:none" data-type="control_radio">
@@ -288,7 +323,19 @@
                 <li class="form-line" data-type="control_head">
                     <div class="form-input-wide">
                         <h2 class="form-header" style="font-size:1.1rem;margin:0.5rem 0">Otros aspectos</h2>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Califique otros aspectos al interior del programa</p>
+                        <p class="form-subHeader" style="margin-bottom:0.5rem">Califique otros aspectos al interior del programa:</p>
+                    </div>
+                </li>
+                <li class="form-line" data-type="control_widget">
+                    <div class="form-input-wide comedores-matriz-leyenda" aria-hidden="true">
+                        <div class="comedores-matriz-fila comedores-matriz-fila-head">
+                            <span class="comedores-matriz-n">N°</span>
+                            <span class="comedores-matriz-item">Aspecto</span>
+                            <span class="comedores-matriz-col">1 <small>(Malo)</small></span>
+                            <span class="comedores-matriz-col">2 <small>(Regular)</small></span>
+                            <span class="comedores-matriz-col">3 <small>(Bueno)</small></span>
+                            <span class="comedores-matriz-col">4 <small>(Excelente)</small></span>
+                        </div>
                     </div>
                 </li>
                 <li class="form-line jf-required" data-type="control_radio">
@@ -303,7 +350,7 @@
                     </div>
                 </li>
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">2. En términos generales, ¿cuál es su nivel de satisfacción con el servicio prestado en el Programa?<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">2. En términos generales ¿Cuál es su nivel de satisfacción con el servicio prestado en el Programa?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" name="satisfaccion_general_programa" value="1 Malo" required /><label>1 Malo</label></span>
@@ -314,9 +361,14 @@
                     </div>
                 </li>
 
+                <li class="form-line" data-type="control_textarea">
+                    <label class="form-label form-label-top">Observaciones/sugerencias:</label>
+                    <div class="form-input-wide">
+                        <textarea name="observaciones_sugerencias" class="form-textarea" rows="3" placeholder="Observaciones o sugerencias generales"></textarea>
+                    </div>
+                </li>
                 <li class="form-line" data-type="control_text">
                     <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-top:0.5rem">Observaciones / sugerencias</p>
                         <p style="font-size:0.9rem">A continuación mencione los aspectos positivos del PAE que quisiera resaltar y las recomendaciones que considera importantes para mejorar el programa.</p>
                     </div>
                 </li>
