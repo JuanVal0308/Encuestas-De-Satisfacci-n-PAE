@@ -315,7 +315,7 @@ class EncuestasPAE {
             const names = ['ri_calidad', 'ri_variedad', 'ri_cantidad'];
             for (const n of names) {
                 if (!requireRadio(n)) {
-                    alert('Complete todas las preguntas de ración industrializada.');
+                    alert('Complete todas las preguntas de ración industrializada (10 a 12).');
                     return false;
                 }
             }
@@ -324,18 +324,18 @@ class EncuestasPAE {
             const names = ['pa_calidad', 'pa_variedad', 'pa_oportunidad_entrega', 'pa_trato_entrega'];
             for (const n of names) {
                 if (!requireRadio(n)) {
-                    alert('Complete todas las preguntas de paquete de alimentos (1 a 4).');
+                    alert('Complete todas las preguntas de Paquete de Alimentos (13 a 16).');
                     return false;
                 }
             }
         }
 
         if (!requireRadio('espacio_condiciones_comedor')) {
-            alert('Responda la pregunta sobre el espacio y condiciones del comedor.');
+            alert('Responda la pregunta 17 (espacio y condiciones del comedor).');
             return false;
         }
         if (!requireRadio('satisfaccion_general_programa')) {
-            alert('Responda la pregunta sobre su nivel de satisfacción con el servicio del Programa.');
+            alert('Responda la pregunta 18 (satisfacción con el servicio del Programa).');
             return false;
         }
 
@@ -1311,7 +1311,7 @@ class EncuestasPAE {
                 categories['Información Académica'][key] = value;
             } else if (key.includes('satisfaccion') || key.includes('calidad') || key.includes('cantidad') || key.includes('temperatura') || key.includes('presentacion')) {
                 categories['Evaluación'][key] = value;
-            } else if (['observaciones', 'observaciones_sugerencias', 'comentarios', 'sugerencias', 'alimentos_gustan', 'alimentos_no_gustan', 'positivo', 'mejorar'].includes(key)) {
+            } else if (['observaciones', 'comentarios', 'sugerencias', 'alimentos_gustan', 'alimentos_no_gustan'].includes(key)) {
                 categories['Comentarios'][key] = value;
             } else {
                 categories['Evaluación'][key] = value;
@@ -1470,7 +1470,6 @@ class EncuestasPAE {
             'pa_oportunidad_entrega': 'Paquete — Oportunidad en la entrega',
             'espacio_condiciones_comedor': 'Espacio y condiciones del comedor',
             'satisfaccion_general_programa': 'Satisfacción general con el Programa',
-            'observaciones_sugerencias': 'Observaciones/sugerencias',
             'positivo': 'Aspectos positivos a destacar',
             'mejorar': 'Recomendaciones'
         };

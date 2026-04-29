@@ -585,45 +585,26 @@ body {
     background-color: #F29100;
 }
 
-/* Matriz tipo Excel — comedores comunitarios (cabecera N° + escala 1–4) */
-.survey-form .comedores-matriz-leyenda {
-    margin: 0.35rem 0 0.75rem;
-    padding: 0.5rem 0.65rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 12px;
-    line-height: 1.25;
-}
-.survey-form .comedores-matriz-fila {
+/* Comedores: bloque final observaciones (dos columnas como formato impreso) */
+.survey-form .comedores-feedback-dos-columnas {
     display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr) repeat(4, minmax(2.5rem, 1fr));
-    gap: 0.35rem 0.25rem;
-    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.25rem;
+    align-items: start;
+    width: 100%;
 }
-.survey-form .comedores-matriz-fila-head {
-    font-weight: 600;
-    color: #334155;
-    padding-bottom: 0.35rem;
-    margin-bottom: 0.25rem;
-    border-bottom: 1px solid #cbd5e1;
+.survey-form .comedores-feedback-col {
+    min-width: 0;
 }
-.survey-form .comedores-matriz-n {
-    text-align: center;
+.survey-form .comedores-feedback-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.25rem;
 }
-.survey-form .comedores-matriz-item {
-    font-weight: 600;
-    color: #0f172a;
-}
-.survey-form .comedores-matriz-col {
-    text-align: center;
-    font-weight: 600;
-}
-.survey-form .comedores-matriz-col small {
-    display: block;
-    font-weight: 500;
-    color: #64748b;
-    font-size: 11px;
+@media (max-width: 640px) {
+    .survey-form .comedores-feedback-dos-columnas {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Ocultar marcas de agua de JotForm */
