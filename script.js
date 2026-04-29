@@ -293,10 +293,20 @@ class EncuestasPAE {
         }
 
         if (selectedMods.includes('almuerzo-sitio')) {
-            const names = ['calidad', 'variedad', 'porcion', 'aseo', 'utensilios', 'trato'];
+            const names = [
+                'alm_calidad',
+                'alm_variedad_menus',
+                'alm_oportunidad_entrega',
+                'alm_temperatura_entrega',
+                'alm_presentacion_alimentos',
+                'alm_aseo_organizacion',
+                'alm_limpieza_utensilios',
+                'alm_trato_manipuladoras',
+                'alm_presentacion_personal'
+            ];
             for (const n of names) {
                 if (!requireRadio(n)) {
-                    alert('Complete todas las preguntas de evaluación (almuerzo ración en sitio).');
+                    alert('Complete todas las preguntas de almuerzo ración en sitio (1 a 9).');
                     return false;
                 }
             }
@@ -311,10 +321,10 @@ class EncuestasPAE {
             }
         }
         if (selectedMods.includes('paquete-alimentos')) {
-            const names = ['pa_calidad', 'pa_variedad', 'pa_oportunidad_entrega'];
+            const names = ['pa_calidad', 'pa_variedad', 'pa_oportunidad_entrega', 'pa_trato_entrega'];
             for (const n of names) {
                 if (!requireRadio(n)) {
-                    alert('Complete todas las preguntas de paquete de alimentos.');
+                    alert('Complete todas las preguntas de paquete de alimentos (1 a 4).');
                     return false;
                 }
             }
@@ -1442,6 +1452,16 @@ class EncuestasPAE {
             'mod_almuerzo_sitio': 'Modalidad: almuerzo ración en sitio',
             'mod_racion_industrializada': 'Modalidad: ración industrializada',
             'mod_paquete_alimentos': 'Modalidad: paquete de alimentos',
+            'alm_calidad': 'Almuerzo sitio — Calidad alimentos entregados',
+            'alm_variedad_menus': 'Almuerzo sitio — Variedad menús',
+            'alm_oportunidad_entrega': 'Almuerzo sitio — Oportunidad entrega',
+            'alm_temperatura_entrega': 'Almuerzo sitio — Temperatura almuerzo',
+            'alm_presentacion_alimentos': 'Almuerzo sitio — Presentación alimentos',
+            'alm_aseo_organizacion': 'Almuerzo sitio — Aseo y organización comedor',
+            'alm_limpieza_utensilios': 'Almuerzo sitio — Limpieza platos y cubiertos',
+            'alm_trato_manipuladoras': 'Almuerzo sitio — Trato manipuladoras',
+            'alm_presentacion_personal': 'Almuerzo sitio — Presentación personal manipuladoras',
+            'pa_trato_entrega': 'Paquete — Trato personas que entregan paquetes',
             'ri_calidad': 'RI — Calidad alimentos entregados',
             'ri_variedad': 'RI — Variedad alimentos ofrecidos',
             'ri_cantidad': 'RI — Cantidad (refrigerio)',
