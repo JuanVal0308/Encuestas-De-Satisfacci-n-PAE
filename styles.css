@@ -608,7 +608,16 @@ body {
 }
 
 .survey-form .comedores-mod-inactive {
-    opacity: 0.55;
+    opacity: 1;
+    border-left: 4px solid #cbd5e1;
+    padding-left: 0.5rem;
+    margin-left: -0.25rem;
+    background: #f8fafc;
+    pointer-events: none;
+}
+.survey-form .comedores-mod-inactive .form-subHeader,
+.survey-form .comedores-mod-inactive .form-label {
+    color: #64748b;
 }
 
 /* Ocultar marcas de agua de JotForm */

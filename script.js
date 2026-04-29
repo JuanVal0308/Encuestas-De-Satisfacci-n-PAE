@@ -236,9 +236,8 @@ class EncuestasPAE {
                 const on = mod && selected.has(mod);
                 el.style.display = '';
                 el.classList.toggle('comedores-mod-inactive', !!(mod && !on));
-                el.querySelectorAll('input, textarea, select').forEach((input) => {
-                    input.disabled = !on;
-                    if (!on && (input.type === 'radio' || input.type === 'checkbox')) {
+                el.querySelectorAll('input[type="radio"]').forEach((input) => {
+                    if (!on) {
                         input.checked = false;
                     }
                 });
@@ -355,6 +354,15 @@ class EncuestasPAE {
             delete data.mod_almuerzo_sitio;
             delete data.mod_racion_industrializada;
             delete data.mod_paquete_alimentos;
+            if (!form?.querySelector('input[name="mod_almuerzo_sitio"]:checked')) {
+                Object.keys(data).filter((k) => k.startsWith('alm_')).forEach((k) => delete data[k]);
+            }
+            if (!form?.querySelector('input[name="mod_racion_industrializada"]:checked')) {
+                Object.keys(data).filter((k) => k.startsWith('ri_')).forEach((k) => delete data[k]);
+            }
+            if (!form?.querySelector('input[name="mod_paquete_alimentos"]:checked')) {
+                Object.keys(data).filter((k) => k.startsWith('pa_')).forEach((k) => delete data[k]);
+            }
         }
 
         const responseData = {
