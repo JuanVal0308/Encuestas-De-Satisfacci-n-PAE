@@ -184,8 +184,14 @@ class EncuestasPAE {
     setupSurveyForm(surveyType) {
         const form = document.querySelector('#survey-modal form');
         if (form) {
+            if (surveyType === 'comedores-comunitarios') {
+                this.initComedoresComunitariosModality(form);
+            }
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
+                if (surveyType === 'comedores-comunitarios' && !this.validateComedoresComunitariosForm(form)) {
+                    return;
+                }
                 this.saveResponse(surveyType, new FormData(form));
             });
         }
@@ -203,10 +209,146 @@ class EncuestasPAE {
         };
     }
 
+    /** Muestra los bloques de preguntas según las modalidades marcadas (una o varias). */
+    initComedoresComunitariosModality(form) {
+        const blocks = form.querySelectorAll('[data-comedores-mod]');
+        const modalityChecks = form.querySelectorAll(
+            'input[name="mod_almuerzo_sitio"], input[name="mod_racion_industrializada"], input[name="mod_paquete_alimentos"]'
+        );
+
+        const modKeyByCheckboxName = {
+            mod_almuerzo_sitio: 'almuerzo-sitio',
+            mod_racion_industrializada: 'racion-industrializada',
+            mod_paquete_alimentos: 'paquete-alimentos'
+        };
+
+        const apply = () => {
+            const selected = new Set();
+            modalityChecks.forEach((chk) => {
+                if (chk.checked) {
+                    const key = modKeyByCheckboxName[chk.name];
+                    if (key) selected.add(key);
+                }
+            });
+
+            blocks.forEach((el) => {
+                const mod = el.getAttribute('data-comedores-mod');
+                const on = mod && selected.has(mod);
+                el.style.display = on ? '' : 'none';
+                el.querySelectorAll('input, textarea, select').forEach((input) => {
+                    input.disabled = !on;
+                    if (!on && (input.type === 'radio' || input.type === 'checkbox')) {
+                        input.checked = false;
+                    }
+                });
+            });
+        };
+
+        modalityChecks.forEach((c) => c.addEventListener('change', apply));
+        apply();
+    }
+
+    validateComedoresComunitariosForm(form) {
+        const val = (name) => {
+            const el = form.elements.namedItem(name);
+            if (!el) return '';
+            if (el instanceof RadioNodeList) {
+                const c = form.querySelector(`input[name="${name}"]:checked`);
+                return c ? String(c.value).trim() : '';
+            }
+            return String(el.value || '').trim();
+        };
+
+        const requireRadio = (name) => !!form.querySelector(`input[name="${name}"]:checked`);
+
+        if (!val('nombre')) {
+            alert('Por favor escriba su nombre completo.');
+            return false;
+        }
+        if (!val('edad')) {
+            alert('Por favor indique su edad.');
+            return false;
+        }
+        if (!val('fecha')) {
+            alert('Por favor seleccione la fecha.');
+            return false;
+        }
+        if (!val('comedor')) {
+            alert('Por favor seleccione un comedor.');
+            return false;
+        }
+        if (!val('barrio')) {
+            alert('Por favor indique el barrio donde vive.');
+            return false;
+        }
+
+        const selectedMods = [];
+        if (form.querySelector('input[name="mod_almuerzo_sitio"]:checked')) selectedMods.push('almuerzo-sitio');
+        if (form.querySelector('input[name="mod_racion_industrializada"]:checked')) selectedMods.push('racion-industrializada');
+        if (form.querySelector('input[name="mod_paquete_alimentos"]:checked')) selectedMods.push('paquete-alimentos');
+
+        if (selectedMods.length === 0) {
+            alert('Por favor marque al menos una modalidad que recibe.');
+            return false;
+        }
+
+        if (selectedMods.includes('almuerzo-sitio')) {
+            const names = ['calidad', 'variedad', 'porcion', 'aseo', 'utensilios', 'trato'];
+            for (const n of names) {
+                if (!requireRadio(n)) {
+                    alert('Complete todas las preguntas de evaluación (almuerzo ración en sitio).');
+                    return false;
+                }
+            }
+        }
+        if (selectedMods.includes('racion-industrializada')) {
+            const names = ['ri_calidad', 'ri_variedad', 'ri_cantidad'];
+            for (const n of names) {
+                if (!requireRadio(n)) {
+                    alert('Complete todas las preguntas de ración industrializada.');
+                    return false;
+                }
+            }
+        }
+        if (selectedMods.includes('paquete-alimentos')) {
+            const names = ['pa_calidad', 'pa_variedad', 'pa_oportunidad_entrega'];
+            for (const n of names) {
+                if (!requireRadio(n)) {
+                    alert('Complete todas las preguntas de paquete de alimentos.');
+                    return false;
+                }
+            }
+        }
+
+        if (!requireRadio('espacio_condiciones_comedor')) {
+            alert('Responda la pregunta sobre el espacio y condiciones del comedor.');
+            return false;
+        }
+        if (!requireRadio('satisfaccion_general_programa')) {
+            alert('Responda la pregunta sobre su nivel de satisfacción con el servicio del Programa.');
+            return false;
+        }
+
+        return true;
+    }
+
     async saveResponse(surveyType, formData) {
+        const data = Object.fromEntries(formData.entries());
+        if (surveyType === 'comedores-comunitarios') {
+            const form = document.querySelector('#survey-modal form');
+            const mods = [];
+            if (form?.querySelector('input[name="mod_almuerzo_sitio"]:checked')) mods.push('almuerzo-sitio');
+            if (form?.querySelector('input[name="mod_racion_industrializada"]:checked')) mods.push('racion-industrializada');
+            if (form?.querySelector('input[name="mod_paquete_alimentos"]:checked')) mods.push('paquete-alimentos');
+            data.modalidades_servicio = mods;
+            delete data.mod_almuerzo_sitio;
+            delete data.mod_racion_industrializada;
+            delete data.mod_paquete_alimentos;
+        }
+
         const responseData = {
             type: surveyType,
-            data: Object.fromEntries(formData.entries())
+            data
         };
         
         try {
@@ -1292,7 +1434,24 @@ class EncuestasPAE {
             'calidad': 'Calidad',
             'cantidad': 'Cantidad',
             'temperatura': 'Temperatura',
-            'presentacion': 'Presentación'
+            'presentacion': 'Presentación',
+            'barrio': 'Barrio donde vive',
+            'comedor': 'Comedor comunitario',
+            'modalidad_servicio': 'Modalidad que recibe',
+            'modalidades_servicio': 'Modalidades que recibe',
+            'mod_almuerzo_sitio': 'Modalidad: almuerzo ración en sitio',
+            'mod_racion_industrializada': 'Modalidad: ración industrializada',
+            'mod_paquete_alimentos': 'Modalidad: paquete de alimentos',
+            'ri_calidad': 'RI — Calidad alimentos entregados',
+            'ri_variedad': 'RI — Variedad alimentos ofrecidos',
+            'ri_cantidad': 'RI — Cantidad (refrigerio)',
+            'pa_calidad': 'Paquete — Calidad alimentos entregados',
+            'pa_variedad': 'Paquete — Variedad alimentos ofrecidos',
+            'pa_oportunidad_entrega': 'Paquete — Oportunidad en la entrega',
+            'espacio_condiciones_comedor': 'Espacio y condiciones del comedor',
+            'satisfaccion_general_programa': 'Satisfacción general con el Programa',
+            'positivo': 'Aspectos positivos a destacar',
+            'mejorar': 'Recomendaciones'
         };
 
         return fieldMap[fieldName] || fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
