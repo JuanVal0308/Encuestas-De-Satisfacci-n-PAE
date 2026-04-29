@@ -234,7 +234,8 @@ class EncuestasPAE {
             blocks.forEach((el) => {
                 const mod = el.getAttribute('data-comedores-mod');
                 const on = mod && selected.has(mod);
-                el.style.display = on ? '' : 'none';
+                el.style.display = '';
+                el.classList.toggle('comedores-mod-inactive', !!(mod && !on));
                 el.querySelectorAll('input, textarea, select').forEach((input) => {
                     input.disabled = !on;
                     if (!on && (input.type === 'radio' || input.type === 'checkbox')) {
@@ -1470,8 +1471,8 @@ class EncuestasPAE {
             'pa_oportunidad_entrega': 'Paquete — Oportunidad en la entrega',
             'espacio_condiciones_comedor': 'Espacio y condiciones del comedor',
             'satisfaccion_general_programa': 'Satisfacción general con el Programa',
-            'positivo': 'Aspectos positivos a destacar',
-            'mejorar': 'Recomendaciones'
+            'positivo': '19. Aspectos positivos del PAE a resaltar',
+            'mejorar': '20. Recomendaciones para mejorar el programa'
         };
 
         return fieldMap[fieldName] || fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());

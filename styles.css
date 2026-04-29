@@ -607,6 +607,10 @@ body {
     }
 }
 
+.survey-form .comedores-mod-inactive {
+    opacity: 0.55;
+}
+
 /* Ocultar marcas de agua de JotForm */
 .jotform-powered,
 .jotform-footer,
