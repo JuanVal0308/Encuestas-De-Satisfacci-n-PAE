@@ -232,7 +232,7 @@ class EncuestasPAE {
             });
 
             blocks.forEach((el) => {
-                const mod = el.getAttribute('data-comedores-mod');
+                const mod = (el.getAttribute('data-comedores-mod') || '').trim();
                 const on = mod && selected.has(mod);
                 el.style.display = '';
                 el.classList.toggle('comedores-mod-inactive', !!(mod && !on));

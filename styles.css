@@ -558,6 +558,26 @@ body {
     transition: 0.3s;
     min-width: 120px;
     text-align: center;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.survey-form .form-radio-item:hover,
+.survey-form .form-checkbox-item:hover {
+    background-color: #ffecd9;
+    border-color: #F29100;
+    box-shadow: 0 2px 8px rgba(234, 91, 12, 0.12);
+}
+
+.survey-form .form-radio-item input[type="radio"],
+.survey-form .form-checkbox-item input[type="checkbox"] {
+    accent-color: #0F3A31;
+    width: 1.125em;
+    height: 1.125em;
+    margin: 0 6px 0 0;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 .survey-form .form-radio + label,
@@ -566,6 +586,7 @@ body {
     font-weight: 500;
     color: #0F3A31;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .survey-form .form-submit-button {
@@ -607,17 +628,32 @@ body {
     }
 }
 
+/* Comedores: bloques de modalidad — activos encima para que los clics no queden bloqueados */
+.survey-form li.comedores-mod-block {
+    position: relative;
+}
+.survey-form li.comedores-mod-block:not(.comedores-mod-inactive) {
+    z-index: 4;
+}
+.survey-form li.comedores-mod-block.comedores-mod-inactive {
+    z-index: 1;
+    pointer-events: none;
+}
+
 .survey-form .comedores-mod-inactive {
     opacity: 1;
-    border-left: 4px solid #cbd5e1;
+    border-left: 4px solid #F29100;
     padding-left: 0.5rem;
     margin-left: -0.25rem;
-    background: #f8fafc;
-    pointer-events: none;
+    background: #FFF7F0;
 }
 .survey-form .comedores-mod-inactive .form-subHeader,
 .survey-form .comedores-mod-inactive .form-label {
-    color: #64748b;
+    color: #6b857c;
+}
+.survey-form .comedores-mod-inactive .form-radio-item {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
 /* Ocultar marcas de agua de JotForm */
