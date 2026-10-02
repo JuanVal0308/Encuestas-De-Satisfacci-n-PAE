@@ -29,6 +29,16 @@
                         <input type="number" name="edad" class="form-textbox validate[required]" required />
                     </div>
                 </li>
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">Género<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Hombre" required /><label>Hombre</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Mujer" /><label>Mujer</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Otro" /><label>Otro</label></span>
+                        </div>
+                    </div>
+                </li>
                 <li class="form-line jf-required" data-type="control_datetime">
                     <label class="form-label form-label-top">Fecha<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
@@ -51,34 +61,34 @@
                     </div>
                 </li>
                 <li class="form-line jf-required" data-type="control_text">
-                    <label class="form-label form-label-top">Barrio donde vive<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">Barrio en el que habita<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
-                        <input type="text" name="barrio" class="form-textbox validate[required]" required placeholder="Escriba el barrio en el cual reside" />
+                        <input type="text" name="barrio" class="form-textbox validate[required]" required placeholder="Escriba el barrio en el que habita" />
                     </div>
                 </li>
 
                 <li class="form-line" data-type="control_text">
                     <div class="form-input-wide">
                         <div class="form-html">
-                            <p><strong>Escala:</strong> califique cada aspecto siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo.</p>
+                            <p><strong>Escala:</strong> califique según su percepción cada aspecto, siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo.</p>
                             <p>1 Malo · 2 Regular · 3 Bueno · 4 Excelente</p>
                             <p>Ubique el recuadro de la modalidad señalada y califique cada aspecto según corresponda.</p>
-                            <p><strong>Preguntas 1 a 16:</strong> responda solo los bloques de las modalidades que marcó arriba (los demás quedan atenuados hasta que marque la modalidad). <strong>17 y 18</strong> aplican a todos. <strong>19 y 20</strong> son de texto abierto (opcionales).</p>
+                            <p><strong>Preguntas 1 a 13:</strong> responda solo los bloques de las modalidades que marcó arriba (los demás quedan atenuados hasta que marque la modalidad). <strong>14 y 15</strong> aplican a todos. <strong>16 y 17</strong> son de texto abierto (opcionales).</p>
                         </div>
                     </div>
                 </li>
 
                 <li class="form-line jf-required" data-type="control_checkbox">
-                    <label class="form-label form-label-top">Marque la(s) modalidad(es) que recibe (puede elegir una o varias)<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">Marque la(s) modalidad(es) que evaluará (puede elegir una o varias)<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="checkbox" name="mod_almuerzo_sitio" value="si" id="mod-almuerzo-sitio" />
-                                <label for="mod-almuerzo-sitio">Almuerzo ración en sitio</label>
+                                <input type="checkbox" name="mod_desayuno_sitio" value="si" id="mod-desayuno-sitio" />
+                                <label for="mod-desayuno-sitio">Desayuno – ración preparada en sitio (RPS)</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="checkbox" name="mod_racion_industrializada" value="si" id="mod-racion-industrializada" />
-                                <label for="mod-racion-industrializada">Ración industrializada</label>
+                                <input type="checkbox" name="mod_almuerzo_sitio" value="si" id="mod-almuerzo-sitio" />
+                                <label for="mod-almuerzo-sitio">Almuerzo – ración preparada en sitio (RPS)</label>
                             </span>
                             <span class="form-radio-item">
                                 <input type="checkbox" name="mod_paquete_alimentos" value="si" id="mod-paquete-alimentos" />
@@ -88,11 +98,11 @@
                     </div>
                 </li>
 
-                <!-- Almuerzo ración en sitio (9 preguntas — Excel Hoja1) -->
+                <!-- Ración preparada en sitio – RPS: desayuno y/o almuerzo (9 preguntas — Excel Hoja1). Se conservan los campos alm_* -->
                 <li class="form-line comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_head">
                     <div class="form-input-wide">
                         <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 1 a 9</p>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Como califica el servicio en la modalidad de <strong>Almuerzo ración en sitio</strong>:</p>
+                        <p class="form-subHeader" style="margin-bottom:0.5rem">Cómo califica el servicio en la modalidad de <strong>ración preparada en sitio (RPS)</strong> – desayuno y/o almuerzo:</p>
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
@@ -129,7 +139,7 @@
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">4. La temperatura en la que se entrega el almuerzo.<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">4. La temperatura a la que se entrega el complemento.<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="1 Malo" /><label>1 Malo</label></span>
@@ -195,56 +205,15 @@
                     </div>
                 </li>
 
-                <!-- Ración industrializada (3 preguntas) -->
-                <li class="form-line comedores-mod-block" data-comedores-mod="racion-industrializada" data-type="control_head">
-                    <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 10 a 12</p>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Como califica el servicio la modalidad de <strong>ración industrializada</strong>:</p>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="racion-industrializada" data-type="control_radio">
-                    <label class="form-label form-label-top">10. La calidad de los alimentos entregados.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="racion-industrializada" data-type="control_radio">
-                    <label class="form-label form-label-top">11. La variedad de los alimentos ofrecidos.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="racion-industrializada" data-type="control_radio">
-                    <label class="form-label form-label-top">12. La cantidad de los alimentos ofrecidos teniendo en cuenta que es para un refrigerio.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-
                 <!-- Paquete de alimentos (4 preguntas — Excel) -->
                 <li class="form-line comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_head">
                     <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 13 a 16</p>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Como califica el servicio de la modalidad de <strong>Paquete de Alimentos</strong>:</p>
+                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 10 a 13</p>
+                        <p class="form-subHeader" style="margin-bottom:0.5rem">Cómo califica el servicio de la modalidad de <strong>Paquete de Alimentos</strong>:</p>
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">13. La calidad de los alimentos entregados.<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">10. La calidad de los alimentos entregados.<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="1 Malo" /><label>1 Malo</label></span>
@@ -255,7 +224,7 @@
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">14. La variedad de los alimentos ofrecidos.<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">11. La variedad de los alimentos ofrecidos.<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="1 Malo" /><label>1 Malo</label></span>
@@ -266,7 +235,7 @@
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">15. La oportunidad en la entrega a los usuarios.<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">12. La oportunidad en la entrega a los usuarios.<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="1 Malo" /><label>1 Malo</label></span>
@@ -277,7 +246,7 @@
                     </div>
                 </li>
                 <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">16. El trato de las personas que entregan los paquetes de alimentos hacia los usuarios del programa.<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">13. El trato de las personas que entregan los paquetes de alimentos hacia los usuarios del programa.<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="1 Malo" /><label>1 Malo</label></span>
@@ -292,12 +261,12 @@
                 <li class="form-line" data-type="control_head">
                     <div class="form-input-wide">
                         <h2 class="form-header" style="font-size:1.1rem;margin:0.5rem 0">Otros aspectos</h2>
-                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 17 y 18</p>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Califique otros aspectos al interior del programa:</p>
+                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 14 y 15</p>
+                        <p class="form-subHeader" style="margin-bottom:0.5rem">Califique según su percepción otros aspectos al interior del programa:</p>
                     </div>
                 </li>
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">17. El espacio y condiciones del comedor.<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">14. El espacio y condiciones del comedor.<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="1 Malo" required /><label>1 Malo</label></span>
@@ -308,7 +277,7 @@
                     </div>
                 </li>
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">18. En términos generales ¿Cuál es su nivel de satisfacción con el servicio prestado en el Programa?<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">15. En términos generales ¿Cuál es su nivel de satisfacción con el servicio prestado en el Programa?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="1 Malo" required /><label>1 Malo</label></span>
@@ -322,19 +291,19 @@
                 <li class="form-line" data-type="control_head">
                     <div class="form-input-wide">
                         <h2 class="form-header" style="font-size:1.1rem;margin:0.75rem 0 0.35rem">Observaciones/sugerencias</h2>
-                        <p class="form-subHeader" style="margin-bottom:0.35rem;font-weight:700">Preguntas 19 y 20 (texto abierto, opcionales)</p>
+                        <p class="form-subHeader" style="margin-bottom:0.35rem;font-weight:700">Preguntas 16 y 17 (texto abierto, opcionales)</p>
                         <p style="font-size:0.95rem">A continuación mencione los aspectos positivos del PAE que quisiera resaltar y las recomendaciones que considera importantes para mejorar el programa.</p>
                     </div>
                 </li>
                 <li class="form-line" data-type="control_widget">
                     <div class="form-input-wide comedores-feedback-dos-columnas">
                         <div class="comedores-feedback-col">
-                            <label class="form-label form-label-top" for="comedores-positivo">19. Aspectos positivos del PAE que quisiera resaltar.</label>
-                            <textarea id="comedores-positivo" name="positivo" class="form-textarea comedores-feedback-textarea" rows="6" placeholder="Escriba aquí su respuesta a la pregunta 19"></textarea>
+                            <label class="form-label form-label-top" for="comedores-positivo">16. Aspectos positivos del PAE que quisiera resaltar.</label>
+                            <textarea id="comedores-positivo" name="positivo" class="form-textarea comedores-feedback-textarea" rows="6" placeholder="Escriba aquí su respuesta a la pregunta 16"></textarea>
                         </div>
                         <div class="comedores-feedback-col">
-                            <label class="form-label form-label-top" for="comedores-mejorar">20. Recomendaciones que considera importantes para mejorar el programa.</label>
-                            <textarea id="comedores-mejorar" name="mejorar" class="form-textarea comedores-feedback-textarea" rows="6" placeholder="Escriba aquí su respuesta a la pregunta 20"></textarea>
+                            <label class="form-label form-label-top" for="comedores-mejorar">17. Recomendaciones que considera importantes para mejorar el programa.</label>
+                            <textarea id="comedores-mejorar" name="mejorar" class="form-textarea comedores-feedback-textarea" rows="6" placeholder="Escriba aquí su respuesta a la pregunta 17"></textarea>
                         </div>
                     </div>
                 </li>

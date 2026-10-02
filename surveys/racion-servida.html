@@ -12,8 +12,29 @@
                 </li>
                 <li class="form-input-wide" data-type="control_head">
                     <div class="form-header-group hasImage header-large">
-                        <h1 class="form-header">Formulario de satisfacción Ración Servida.</h1>
+                        <h1 class="form-header">Formulario de satisfacción Ración Servida</h1>
                         <div class="form-subHeader">Por favor, califica la comida y el servicio usando la escala.</div>
+                    </div>
+                </li>
+
+                <!-- Modalidad primero y de selección única (antes era casilla múltiple "modalidad[]") -->
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">¿Qué modalidad vas a evaluar? (elige solo una)<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <div class="form-single-column">
+                            <span class="form-radio-item">
+                                <input type="radio" name="modalidad" value="Desayuno" required />
+                                <label>Desayuno</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="modalidad" value="Almuerzo" required />
+                                <label>Almuerzo</label>
+                            </span>
+                            <span class="form-radio-item">
+                                <input type="radio" name="modalidad" value="Refrigerio" required />
+                                <label>Refrigerio</label>
+                            </span>
+                        </div>
                     </div>
                 </li>
                 
@@ -23,7 +44,6 @@
                         <input type="date" name="fecha_nacimiento" class="form-textbox validate[required]" required />
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
                     <label class="form-label form-label-top">Sexo<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
@@ -39,7 +59,6 @@
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_widget">
                     <label class="form-label form-label-top">¿En qué grado estás?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
@@ -59,7 +78,6 @@
                         </select>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_widget">
                     <label class="form-label form-label-top">¿Cuál es tu institución educativa?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
@@ -71,13 +89,14 @@
                             <option value="IE Comercial de Envigado (Sede Pio XII)">IE Comercial de Envigado (Sede Pio XII)</option>
                             <option value="IE Comercial de Envigado(Sede San Rafael)">IE Comercial de Envigado(Sede San Rafael)</option>
                             <option value="IE Darío de Bedout">IE Darío de Bedout</option>
-                            <option value="IE El Salado (Sede Primaria)">IE El Salado (Sede Primaria)</option>
+                            <option value="IE El Salado (Sede Primaria La Morena)">IE El Salado (Sede Primaria La Morena)</option>
                             <option value="IE El Salado (Sede Secundaria)">IE El Salado (Sede Secundaria)</option>
                             <option value="IE José Manuel Restrepo Vélez (JOMAR)">IE José Manuel Restrepo Vélez (JOMAR)</option>
+                            <option value="IE José Manuel Restrepo Vélez (Sede Fernando González)">IE José Manuel Restrepo Vélez (Sede Fernando González)</option>
                             <option value="IE José Miguel de la Calle">IE José Miguel de la Calle</option>
                             <option value="IE La Paz">IE La Paz</option>
-                            <option value="IE La Paz (Sede El Triangón)">IE La Paz (Sede El Triangón)</option>
-                            <option value="IE La Paz (Sede John F. Kennedyz)">IE La Paz (Sede John F. Kennedyz)</option>
+                            <option value="IE La Paz (Sede El Trianón)">IE La Paz (Sede El Trianón)</option>
+                            <option value="IE La Paz (Sede John F. Kennedy)">IE La Paz (Sede John F. Kennedy)</option>
                             <option value="IE Leticia Arango de Avendaño">IE Leticia Arango de Avendaño</option>
                             <option value="IE Las Palmas">IE Las Palmas</option>
                             <option value="IE Martín Eduardo Rios Llano (Pantanillo)">IE Martín Eduardo Rios Llano (Pantanillo)</option>
@@ -87,305 +106,269 @@
                             <option value="IE Normal Superior de Envigado(Sede Secundaria)">IE Normal Superior de Envigado(Sede Secundaria)</option>
                             <option value="IE Normal Superior de Envigado(Sede Primaria)">IE Normal Superior de Envigado(Sede Primaria)</option>
                             <option value="IE Marie Poussepin">IE Marie Poussepin</option>
-                            <option value="IE San Vicente de Paúl(Sede La Morena)">IE San Vicente de Paúl(Sede La Morena)</option>
                         </select>
                     </div>
                 </li>
-                
                 <li class="form-line" data-type="control_text">
                     <div class="form-input-wide">
                         <div class="form-html">
-                            <p>Cómo califica el servicio en ración preparada en sitio (desayuno, refrigerio o almuerzo) según los siguientes aspectos:</p>
-                            <p>😁 Siempre</p>
-                            <p>😊 Casi siempre</p>
-                            <p>😐 Algunas veces</p>
-                            <p>😔 Nunca</p>
+                            <p><strong>Califique el servicio ofrecido, señalando si es:</strong></p>
+                            <p><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</p>
+                            <p><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</p>
+                            <p><span class="emoji-grande" aria-hidden="true">😐</span> Regular</p>
+                            <p><span class="emoji-grande" aria-hidden="true">😔</span> Malo</p>
                         </div>
                     </div>
                 </li>
-                
-                <li class="form-line" data-type="control_checkbox">
-                    <label class="form-label form-label-top">¿Cuál es la modalidad que recibe?</label>
-                    <div class="form-input-wide">
-                        <div class="form-single-column">
-                            <span class="form-checkbox-item">
-                                <input type="checkbox" name="modalidad[]" value="Desayuno" />
-                                <label>Desayuno</label>
-                            </span>
-                            <span class="form-checkbox-item">
-                                <input type="checkbox" name="modalidad[]" value="Almuerzo" />
-                                <label>Almuerzo</label>
-                            </span>
-                            <span class="form-checkbox-item">
-                                <input type="checkbox" name="modalidad[]" value="Refrigerio" />
-                                <label>Refrigerio</label>
-                            </span>
-                        </div>
-                    </div>
-                </li>
-                
-                <!-- Preguntas de evaluación -->
+                <!-- Preguntas de evaluación (escala de calificativos) -->
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Las manipuladoras de alimentos son amables y me tratan bien? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿Las manipuladoras de alimentos son amables y me tratan bien?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="manipuladoras_amables" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="manipuladoras_amables" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="manipuladoras_amables" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="manipuladoras_amables" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="manipuladoras_amables" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="manipuladoras_amables" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="manipuladoras_amables" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="manipuladoras_amables" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Los alimentos que recibo son variados todos los días? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿Los alimentos que recibo son variados todos los días?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_variados" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="alimentos_variados" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_variados" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="alimentos_variados" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_variados" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="alimentos_variados" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_variados" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="alimentos_variados" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Los alimentos se ven ricos y bien presentados en el plato que me entregan? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿Los alimentos se ven ricos y bien presentados en el plato que me entregan?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_presentacion" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="alimentos_presentacion" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_presentacion" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="alimentos_presentacion" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_presentacion" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="alimentos_presentacion" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="alimentos_presentacion" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="alimentos_presentacion" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">Cuando llego al comedor escolar para consumir los alimentos, ¿me los entregan rápido? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">Cuando llego al comedor escolar para consumir los alimentos, ¿me los entregan rápido?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="entrega_rapida" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="entrega_rapida" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="entrega_rapida" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="entrega_rapida" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="entrega_rapida" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="entrega_rapida" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="entrega_rapida" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="entrega_rapida" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿El lugar donde consumo los alimentos está limpio y ordenado? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿El lugar donde consumo los alimentos está limpio y ordenado?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="lugar_limpio" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="lugar_limpio" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="lugar_limpio" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="lugar_limpio" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="lugar_limpio" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="lugar_limpio" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="lugar_limpio" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="lugar_limpio" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Los platos, pocillos, vasos y cubiertos que utilizo me los entregan limpios y en buen estado? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿Los platos, pocillos, vasos y cubiertos que utilizo me los entregan limpios y en buen estado?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="utensilios_limpios" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="utensilios_limpios" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="utensilios_limpios" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="utensilios_limpios" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="utensilios_limpios" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="utensilios_limpios" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="utensilios_limpios" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="utensilios_limpios" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Cuando recibo los alimentos, aún están a buena temperatura (fríos o calientes) según corresponda? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿Cuando recibo los alimentos, aún están a buena temperatura (fríos o calientes) según corresponda?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="temperatura_adecuada" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="temperatura_adecuada" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="temperatura_adecuada" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="temperatura_adecuada" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="temperatura_adecuada" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="temperatura_adecuada" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="temperatura_adecuada" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="temperatura_adecuada" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Algún profesor está presente en el comedor mientras consumo los alimentos? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿Algún profesor está presente en el comedor mientras consumo los alimentos?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="profesor_presente" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="profesor_presente" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="profesor_presente" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="profesor_presente" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="profesor_presente" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="profesor_presente" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="profesor_presente" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="profesor_presente" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Me gusta recibir la alimentación que me dan en el Programa? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿Me gusta recibir la alimentación que me dan en el Programa?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="gusta_alimentacion" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="gusta_alimentacion" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="gusta_alimentacion" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="gusta_alimentacion" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="gusta_alimentacion" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="gusta_alimentacion" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="gusta_alimentacion" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="gusta_alimentacion" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿La cantidad de alimentos servidos es suficiente para el grado en el que estoy? Ración Servida<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">¿La cantidad de alimentos servidos es suficiente para el grado en el que estoy?<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <div class="form-single-column">
                             <span class="form-radio-item">
-                                <input type="radio" name="cantidad_suficiente" value="😁 Siempre" required />
-                                <label>😁 Siempre</label>
+                                <input type="radio" name="cantidad_suficiente" value="😁 Excelente" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😁</span> Excelente</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="cantidad_suficiente" value="😊 Casi siempre" required />
-                                <label>😊 Casi siempre</label>
+                                <input type="radio" name="cantidad_suficiente" value="😊 Bueno" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😊</span> Bueno</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="cantidad_suficiente" value="😐 Algunas veces" required />
-                                <label>😐 Algunas veces</label>
+                                <input type="radio" name="cantidad_suficiente" value="😐 Regular" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😐</span> Regular</label>
                             </span>
                             <span class="form-radio-item">
-                                <input type="radio" name="cantidad_suficiente" value="😔 Nunca" required />
-                                <label>😔 Nunca</label>
+                                <input type="radio" name="cantidad_suficiente" value="😔 Malo" required />
+                                <label><span class="emoji-grande" aria-hidden="true">😔</span> Malo</label>
                             </span>
                         </div>
                     </div>
                 </li>
-                
                 <li class="form-line" data-type="control_textbox">
-                    <label class="form-label form-label-top">¿Qué alimentos son los que más te gustan de los que te dan en el comedor escolar?</label>
+                    <label class="form-label form-label-top">¿Qué alimentos <span class="js-modalidad-texto">del desayuno, almuerzo o refrigerio</span> son los que más te gustan de los que te dan en el comedor escolar?</label>
                     <div class="form-input-wide">
                         <input type="text" name="alimentos_gustan" class="form-textbox" />
                     </div>
                 </li>
-                
                 <li class="form-line" data-type="control_textbox">
-                    <label class="form-label form-label-top">¿Qué alimentos son los que menos te gustan de los que dan en el comedor escolar?</label>
+                    <label class="form-label form-label-top">¿Qué alimentos <span class="js-modalidad-texto">del desayuno, almuerzo o refrigerio</span> son los que menos te gustan de los que te dan en el comedor escolar?</label>
                     <div class="form-input-wide">
                         <input type="text" name="alimentos_no_gustan" class="form-textbox" />
                     </div>
                 </li>
-                
                 <li class="form-line" data-type="control_textarea">
                     <label class="form-label form-label-top">Si quiere contar algo más que no se haya preguntado sobre el Programa o quiere explicar algo sobre la calificación, lo puede hacer a continuación:</label>
                     <div class="form-input-wide">
                         <textarea name="observaciones" class="form-textarea" rows="4"></textarea>
                     </div>
                 </li>
-                
                 <li class="form-line" data-type="control_button">
                     <div class="form-input-wide">
                         <button type="submit" class="form-submit-button">Enviar</button>

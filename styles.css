@@ -1487,3 +1487,19 @@ a[href*="jotform.io"] {
         justify-content: center;
     }
 }
+/* Ración Servida: emojis de la escala más grandes (oct. 2026) */
+.survey-form .emoji-grande {
+    font-size: 2.25rem;
+    line-height: 1;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 6px;
+}
+.survey-form .form-html .emoji-grande {
+    font-size: 2rem;
+}
+@media (max-width: 640px) {
+    .survey-form .emoji-grande {
+        font-size: 1.9rem;
+    }
+}
