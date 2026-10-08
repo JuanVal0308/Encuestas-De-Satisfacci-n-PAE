@@ -1,0 +1,163 @@
+<!-- EVALUACIÓN DEL SERVICIO – PAQUETES DE ALIMENTOS (entrega en bodega o sitio de distribución) -->
+<div class="survey-form">
+    <form id="paquetes-alimentos-form" data-branching="1">
+        <div class="form-all">
+            <ul class="form-section page-section">
+                <li class="form-line" data-type="control_image">
+                    <div class="form-input-wide">
+                        <div style="text-align:center">
+                            <img alt="Logo" style="border:0" src="https://www.jotform.com/uploads/juanpamartinezro/form_files/alcaldia_envigado_salud.68925c2d63e0c2.16743275.png" height="100px" width="178px" />
+                        </div>
+                    </div>
+                </li>
+                <li class="form-input-wide" data-type="control_head">
+                    <div class="form-header-group hasImage header-large">
+                        <h1 class="form-header">Evaluación del servicio – Paquetes de alimentos</h1>
+                        <div class="form-subHeader">Por favor, califique el servicio usando la escala.</div>
+                    </div>
+                </li>
+
+                <!-- Datos del usuario -->
+                <li class="form-line jf-required" data-type="control_textbox">
+                    <label class="form-label form-label-top">Nombre completo<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="text" name="nombre" class="form-textbox validate[required]" required />
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_textbox">
+                    <label class="form-label form-label-top">Edad<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="number" name="edad" class="form-textbox validate[required]" placeholder="Años" min="1" max="120" step="1" inputmode="numeric" required />
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">Género<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Hombre" required /><label>Hombre</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Mujer" required /><label>Mujer</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Otro" required /><label>Otro</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_textbox">
+                    <label class="form-label form-label-top">Barrio en el que habita<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="text" name="barrio" class="form-textbox validate[required]" placeholder="Escriba el barrio en el que habita" required />
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_datetime">
+                    <label class="form-label form-label-top">Fecha<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="date" name="fecha" class="form-textbox validate[required]" required />
+                    </div>
+                </li>
+
+                <!-- Lugar de entrega: lo define el operador (bodega o sitio de distribución) -->
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">¿Dónde recibió el paquete de alimentos?<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="lugar_entrega" value="Bodega" required /><label>Bodega</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="lugar_entrega" value="Sitio de distribución" required /><label>Sitio de distribución</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line" data-type="control_textbox">
+                    <label class="form-label form-label-top">Nombre o dirección de la bodega o del sitio de distribución (opcional)</label>
+                    <div class="form-input-wide">
+                        <input type="text" name="lugar_entrega_detalle" class="form-textbox" placeholder="Ej.: Bodega principal, sede comunal del barrio…" />
+                    </div>
+                </li>
+                <li class="form-line" data-type="control_text">
+                    <div class="form-input-wide">
+                        <div class="form-html">
+                            <p><strong>Califique según su percepción cada aspecto</strong>, siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo:</p>
+                            <p>1 Malo · 2 Regular · 3 Bueno · 4 Excelente</p>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Solo preguntas que aplican a paquetes (sin vajilla, cubiertos ni comedor). Se conservan los campos pa_* -->
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La calidad de los alimentos entregados.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La variedad de los alimentos ofrecidos.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La oportunidad en la entrega a los usuarios.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>El trato de las personas que entregan los paquetes de alimentos hacia los usuarios del programa.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>En términos generales, ¿cuál es su nivel de satisfacción con el servicio prestado en el Programa?<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line" data-type="control_head">
+                    <div class="form-input-wide">
+                        <h2 class="form-header" style="font-size:1.1rem;margin:0.75rem 0 0.35rem">Observaciones/sugerencias (opcionales)</h2>
+                        <p style="font-size:0.95rem">A continuación mencione los aspectos positivos que quisiera resaltar y las recomendaciones que considera importantes para mejorar el programa.</p>
+                    </div>
+                </li>
+                <li class="form-line" data-type="control_widget">
+                    <div class="form-input-wide comedores-feedback-dos-columnas">
+                        <div class="comedores-feedback-col">
+                            <label class="form-label form-label-top"><span class="js-qnum"></span>Aspectos positivos que quisiera resaltar.</label>
+                            <textarea name="positivo" class="form-textarea comedores-feedback-textarea" rows="5"></textarea>
+                        </div>
+                        <div class="comedores-feedback-col">
+                            <label class="form-label form-label-top"><span class="js-qnum"></span>Recomendaciones que considera importantes para mejorar el programa.</label>
+                            <textarea name="mejorar" class="form-textarea comedores-feedback-textarea" rows="5"></textarea>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line" data-type="control_button">
+                    <div class="form-input-wide">
+                        <button type="submit" class="form-submit-button">Enviar Encuesta</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

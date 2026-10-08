@@ -6,10 +6,13 @@ Sistema web completo para la gestión de encuestas de satisfacción del Programa
 ## Características
 
 ### 🎯 Funcionalidades Principales
-- **3 Tipos de Encuestas**:
+- **Encuestas disponibles**:
   - 🍽️ Ración Servida (para estudiantes)
-  - 🍪 Ración Industrializada (para estudiantes)
   - 👨‍💼 Coordinadores PAE (para personal educativo)
+  - 🏘️ Comedores Comunitarios: primero se elige el complemento (almuerzo – ración servida, o ración industrializada – RI) y solo se muestran sus preguntas
+  - 🧓 Centros Vida: desayuno, refrigerio (RPS) o almuerzo, con preguntas según la modalidad
+  - 📦 Paquetes de Alimentos: entrega en bodega o sitio de distribución
+  - 🍪 Ración Industrializada: ya no se diligencia por separado (ahora está dentro de Comedores Comunitarios); sus respuestas anteriores siguen en Resultados y Exportación como "histórico"
 
 - **Gestión de Datos**:
   - Almacenamiento local en el navegador
@@ -31,8 +34,10 @@ Sistema web completo para la gestión de encuestas de satisfacción del Programa
 ├── script.js               # Lógica de la aplicación
 ├── surveys/                # Formularios de encuestas
 │   ├── racion-servida.html
-│   ├── racion-industrializada.html
-│   └── coordinadores.html
+│   ├── coordinadores.html
+│   ├── comedores-comunitarios.html
+│   ├── centros-vida.html
+│   └── paquetes-alimentos.html
 └── README.md               # Este archivo
 ```
 

@@ -69,11 +69,6 @@
                         <p>Evaluación de satisfacción del consumidor - Ración servida en comedor</p>
                         <button class="btn-primary">Realizar Encuesta</button>
                     </div>
-                    <div class="survey-card" data-survey="racion-industrializada">
-                        <h3>🍪 Ración Industrializada</h3>
-                        <p>Evaluación de satisfacción de la entrega de ración industrializada (RI)</p>
-                        <button class="btn-primary">Realizar Encuesta</button>
-                    </div>
                     <div class="survey-card" data-survey="coordinadores">
                         <h3>👨‍💼 Coordinadores PAE</h3>
                         <p>Evaluación del servicio PAE para coordinadores en sedes e instituciones educativas</p>
@@ -81,7 +76,17 @@
                     </div>
                     <div class="survey-card" data-survey="comedores-comunitarios">
                         <h3>🏘️ Comedores Comunitarios</h3>
-                        <p>Evaluación del servicio para usuarios de comedores comunitarios</p>
+                        <p>Evaluación del almuerzo (ración servida) o de la ración industrializada (RI) en comedores comunitarios</p>
+                        <button class="btn-primary">Realizar Encuesta</button>
+                    </div>
+                    <div class="survey-card" data-survey="centros-vida">
+                        <h3>🧓 Centros Vida</h3>
+                        <p>Evaluación del desayuno, refrigerio (RPS) o almuerzo en los Centros Vida</p>
+                        <button class="btn-primary">Realizar Encuesta</button>
+                    </div>
+                    <div class="survey-card" data-survey="paquetes-alimentos">
+                        <h3>📦 Paquetes de Alimentos</h3>
+                        <p>Evaluación de la entrega de paquetes de alimentos en bodega o sitio de distribución</p>
                         <button class="btn-primary">Realizar Encuesta</button>
                     </div>
                 </div>
@@ -157,6 +162,14 @@
                                         </div>
                                         <div class="filter-row">
                                             <div class="filter-item">
+                                                <label for="modality-filter">Modalidad:</label>
+                                                <select id="modality-filter" class="filter-select">
+                                                    <option value="">Todas las modalidades</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="filter-row">
+                                            <div class="filter-item">
                                                 <label for="grade-filter">Grado:</label>
                                                 <select id="grade-filter" class="filter-select">
                                                     <option value="">Todos los grados</option>
@@ -195,10 +208,12 @@
                                                     <option value="9-12">9-12 años</option>
                                                     <option value="13-16">13-16 años</option>
                                                     <option value="17-20">17-20 años</option>
+                                                    <option value="21-59">21-59 años</option>
+                                                    <option value="60+">60 años o más</option>
                                                 </select>
                                             </div>
                                             <div class="filter-item">
-                                                <label for="sex-filter">Sexo:</label>
+                                                <label for="sex-filter">Sexo / género:</label>
                                                 <select id="sex-filter" class="filter-select">
                                                     <option value="">Todos</option>
                                                     <option value="Hombre">Hombre</option>
@@ -252,9 +267,11 @@
                     <select id="survey-select" class="form-control">
                         <option value="">Seleccionar encuesta</option>
                         <option value="racion-servida">Ración Servida</option>
-                        <option value="racion-industrializada">Ración Industrializada</option>
                         <option value="coordinadores">Coordinadores PAE</option>
                         <option value="comedores-comunitarios">Comedores Comunitarios</option>
+                        <option value="centros-vida">Centros Vida</option>
+                        <option value="paquetes-alimentos">Paquetes de Alimentos</option>
+                        <option value="racion-industrializada">Ración Industrializada (histórico)</option>
                     </select>
                     <button id="load-results" class="btn-primary">Cargar Resultados</button>
                 </div>
@@ -288,10 +305,6 @@
                                     <span class="btn-icon">🍽️</span>
                                     Ración Servida
                                 </button>
-                                <button id="export-racion-industrializada" class="btn-export">
-                                    <span class="btn-icon">🍪</span>
-                                    Ración Industrializada
-                                </button>
                                 <button id="export-coordinadores" class="btn-export">
                                     <span class="btn-icon">👨‍💼</span>
                                     Coordinadores PAE
@@ -299,6 +312,18 @@
                                 <button id="export-comedores-comunitarios" class="btn-export">
                                     <span class="btn-icon">🏘️</span>
                                     Comedores Comunitarios
+                                </button>
+                                <button id="export-centros-vida" class="btn-export">
+                                    <span class="btn-icon">🧓</span>
+                                    Centros Vida
+                                </button>
+                                <button id="export-paquetes-alimentos" class="btn-export">
+                                    <span class="btn-icon">📦</span>
+                                    Paquetes de Alimentos
+                                </button>
+                                <button id="export-racion-industrializada" class="btn-export">
+                                    <span class="btn-icon">🍪</span>
+                                    Ración Industrializada (histórico)
                                 </button>
                             </div>
                         </div>
@@ -357,6 +382,6 @@
         <p>Cargando...</p>
     </div>
 
-    <script src="script.js?v=2.1"></script>
+    <script src="script.js?v=2.2"></script>
 </body>
 </html>

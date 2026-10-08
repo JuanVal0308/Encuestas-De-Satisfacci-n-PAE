@@ -1,6 +1,6 @@
-<!-- EVALUACIÓN DEL SERVICIO PARA USUARIOS DEL PROGRAMA DE COMEDORES COMUNITARIOS (GS-F-086 v.04) — mismo formato que las demás encuestas -->
+<!-- EVALUACIÓN DEL SERVICIO PARA USUARIOS DEL PROGRAMA DE COMEDORES COMUNITARIOS (GS-F-086 v.04): almuerzo (ración servida) o ración industrializada (RI) -->
 <div class="survey-form">
-    <form id="comedores-comunitarios-form">
+    <form id="comedores-comunitarios-form" data-branching="1">
         <div class="form-all">
             <ul class="form-section page-section">
                 <li class="form-line" data-type="control_image">
@@ -17,25 +17,26 @@
                     </div>
                 </li>
 
-                <li class="form-line jf-required" data-type="control_text">
+                <!-- Datos del usuario -->
+                <li class="form-line jf-required" data-type="control_textbox">
                     <label class="form-label form-label-top">Nombre completo<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <input type="text" name="nombre" class="form-textbox validate[required]" required />
                     </div>
                 </li>
-                <li class="form-line jf-required" data-type="control_text">
+                <li class="form-line jf-required" data-type="control_textbox">
                     <label class="form-label form-label-top">Edad<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
-                        <input type="number" name="edad" class="form-textbox validate[required]" required />
+                        <input type="number" name="edad" class="form-textbox validate[required]" placeholder="Años" min="1" max="120" step="1" inputmode="numeric" required />
                     </div>
                 </li>
                 <li class="form-line jf-required" data-type="control_radio">
                     <label class="form-label form-label-top">Género<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
+                    <div class="form-input-wide">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Hombre" required /><label>Hombre</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Mujer" /><label>Mujer</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Otro" /><label>Otro</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Mujer" required /><label>Mujer</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="genero" value="Otro" required /><label>Otro</label></span>
                         </div>
                     </div>
                 </li>
@@ -51,263 +52,269 @@
                         <select name="comedor" class="form-dropdown validate[required]" required>
                             <option value="">Seleccione un comedor</option>
                             <option value="Comedor Santa Gertrudis">Comedor Santa Gertrudis</option>
-                            <option value="Comedor el salado">Comedor el salado</option>
-                            <option value="Comedor Uribe angel">Comedor Uribe angel</option>
-                            <option value="Comedor la mina">Comedor la mina</option>
-                            <option value="San Rafael">San Rafael</option>
-                            <option value="Centro vida alto de los sueños">Centro vida alto de los sueños</option>
-                            <option value="Centro vida el salado">Centro vida el salado</option>
+                            <option value="Comedor El Salado">Comedor El Salado</option>
+                            <option value="Comedor Uribe Ángel">Comedor Uribe Ángel</option>
+                            <option value="Comedor La Mina">Comedor La Mina</option>
+                            <option value="Comedor San Rafael">Comedor San Rafael</option>
                         </select>
                     </div>
                 </li>
-                <li class="form-line jf-required" data-type="control_text">
+                <li class="form-line jf-required" data-type="control_textbox">
                     <label class="form-label form-label-top">Barrio en el que habita<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
-                        <input type="text" name="barrio" class="form-textbox validate[required]" required placeholder="Escriba el barrio en el que habita" />
+                        <input type="text" name="barrio" class="form-textbox validate[required]" placeholder="Escriba el barrio en el que habita" required />
                     </div>
                 </li>
 
-                <li class="form-line" data-type="control_text">
+                <!-- Complemento a evaluar: define qué preguntas se muestran (data-branch) -->
+                <li class="form-line jf-required" data-type="control_radio">
+                    <label class="form-label form-label-top">¿Qué complemento va a evaluar?<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="modalidad" value="Almuerzo (ración servida)" data-branch-key="almuerzo" required /><label>Almuerzo (ración servida)</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="modalidad" value="Ración industrializada (RI)" data-branch-key="racion-industrializada" required /><label>Ración industrializada (RI)</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line" data-branch="none" data-type="control_text">
                     <div class="form-input-wide">
                         <div class="form-html">
-                            <p><strong>Escala:</strong> califique según su percepción cada aspecto, siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo.</p>
+                            <p class="branch-hint">Seleccione el complemento que va a evaluar para ver las preguntas.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line" data-branch="*" data-type="control_text">
+                    <div class="form-input-wide">
+                        <div class="form-html">
+                            <p><strong>Califique según su percepción cada aspecto</strong>, siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo:</p>
                             <p>1 Malo · 2 Regular · 3 Bueno · 4 Excelente</p>
-                            <p>Ubique el recuadro de la modalidad señalada y califique cada aspecto según corresponda.</p>
-                            <p><strong>Preguntas 1 a 13:</strong> responda solo los bloques de las modalidades que marcó arriba (los demás quedan atenuados hasta que marque la modalidad). <strong>14 y 15</strong> aplican a todos. <strong>16 y 17</strong> son de texto abierto (opcionales).</p>
                         </div>
                     </div>
                 </li>
 
-                <li class="form-line jf-required" data-type="control_checkbox">
-                    <label class="form-label form-label-top">Marque la(s) modalidad(es) que evaluará (puede elegir una o varias)<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item">
-                                <input type="checkbox" name="mod_desayuno_sitio" value="si" id="mod-desayuno-sitio" />
-                                <label for="mod-desayuno-sitio">Desayuno – ración preparada en sitio (RPS)</label>
-                            </span>
-                            <span class="form-radio-item">
-                                <input type="checkbox" name="mod_almuerzo_sitio" value="si" id="mod-almuerzo-sitio" />
-                                <label for="mod-almuerzo-sitio">Almuerzo – ración preparada en sitio (RPS)</label>
-                            </span>
-                            <span class="form-radio-item">
-                                <input type="checkbox" name="mod_paquete_alimentos" value="si" id="mod-paquete-alimentos" />
-                                <label for="mod-paquete-alimentos">Paquete de alimentos</label>
-                            </span>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Ración preparada en sitio – RPS: desayuno y/o almuerzo (9 preguntas — Excel Hoja1). Se conservan los campos alm_* -->
-                <li class="form-line comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_head">
+                <!-- Almuerzo – ración servida (GS-F-086, preguntas de almuerzo; se conservan los campos alm_*) -->
+                <li class="form-line" data-branch="almuerzo" data-type="control_head">
                     <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 1 a 9</p>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Cómo califica el servicio en la modalidad de <strong>ración preparada en sitio (RPS)</strong> – desayuno y/o almuerzo:</p>
+                        <h2 class="form-header" style="font-size:1.1rem;margin:0.5rem 0">Almuerzo (ración servida)</h2>
                     </div>
                 </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">1. La calidad de los alimentos entregados.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">2. La variedad de los menús ofrecidos.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">3. La oportunidad en la entrega a los usuarios.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">4. La temperatura a la que se entrega el complemento.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">5. La presentación de los alimentos servidos.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">6. El aseo y organización del comedor.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">7. La limpieza y estado de platos, pocillos, vasos y cubiertos.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">8. El trato de las manipuladoras de alimentos hacia los usuarios.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="almuerzo-sitio" data-type="control_radio">
-                    <label class="form-label form-label-top">9. La presentación personal de las manipuladoras de alimentos.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
-                        <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="4 Excelente" /><label>4 Excelente</label></span>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Paquete de alimentos (4 preguntas — Excel) -->
-                <li class="form-line comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_head">
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La calidad de los alimentos entregados.<span class="form-required">*</span></label>
                     <div class="form-input-wide">
-                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 10 a 13</p>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Cómo califica el servicio de la modalidad de <strong>Paquete de Alimentos</strong>:</p>
-                    </div>
-                </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">10. La calidad de los alimentos entregados.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
                         <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_calidad" value="4 Excelente" /><label>4 Excelente</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_calidad" value="4 Excelente" required /><label>4 Excelente</label></span>
                         </div>
                     </div>
                 </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">11. La variedad de los alimentos ofrecidos.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La variedad de los menús ofrecidos.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
                         <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_variedad" value="4 Excelente" /><label>4 Excelente</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_variedad_menus" value="4 Excelente" required /><label>4 Excelente</label></span>
                         </div>
                     </div>
                 </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">12. La oportunidad en la entrega a los usuarios.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La oportunidad en la entrega a los usuarios.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
                         <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_oportunidad_entrega" value="4 Excelente" /><label>4 Excelente</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_oportunidad_entrega" value="4 Excelente" required /><label>4 Excelente</label></span>
                         </div>
                     </div>
                 </li>
-                <li class="form-line jf-required comedores-mod-block" data-comedores-mod="paquete-alimentos" data-type="control_radio">
-                    <label class="form-label form-label-top">13. El trato de las personas que entregan los paquetes de alimentos hacia los usuarios del programa.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La temperatura a la que se entrega el almuerzo.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
                         <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="1 Malo" /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="pa_trato_entrega" value="4 Excelente" /><label>4 Excelente</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_temperatura_entrega" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La presentación de los alimentos servidos.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_alimentos" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>El aseo y organización del comedor.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_aseo_organizacion" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La limpieza y estado de platos, pocillos, vasos y cubiertos.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_limpieza_utensilios" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>El trato de las manipuladoras de alimentos hacia los usuarios.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_trato_manipuladoras" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="almuerzo" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La presentación personal de las manipuladoras de alimentos.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="alm_presentacion_personal" value="4 Excelente" required /><label>4 Excelente</label></span>
                         </div>
                     </div>
                 </li>
 
-                <!-- Otros aspectos -->
-                <li class="form-line" data-type="control_head">
+                <!-- Ración industrializada – RI (GS-F-086 + ajustes del cliente; se conservan ri_calidad, ri_variedad, ri_cantidad) -->
+                <li class="form-line" data-branch="racion-industrializada" data-type="control_head">
+                    <div class="form-input-wide">
+                        <h2 class="form-header" style="font-size:1.1rem;margin:0.5rem 0">Ración industrializada (RI)</h2>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="racion-industrializada" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La calidad de los alimentos entregados.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_calidad" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="racion-industrializada" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La variedad de los alimentos ofrecidos.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_variedad" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="racion-industrializada" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La cantidad de los alimentos ofrecidos teniendo en cuenta que es para un refrigerio.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_cantidad" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="racion-industrializada" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La presentación de los alimentos entregados.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_presentacion" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_presentacion" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_presentacion" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_presentacion" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="racion-industrializada" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>La oportunidad en la entrega de los alimentos a los usuarios.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_oportunidad_entrega" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_oportunidad_entrega" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_oportunidad_entrega" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_oportunidad_entrega" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line jf-required" data-branch="racion-industrializada" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>El trato y la atención de las personas que entregan los alimentos.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
+                        <div class="form-single-column">
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_trato_atencion" value="1 Malo" required /><label>1 Malo</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_trato_atencion" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_trato_atencion" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="ri_trato_atencion" value="4 Excelente" required /><label>4 Excelente</label></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="form-line" data-branch="*" data-type="control_head">
                     <div class="form-input-wide">
                         <h2 class="form-header" style="font-size:1.1rem;margin:0.5rem 0">Otros aspectos</h2>
-                        <p class="form-subHeader" style="margin-bottom:0.25rem;font-weight:600">Preguntas 14 y 15</p>
-                        <p class="form-subHeader" style="margin-bottom:0.5rem">Califique según su percepción otros aspectos al interior del programa:</p>
                     </div>
                 </li>
-                <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">14. El espacio y condiciones del comedor.<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
+                <li class="form-line jf-required" data-branch="*" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>El espacio y condiciones del comedor.<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="1 Malo" required /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="4 Excelente" /><label>4 Excelente</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="espacio_condiciones_comedor" value="4 Excelente" required /><label>4 Excelente</label></span>
                         </div>
                     </div>
                 </li>
-                <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">15. En términos generales ¿Cuál es su nivel de satisfacción con el servicio prestado en el Programa?<span class="form-required">*</span></label>
-                    <div class="form-input-wide jf-required">
+                <li class="form-line jf-required" data-branch="*" data-type="control_radio">
+                    <label class="form-label form-label-top"><span class="js-qnum"></span>En términos generales, ¿cuál es su nivel de satisfacción con el servicio prestado en el Programa?<span class="form-required">*</span></label>
+                    <div class="form-input-wide">
                         <div class="form-single-column">
                             <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="1 Malo" required /><label>1 Malo</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="2 Regular" /><label>2 Regular</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="3 Bueno" /><label>3 Bueno</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="4 Excelente" /><label>4 Excelente</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="2 Regular" required /><label>2 Regular</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="3 Bueno" required /><label>3 Bueno</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="satisfaccion_general_programa" value="4 Excelente" required /><label>4 Excelente</label></span>
                         </div>
                     </div>
                 </li>
-
-                <li class="form-line" data-type="control_head">
+                <li class="form-line" data-branch="*" data-type="control_head">
                     <div class="form-input-wide">
-                        <h2 class="form-header" style="font-size:1.1rem;margin:0.75rem 0 0.35rem">Observaciones/sugerencias</h2>
-                        <p class="form-subHeader" style="margin-bottom:0.35rem;font-weight:700">Preguntas 16 y 17 (texto abierto, opcionales)</p>
-                        <p style="font-size:0.95rem">A continuación mencione los aspectos positivos del PAE que quisiera resaltar y las recomendaciones que considera importantes para mejorar el programa.</p>
+                        <h2 class="form-header" style="font-size:1.1rem;margin:0.75rem 0 0.35rem">Observaciones/sugerencias (opcionales)</h2>
+                        <p style="font-size:0.95rem">A continuación mencione los aspectos positivos que quisiera resaltar y las recomendaciones que considera importantes para mejorar el programa.</p>
                     </div>
                 </li>
-                <li class="form-line" data-type="control_widget">
+                <li class="form-line" data-branch="*" data-type="control_widget">
                     <div class="form-input-wide comedores-feedback-dos-columnas">
                         <div class="comedores-feedback-col">
-                            <label class="form-label form-label-top" for="comedores-positivo">16. Aspectos positivos del PAE que quisiera resaltar.</label>
-                            <textarea id="comedores-positivo" name="positivo" class="form-textarea comedores-feedback-textarea" rows="6" placeholder="Escriba aquí su respuesta a la pregunta 16"></textarea>
+                            <label class="form-label form-label-top"><span class="js-qnum"></span>Aspectos positivos que quisiera resaltar.</label>
+                            <textarea name="positivo" class="form-textarea comedores-feedback-textarea" rows="5"></textarea>
                         </div>
                         <div class="comedores-feedback-col">
-                            <label class="form-label form-label-top" for="comedores-mejorar">17. Recomendaciones que considera importantes para mejorar el programa.</label>
-                            <textarea id="comedores-mejorar" name="mejorar" class="form-textarea comedores-feedback-textarea" rows="6" placeholder="Escriba aquí su respuesta a la pregunta 17"></textarea>
+                            <label class="form-label form-label-top"><span class="js-qnum"></span>Recomendaciones que considera importantes para mejorar el programa.</label>
+                            <textarea name="mejorar" class="form-textarea comedores-feedback-textarea" rows="5"></textarea>
                         </div>
                     </div>
                 </li>
-
                 <li class="form-line" data-type="control_button">
                     <div class="form-input-wide">
                         <button type="submit" class="form-submit-button">Enviar Encuesta</button>

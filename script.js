@@ -1,15 +1,42 @@
 // Sistema de Encuestas PAE - Envigado
 
 // Versión de los formularios (evita que el navegador use una copia en caché tras un cambio)
-const FORMS_VERSION = '2026-10-02';
+const FORMS_VERSION = '2026-10-08';
 
 // Nombres de instituciones corregidos (oct. 2026). Las respuestas anteriores conservan el
 // valor original en la base de datos; aquí solo se unifican para filtros, tablas y gráficos.
 const INSTITUTION_ALIASES = {
     'IE La Paz (Sede El Triangón)': 'IE La Paz (Sede El Trianón)',
     'IE La Paz (Sede John F. Kennedyz)': 'IE La Paz (Sede John F. Kennedy)',
-    'IE El Salado (Sede Primaria)': 'IE El Salado (Sede Primaria La Morena)'
+    'IE El Salado (Sede Primaria)': 'IE El Salado (Sede Primaria La Morena)',
     // 'IE San Vicente de Paúl(Sede La Morena)' se deja tal cual hasta confirmar con el cliente
+    // Comedores comunitarios y Centros Vida (nombres anteriores en minúscula / sin tilde)
+    'Comedor el salado': 'Comedor El Salado',
+    'Comedor Uribe angel': 'Comedor Uribe Ángel',
+    'Comedor la mina': 'Comedor La Mina',
+    'San Rafael': 'Comedor San Rafael',
+    'Centro vida alto de los sueños': 'Centro Vida Alto de los Sueños',
+    'Centro vida el salado': 'Centro Vida El Salado'
+};
+
+// Encuestas que aparecen en resultados, estadísticas y exportación (en este orden).
+// 'racion-industrializada' queda solo como histórico: la RI ahora se evalúa dentro de
+// Comedores comunitarios, pero las respuestas anteriores se siguen viendo y exportando.
+const REPORT_SURVEY_TYPES = [
+    'racion-servida',
+    'coordinadores',
+    'comedores-comunitarios',
+    'centros-vida',
+    'paquetes-alimentos',
+    'racion-industrializada'
+];
+
+// Etiquetas de las claves guardadas en "modalidades_servicio" (Comedores comunitarios)
+const MODALITY_KEY_LABELS = {
+    'almuerzo-sitio': 'Almuerzo (ración servida)',
+    'racion-industrializada': 'Ración industrializada (RI)',
+    'paquete-alimentos': 'Paquete de alimentos',
+    'desayuno-sitio': 'Desayuno – ración preparada en sitio (RPS)'
 };
 
 class EncuestasPAE {
@@ -17,19 +44,28 @@ class EncuestasPAE {
         this.surveys = {
             'racion-servida': {
                 title: 'Evaluación de Satisfacción - Ración Servida',
-                form: this.getRacionServidaForm()
-            },
-            'racion-industrializada': {
-                title: 'Evaluación de Satisfacción - Ración Industrializada',
-                form: this.getRacionIndustrializadaForm()
+                formUrl: 'surveys/racion-servida.html'
             },
             'coordinadores': {
                 title: 'Evaluación para Coordinadores PAE',
-                form: this.getCoordinadoresForm()
+                formUrl: 'surveys/coordinadores.html'
             },
             'comedores-comunitarios': {
                 title: 'Evaluación del Servicio - Comedores Comunitarios',
-                form: this.getComedoresComunitariosForm()
+                formUrl: 'surveys/comedores-comunitarios.html'
+            },
+            'centros-vida': {
+                title: 'Evaluación del Servicio - Centros Vida',
+                formUrl: 'surveys/centros-vida.html'
+            },
+            'paquetes-alimentos': {
+                title: 'Evaluación del Servicio - Paquetes de Alimentos',
+                formUrl: 'surveys/paquetes-alimentos.html'
+            },
+            // Histórico: ya no se diligencia (la RI se evalúa en Comedores comunitarios)
+            'racion-industrializada': {
+                title: 'Evaluación de Satisfacción - Ración Industrializada (histórico)',
+                formUrl: null
             }
         };
         this.responses = [];
@@ -183,7 +219,7 @@ class EncuestasPAE {
         
         try {
             // Cargar el formulario dinámicamente
-            const formHTML = await this.surveys[surveyType].form;
+            const formHTML = await this.loadSurveyForm(surveyType);
             surveyContent.innerHTML = formHTML;
             
             // Configurar el formulario
@@ -197,17 +233,16 @@ class EncuestasPAE {
     setupSurveyForm(surveyType) {
         const form = document.querySelector('#survey-modal form');
         if (form) {
-            if (surveyType === 'comedores-comunitarios') {
-                this.initComedoresComunitariosModality(form);
+            if (form.dataset.branching) {
+                this.initBranching(form);
             }
             if (surveyType === 'racion-servida') {
                 this.initRacionServidaModality(form);
             }
+            // La validación es la del navegador (campos "required"); las preguntas de
+            // modalidades no elegidas quedan deshabilitadas y no se validan ni se guardan.
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                if (surveyType === 'comedores-comunitarios' && !this.validateComedoresComunitariosForm(form)) {
-                    return;
-                }
                 this.saveResponse(surveyType, new FormData(form));
             });
         }
@@ -241,156 +276,64 @@ class EncuestasPAE {
         apply();
     }
 
-    /** Muestra los bloques de preguntas según las modalidades marcadas (una o varias). */
-    initComedoresComunitariosModality(form) {
-        const blocks = form.querySelectorAll('[data-comedores-mod]');
-        const modalityChecks = form.querySelectorAll(
-            'input[name="mod_desayuno_sitio"], input[name="mod_almuerzo_sitio"], input[name="mod_paquete_alimentos"]'
-        );
-
-        // Desayuno y almuerzo (RPS) comparten el bloque de preguntas 1 a 9
-        const modKeyByCheckboxName = {
-            mod_desayuno_sitio: 'almuerzo-sitio',
-            mod_almuerzo_sitio: 'almuerzo-sitio',
-            mod_paquete_alimentos: 'paquete-alimentos'
-        };
-
+    /**
+     * Ramificación por modalidad (Comedores comunitarios, Centros Vida, Paquetes).
+     * - El radio con data-branch-key define la modalidad elegida.
+     * - Cada <li data-branch="a b"> se muestra solo si la modalidad está en la lista;
+     *   "*" = cualquier modalidad elegida; "none" = aún no se ha elegido.
+     * - Lo oculto se deshabilita: no se valida ni se envía.
+     * - Los <span class="js-qnum"> se numeran según las preguntas visibles.
+     */
+    initBranching(form) {
+        const controls = form.querySelectorAll('input[data-branch-key]');
+        const blocks = form.querySelectorAll('[data-branch]');
         const apply = () => {
-            const selected = new Set();
-            modalityChecks.forEach((chk) => {
-                if (chk.checked) {
-                    const key = modKeyByCheckboxName[chk.name];
-                    if (key) selected.add(key);
-                }
-            });
-
+            const checked = form.querySelector('input[data-branch-key]:checked');
+            const key = checked ? checked.dataset.branchKey : null;
             blocks.forEach((el) => {
-                const mod = (el.getAttribute('data-comedores-mod') || '').trim();
-                const on = mod && selected.has(mod);
-                el.style.display = '';
-                el.classList.toggle('comedores-mod-inactive', !!(mod && !on));
-                el.querySelectorAll('input[type="radio"]').forEach((input) => {
-                    if (!on) {
+                const keys = (el.dataset.branch || '').split(/\s+/).filter(Boolean);
+                const on = key ? (keys.includes('*') || keys.includes(key)) : keys.includes('none');
+                el.style.display = on ? '' : 'none';
+                el.querySelectorAll('input, select, textarea').forEach((input) => {
+                    input.disabled = !on;
+                    if (!on && (input.type === 'radio' || input.type === 'checkbox')) {
                         input.checked = false;
                     }
                 });
             });
+            form.querySelectorAll('.js-branch-label').forEach((el) => {
+                if (el.dataset.default === undefined) el.dataset.default = el.textContent;
+                el.textContent = (key && el.dataset[this.toDatasetKey(key)] !== undefined)
+                    ? el.dataset[this.toDatasetKey(key)]
+                    : el.dataset.default;
+            });
+            this.numberQuestions(form);
         };
-
-        modalityChecks.forEach((c) => c.addEventListener('change', apply));
+        controls.forEach((c) => c.addEventListener('change', apply));
         apply();
     }
 
-    validateComedoresComunitariosForm(form) {
-        const val = (name) => {
-            const el = form.elements.namedItem(name);
-            if (!el) return '';
-            if (el instanceof RadioNodeList) {
-                const c = form.querySelector(`input[name="${name}"]:checked`);
-                return c ? String(c.value).trim() : '';
-            }
-            return String(el.value || '').trim();
-        };
+    toDatasetKey(key) {
+        return String(key).replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+    }
 
-        const requireRadio = (name) => !!form.querySelector(`input[name="${name}"]:checked`);
-
-        if (!val('nombre')) {
-            alert('Por favor escriba su nombre completo.');
-            return false;
-        }
-        if (!val('edad')) {
-            alert('Por favor indique su edad.');
-            return false;
-        }
-        if (!requireRadio('genero')) {
-            alert('Por favor indique su género.');
-            return false;
-        }
-        if (!val('fecha')) {
-            alert('Por favor seleccione la fecha.');
-            return false;
-        }
-        if (!val('comedor')) {
-            alert('Por favor seleccione un comedor.');
-            return false;
-        }
-        if (!val('barrio')) {
-            alert('Por favor indique el barrio en el que habita.');
-            return false;
-        }
-
-        const selectedMods = [];
-        if (form.querySelector('input[name="mod_desayuno_sitio"]:checked')) selectedMods.push('desayuno-sitio');
-        if (form.querySelector('input[name="mod_almuerzo_sitio"]:checked')) selectedMods.push('almuerzo-sitio');
-        if (form.querySelector('input[name="mod_paquete_alimentos"]:checked')) selectedMods.push('paquete-alimentos');
-
-        if (selectedMods.length === 0) {
-            alert('Por favor marque al menos una modalidad que evaluará.');
-            return false;
-        }
-
-        if (selectedMods.includes('desayuno-sitio') || selectedMods.includes('almuerzo-sitio')) {
-            const names = [
-                'alm_calidad',
-                'alm_variedad_menus',
-                'alm_oportunidad_entrega',
-                'alm_temperatura_entrega',
-                'alm_presentacion_alimentos',
-                'alm_aseo_organizacion',
-                'alm_limpieza_utensilios',
-                'alm_trato_manipuladoras',
-                'alm_presentacion_personal'
-            ];
-            for (const n of names) {
-                if (!requireRadio(n)) {
-                    alert('Complete todas las preguntas de ración preparada en sitio – RPS (1 a 9).');
-                    return false;
-                }
-            }
-        }
-        if (selectedMods.includes('paquete-alimentos')) {
-            const names = ['pa_calidad', 'pa_variedad', 'pa_oportunidad_entrega', 'pa_trato_entrega'];
-            for (const n of names) {
-                if (!requireRadio(n)) {
-                    alert('Complete todas las preguntas de Paquete de Alimentos (10 a 13).');
-                    return false;
-                }
-            }
-        }
-
-        if (!requireRadio('espacio_condiciones_comedor')) {
-            alert('Responda la pregunta 14 (espacio y condiciones del comedor).');
-            return false;
-        }
-        if (!requireRadio('satisfaccion_general_programa')) {
-            alert('Responda la pregunta 15 (satisfacción con el servicio del Programa).');
-            return false;
-        }
-
-        return true;
+    numberQuestions(form) {
+        let n = 0;
+        form.querySelectorAll('.js-qnum').forEach((span) => {
+            const li = span.closest('li');
+            const visible = li && li.style.display !== 'none';
+            span.textContent = visible ? `${++n}. ` : '';
+        });
     }
 
     async saveResponse(surveyType, formData) {
         const data = Object.fromEntries(formData.entries());
         if (surveyType === 'comedores-comunitarios') {
+            // Se mantiene "modalidades_servicio" con las mismas claves de las respuestas anteriores
             const form = document.querySelector('#survey-modal form');
-            const mods = [];
-            const desayunoRps = !!form?.querySelector('input[name="mod_desayuno_sitio"]:checked');
-            const almuerzoRps = !!form?.querySelector('input[name="mod_almuerzo_sitio"]:checked');
-            if (desayunoRps) mods.push('desayuno-sitio');
-            if (almuerzoRps) mods.push('almuerzo-sitio');
-            if (form?.querySelector('input[name="mod_paquete_alimentos"]:checked')) mods.push('paquete-alimentos');
-            data.modalidades_servicio = mods;
-            delete data.mod_desayuno_sitio;
-            delete data.mod_almuerzo_sitio;
-            delete data.mod_paquete_alimentos;
-            // Las preguntas 1 a 9 (campos alm_*) aplican a desayuno y/o almuerzo RPS
-            if (!desayunoRps && !almuerzoRps) {
-                Object.keys(data).filter((k) => k.startsWith('alm_')).forEach((k) => delete data[k]);
-            }
-            if (!form?.querySelector('input[name="mod_paquete_alimentos"]:checked')) {
-                Object.keys(data).filter((k) => k.startsWith('pa_')).forEach((k) => delete data[k]);
-            }
+            const checked = form?.querySelector('input[data-branch-key]:checked');
+            const keyMap = { 'almuerzo': 'almuerzo-sitio', 'racion-industrializada': 'racion-industrializada' };
+            data.modalidades_servicio = checked && keyMap[checked.dataset.branchKey] ? [keyMap[checked.dataset.branchKey]] : [];
         }
 
         const responseData = {
@@ -536,8 +479,12 @@ class EncuestasPAE {
                 const key = rawKey === 'modalidad[]' ? 'modalidad' : rawKey;
                 if (!stats[key]) stats[key] = {};
                 let value = response.data[rawKey];
-                if (Array.isArray(value)) value = value.join(', ');
-                if (key === 'institucion') value = this.normalizeInstitution(value);
+                if (Array.isArray(value)) {
+                    value = key === 'modalidades_servicio'
+                        ? value.map((k) => MODALITY_KEY_LABELS[k] || k).join(', ')
+                        : value.join(', ');
+                }
+                if (['institucion', 'comedor', 'centro_vida'].includes(key)) value = this.normalizeInstitution(value);
                 stats[key][value] = (stats[key][value] || 0) + 1;
             });
         });
@@ -555,8 +502,23 @@ class EncuestasPAE {
     /** Institución educativa o comedor de una respuesta, ya normalizado. */
     getInstitution(response) {
         const d = (response && response.data) || {};
-        const raw = d.institucion || d.institucion_educativa || d.comedor || '';
+        const raw = d.institucion || d.institucion_educativa || d.comedor || d.centro_vida || d.lugar_entrega || '';
         return raw ? this.normalizeInstitution(raw) : '';
+    }
+
+    /** Modalidades de una respuesta (formatos nuevo y anteriores), como etiquetas legibles. */
+    getModalities(response) {
+        const d = (response && response.data) || {};
+        // La encuesta RI independiente guardaba "Ración Industrializada (RI)"
+        if (typeof d.modalidad === 'string' && d.modalidad.trim() !== '') {
+            const m = d.modalidad.trim();
+            return [m === 'Ración Industrializada (RI)' ? MODALITY_KEY_LABELS['racion-industrializada'] : m];
+        }
+        if (typeof d['modalidad[]'] === 'string' && d['modalidad[]'].trim() !== '') return [d['modalidad[]'].trim()];
+        if (Array.isArray(d.modalidades_servicio)) {
+            return d.modalidades_servicio.map((k) => MODALITY_KEY_LABELS[k] || k);
+        }
+        return [];
     }
 
     /** Edad de una respuesta: campo "edad" (encuestas nuevas) o calculada desde "fecha_nacimiento". */
@@ -669,20 +631,9 @@ class EncuestasPAE {
         });
 
         // Botones de exportación por tipo
-        document.getElementById('export-racion-servida').addEventListener('click', () => {
-            this.exportByType('racion-servida');
-        });
-
-        document.getElementById('export-racion-industrializada').addEventListener('click', () => {
-            this.exportByType('racion-industrializada');
-        });
-
-        document.getElementById('export-coordinadores').addEventListener('click', () => {
-            this.exportByType('coordinadores');
-        });
-
-        document.getElementById('export-comedores-comunitarios').addEventListener('click', () => {
-            this.exportByType('comedores-comunitarios');
+        REPORT_SURVEY_TYPES.forEach((type) => {
+            const btn = document.getElementById(`export-${type}`);
+            if (btn) btn.addEventListener('click', () => this.exportByType(type));
         });
 
         // Botón ver papelera
@@ -728,9 +679,11 @@ class EncuestasPAE {
     getSurveyTypeName(type) {
         const names = {
             'racion-servida': 'Ración Servida',
-            'racion-industrializada': 'Ración Industrializada',
+            'racion-industrializada': 'Ración Industrializada (histórico)',
             'coordinadores': 'Coordinadores PAE',
-            'comedores-comunitarios': 'Comedores Comunitarios'
+            'comedores-comunitarios': 'Comedores Comunitarios',
+            'centros-vida': 'Centros Vida',
+            'paquetes-alimentos': 'Paquetes de Alimentos'
         };
         return names[type] || type;
     }
@@ -950,6 +903,8 @@ class EncuestasPAE {
         if (gradeFilter) activeFilters.push(`Grado: ${gradeFilter}°`);
         if (ageRangeFilter) activeFilters.push(`Edad: ${ageRangeFilter} años`);
         if (sexFilter) activeFilters.push(`Sexo: ${sexFilter}`);
+        const modalityEl = document.getElementById('modality-filter');
+        if (modalityEl && modalityEl.value) activeFilters.push(`Modalidad: ${modalityEl.value}`);
         
         const periodText = `${this.formatDateDisplay(dateFrom)} - ${this.formatDateDisplay(dateTo)}`;
         
@@ -966,7 +921,7 @@ class EncuestasPAE {
         const filtersToClear = [
             'date-from', 'date-to', 'period-select', 
             'institution-filter', 'grade-filter', 
-            'age-range-filter', 'sex-filter'
+            'age-range-filter', 'sex-filter', 'modality-filter'
         ];
         
         filtersToClear.forEach(id => {
@@ -1009,6 +964,9 @@ class EncuestasPAE {
         const endDate = new Date(dateTo);
         endDate.setHours(23, 59, 59, 999); // Incluir todo el día final
 
+        const modalityEl = document.getElementById('modality-filter');
+        const modalityFilter = modalityEl ? modalityEl.value : '';
+
         return this.responses.filter(response => {
             const responseDate = new Date(response.date);
             const dateMatch = responseDate >= startDate && responseDate <= endDate;
@@ -1022,6 +980,9 @@ class EncuestasPAE {
                 (response.data.grado && response.data.grado === gradeFilter);
             
             // Filtro por sexo
+            // Filtro por modalidad (incluye formatos anteriores)
+            const modalityMatch = !modalityFilter || this.getModalities(response).includes(modalityFilter);
+
             const sexValue = response.data.sexo || response.data.genero;
             const sexMatch = !sexFilter || 
                 (sexValue && sexValue === sexFilter);
@@ -1043,10 +1004,16 @@ class EncuestasPAE {
                     case '17-20':
                         ageMatch = age >= 17 && age <= 20;
                         break;
+                    case '21-59':
+                        ageMatch = age >= 21 && age <= 59;
+                        break;
+                    case '60+':
+                        ageMatch = age >= 60;
+                        break;
                 }
             }
             
-            return dateMatch && institutionMatch && gradeMatch && sexMatch && ageMatch;
+            return dateMatch && institutionMatch && gradeMatch && sexMatch && ageMatch && modalityMatch;
         });
     }
 
@@ -1069,27 +1036,18 @@ class EncuestasPAE {
                         <div class="number">${filteredResponses.length}</div>
                         <div class="label">En el período seleccionado</div>
                     </div>
+                    ${REPORT_SURVEY_TYPES.map(type => `
                     <div class="summary-card">
-                        <h4>Ración Servida</h4>
-                        <div class="number">${filteredResponses.filter(r => r.type === 'racion-servida').length}</div>
+                        <h4>${this.getSurveyTypeName(type)}</h4>
+                        <div class="number">${filteredResponses.filter(r => r.type === type).length}</div>
                         <div class="label">Respuestas</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>Ración Industrializada</h4>
-                        <div class="number">${filteredResponses.filter(r => r.type === 'racion-industrializada').length}</div>
-                        <div class="label">Respuestas</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>Coordinadores</h4>
-                        <div class="number">${filteredResponses.filter(r => r.type === 'coordinadores').length}</div>
-                        <div class="label">Respuestas</div>
-                    </div>
+                    </div>`).join('')}
                 </div>
             </div>
         `;
 
         // Agregar gráficos por tipo de encuesta
-        const surveyTypes = ['racion-servida', 'racion-industrializada', 'coordinadores'];
+        const surveyTypes = REPORT_SURVEY_TYPES;
         surveyTypes.forEach(surveyType => {
             const typeResponses = filteredResponses.filter(r => r.type === surveyType);
             if (typeResponses.length > 0) {
@@ -1180,6 +1138,23 @@ class EncuestasPAE {
             .filter(inst => inst && inst.trim() !== '')
         )].sort();
         
+        // Modalidades disponibles (nuevas y anteriores)
+        const modalitySelect = document.getElementById('modality-filter');
+        if (modalitySelect) {
+            const modalities = [...new Set(this.responses.flatMap(r => this.getModalities(r)))]
+                .filter(m => m && m.trim() !== '')
+                .sort((a, b) => a.localeCompare(b, 'es'));
+            const current = modalitySelect.value;
+            modalitySelect.innerHTML = '<option value="">Todas las modalidades</option>';
+            modalities.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m;
+                option.textContent = m;
+                modalitySelect.appendChild(option);
+            });
+            if (modalities.includes(current)) modalitySelect.value = current;
+        }
+
         // Limpiar opciones existentes (excepto la primera)
         institutionSelect.innerHTML = '<option value="">Todas las instituciones</option>';
         
@@ -1235,37 +1210,24 @@ class EncuestasPAE {
     }
 
     updateStats() {
-        const stats = {
-            total: this.responses.length,
-            racionServida: this.responses.filter(r => r.type === 'racion-servida').length,
-            racionIndustrializada: this.responses.filter(r => r.type === 'racion-industrializada').length,
-            coordinadores: this.responses.filter(r => r.type === 'coordinadores').length,
-            comedoresComunitarios: this.responses.filter(r => r.type === 'comedores-comunitarios').length
-        };
-        
-        console.log('Estadísticas actualizadas:', stats);
+        const total = this.responses.length;
+        const byType = REPORT_SURVEY_TYPES.map(type => ({
+            type,
+            count: this.responses.filter(r => r.type === type).length
+        }));
+
+        console.log('Estadísticas actualizadas:', { total, byType });
 
         document.getElementById('general-stats').innerHTML = `
             <div class="stat-item">
-                <div class="stat-number">${stats.total}</div>
+                <div class="stat-number">${total}</div>
                 <div class="stat-label">Total Encuestas</div>
             </div>
+            ${byType.map(({ type, count }) => `
             <div class="stat-item">
-                <div class="stat-number">${stats.racionServida}</div>
-                <div class="stat-label">Ración Servida</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">${stats.racionIndustrializada}</div>
-                <div class="stat-label">Ración Industrializada</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">${stats.coordinadores}</div>
-                <div class="stat-label">Coordinadores</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">${stats.comedoresComunitarios}</div>
-                <div class="stat-label">Comedores Comunitarios</div>
-            </div>
+                <div class="stat-number">${count}</div>
+                <div class="stat-label">${this.getSurveyTypeName(type)}</div>
+            </div>`).join('')}
             <div class="stat-item">
                 <div class="stat-number">${this.deletedResponses.length}</div>
                 <div class="stat-label">En Papelera</div>
@@ -1282,7 +1244,7 @@ class EncuestasPAE {
             return;
         }
         
-        this.exportToExcel(responses, `encuesta-${surveyName.replace(/\s+/g, '-').toLowerCase()}.xlsx`, surveyName);
+        this.exportToExcel(responses, `encuesta-${surveyType}.xlsx`, surveyName);
     }
 
     exportSurveyData(surveyType) {
@@ -1345,7 +1307,9 @@ class EncuestasPAE {
         
         // Hoja principal con datos
         const worksheet = XLSX.utils.json_to_sheet(formattedData);
-        XLSX.utils.book_append_sheet(workbook, worksheet, surveyName || 'Respuestas');
+        // Excel limita el nombre de la hoja a 31 caracteres y no admite : \ / ? * [ ]
+        const sheetName = String(surveyName || 'Respuestas').replace(/[:\\/?*\[\]]/g, ' ').slice(0, 31).trim() || 'Respuestas';
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
         
         // Hoja de resumen estadístico
         const summaryData = this.generateSheetSummary(sortedData);
@@ -1513,6 +1477,15 @@ class EncuestasPAE {
             'apellido': 'Apellido',
             'edad': 'Edad',
             'genero': 'Género',
+            'centro_vida': 'Centro Vida',
+            'lugar_entrega': 'Lugar de entrega del paquete',
+            'lugar_entrega_detalle': 'Lugar de entrega (nombre o dirección)',
+            'oportunidad_entrega': 'Oportunidad en la entrega',
+            'temperatura_entrega': 'Temperatura de entrega del complemento',
+            'espacio_condiciones': 'Espacio y condiciones del lugar de consumo',
+            'ri_presentacion': 'RI — Presentación alimentos entregados',
+            'ri_oportunidad_entrega': 'RI — Oportunidad en la entrega',
+            'ri_trato_atencion': 'RI — Trato y atención de quienes entregan',
             'telefono': 'Teléfono',
             'email': 'Email',
             'observaciones': 'Observaciones',
@@ -1634,43 +1607,18 @@ class EncuestasPAE {
         localStorage.setItem('paesurvey_deleted_responses', JSON.stringify(this.deletedResponses));
     }
 
-    // Métodos para obtener los formularios de las encuestas
-    async getRacionServidaForm() {
-        try {
-            const response = await fetch(`surveys/racion-servida.html?v=${FORMS_VERSION}`);
-            return await response.text();
-        } catch (error) {
-            console.error('Error cargando formulario de ración servida:', error);
-            return '<p>Error cargando el formulario</p>';
+    // Carga el HTML del formulario de una encuesta (bajo demanda, sin caché vieja)
+    async loadSurveyForm(surveyType) {
+        const survey = this.surveys[surveyType];
+        if (!survey || !survey.formUrl) {
+            return '<p>Esta encuesta ya no se diligencia. Sus respuestas anteriores siguen disponibles en Resultados y Administración.</p>';
         }
-    }
-
-    async getRacionIndustrializadaForm() {
         try {
-            const response = await fetch(`surveys/racion-industrializada.html?v=${FORMS_VERSION}`);
+            const response = await fetch(`${survey.formUrl}?v=${FORMS_VERSION}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return await response.text();
         } catch (error) {
-            console.error('Error cargando formulario de ración industrializada:', error);
-            return '<p>Error cargando el formulario</p>';
-        }
-    }
-
-    async getCoordinadoresForm() {
-        try {
-            const response = await fetch(`surveys/coordinadores.html?v=${FORMS_VERSION}`);
-            return await response.text();
-        } catch (error) {
-            console.error('Error cargando formulario de coordinadores:', error);
-            return '<p>Error cargando el formulario</p>';
-        }
-    }
-
-    async getComedoresComunitariosForm() {
-        try {
-            const response = await fetch(`surveys/comedores-comunitarios.html?v=${FORMS_VERSION}`);
-            return await response.text();
-        } catch (error) {
-            console.error('Error cargando formulario de comedores comunitarios:', error);
+            console.error(`Error cargando formulario de ${surveyType}:`, error);
             return '<p>Error cargando el formulario</p>';
         }
     }

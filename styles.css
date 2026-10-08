@@ -1503,3 +1503,13 @@ a[href*="jotform.io"] {
         font-size: 1.9rem;
     }
 }
+
+/* Encuestas con ramificación por modalidad (Comedores, Centros Vida, Paquetes) */
+.survey-form .branch-hint {
+    background: #FFF7F0;
+    border-left: 4px solid #F29100;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #0F3A31;
+    font-weight: 600;
+}
