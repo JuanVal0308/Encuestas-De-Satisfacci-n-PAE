@@ -21,7 +21,8 @@ WHERE survey_type IN ('racion-servida', 'racion-industrializada', 'coordinadores
   AND response_data->>'institucion' IN (
       'IE La Paz (Sede El Triangón)',
       'IE La Paz (Sede John F. Kennedyz)',
-      'IE El Salado (Sede Primaria)'
+      'IE El Salado (Sede Primaria)',
+      'IE El Salado (Sede Secundaria)'
   )
 GROUP BY 1
 ORDER BY 1;
@@ -37,13 +38,15 @@ ORDER BY 1;
 --             WHEN 'IE La Paz (Sede El Triangón)'      THEN 'IE La Paz (Sede El Trianón)'
 --             WHEN 'IE La Paz (Sede John F. Kennedyz)' THEN 'IE La Paz (Sede John F. Kennedy)'
 --             WHEN 'IE El Salado (Sede Primaria)'      THEN 'IE El Salado (Sede Primaria La Morena)'
+--             WHEN 'IE El Salado (Sede Secundaria)'    THEN 'IE El Salado (Sede Principal)'
 --         END)
 --     )
 -- WHERE survey_type IN ('racion-servida', 'racion-industrializada', 'coordinadores')
 --   AND response_data->>'institucion' IN (
 --       'IE La Paz (Sede El Triangón)',
 --       'IE La Paz (Sede John F. Kennedyz)',
---       'IE El Salado (Sede Primaria)'
+--       'IE El Salado (Sede Primaria)',
+--       'IE El Salado (Sede Secundaria)'
 --   );
 --
 -- -- Pendiente de confirmar con el cliente: la sede La Morena figuraba como

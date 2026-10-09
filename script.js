@@ -1,7 +1,7 @@
 // Sistema de Encuestas PAE - Envigado
 
 // Versión de los formularios (evita que el navegador use una copia en caché tras un cambio)
-const FORMS_VERSION = '2026-10-08';
+const FORMS_VERSION = '2026-10-09';
 
 // Nombres de instituciones corregidos (oct. 2026). Las respuestas anteriores conservan el
 // valor original en la base de datos; aquí solo se unifican para filtros, tablas y gráficos.
@@ -9,6 +9,7 @@ const INSTITUTION_ALIASES = {
     'IE La Paz (Sede El Triangón)': 'IE La Paz (Sede El Trianón)',
     'IE La Paz (Sede John F. Kennedyz)': 'IE La Paz (Sede John F. Kennedy)',
     'IE El Salado (Sede Primaria)': 'IE El Salado (Sede Primaria La Morena)',
+    'IE El Salado (Sede Secundaria)': 'IE El Salado (Sede Principal)',
     // 'IE San Vicente de Paúl(Sede La Morena)' se deja tal cual hasta confirmar con el cliente
     // Comedores comunitarios y Centros Vida (nombres anteriores en minúscula / sin tilde)
     'Comedor el salado': 'Comedor El Salado',
@@ -502,7 +503,7 @@ class EncuestasPAE {
     /** Institución educativa o comedor de una respuesta, ya normalizado. */
     getInstitution(response) {
         const d = (response && response.data) || {};
-        const raw = d.institucion || d.institucion_educativa || d.comedor || d.centro_vida || d.lugar_entrega || '';
+        const raw = d.institucion || d.institucion_educativa || d.comedor || d.centro_vida || d.lugar_entrega_detalle || d.lugar_entrega || '';
         return raw ? this.normalizeInstitution(raw) : '';
     }
 
@@ -515,6 +516,8 @@ class EncuestasPAE {
             return [m === 'Ración Industrializada (RI)' ? MODALITY_KEY_LABELS['racion-industrializada'] : m];
         }
         if (typeof d['modalidad[]'] === 'string' && d['modalidad[]'].trim() !== '') return [d['modalidad[]'].trim()];
+        // Paquetes: el tipo de paquete hace las veces de modalidad
+        if (typeof d.tipo_paquete === 'string' && d.tipo_paquete.trim() !== '') return [d.tipo_paquete.trim()];
         if (Array.isArray(d.modalidades_servicio)) {
             return d.modalidades_servicio.map((k) => MODALITY_KEY_LABELS[k] || k);
         }
@@ -1480,6 +1483,7 @@ class EncuestasPAE {
             'centro_vida': 'Centro Vida',
             'lugar_entrega': 'Lugar de entrega del paquete',
             'lugar_entrega_detalle': 'Lugar de entrega (nombre o dirección)',
+            'tipo_paquete': 'Tipo de paquete',
             'oportunidad_entrega': 'Oportunidad en la entrega',
             'temperatura_entrega': 'Temperatura de entrega del complemento',
             'espacio_condiciones': 'Espacio y condiciones del lugar de consumo',

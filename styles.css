@@ -1513,3 +1513,15 @@ a[href*="jotform.io"] {
     color: #0F3A31;
     font-weight: 600;
 }
+
+/* Ración Servida: texto de agradecimiento bajo el título (oct. 2026) */
+.survey-form .form-subHeader.form-agradecimiento {
+    font-weight: 600;
+    color: #0F3A31;
+    margin-bottom: 0.35rem;
+}
+/* Escala 1-4: cada opción en su propio renglón */
+.survey-form .escala-opciones {
+    margin-top: 0.35rem;
+    line-height: 1.7;
+}

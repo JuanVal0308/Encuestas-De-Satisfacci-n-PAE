@@ -47,33 +47,35 @@
                     </div>
                 </li>
                 <li class="form-line jf-required" data-type="control_datetime">
-                    <label class="form-label form-label-top">Fecha<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">Fecha de elaboración de la encuesta<span class="form-required">*</span></label>
                     <div class="form-input-wide jf-required">
                         <input type="date" name="fecha" class="form-textbox validate[required]" required />
                     </div>
                 </li>
 
-                <!-- Lugar de entrega: lo define el operador (bodega o sitio de distribución) -->
+                <!-- Tipo de paquete (reemplaza la pregunta "¿Dónde recibió el paquete?", oct. 2026) -->
                 <li class="form-line jf-required" data-type="control_radio">
-                    <label class="form-label form-label-top">¿Dónde recibió el paquete de alimentos?<span class="form-required">*</span></label>
+                    <label class="form-label form-label-top">Tipo de paquete que recibe<span class="form-required">*</span></label>
                     <div class="form-input-wide">
                         <div class="form-single-column">
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="lugar_entrega" value="Bodega" required /><label>Bodega</label></span>
-                            <span class="form-radio-item"><input type="radio" class="form-radio" name="lugar_entrega" value="Sitio de distribución" required /><label>Sitio de distribución</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="tipo_paquete" value="CAS (Centro de Ayudas Sociales) – Bienestar Social" required /><label>CAS (Centro de Ayudas Sociales) – Bienestar Social</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="tipo_paquete" value="Población en condición especial" required /><label>Población en condición especial</label></span>
+                            <span class="form-radio-item"><input type="radio" class="form-radio" name="tipo_paquete" value="CAMI (Complementación Alimentaria Materno Infantil)" required /><label>CAMI (Complementación Alimentaria Materno Infantil)</label></span>
                         </div>
                     </div>
                 </li>
-                <li class="form-line" data-type="control_textbox">
-                    <label class="form-label form-label-top">Nombre o dirección de la bodega o del sitio de distribución (opcional)</label>
-                    <div class="form-input-wide">
-                        <input type="text" name="lugar_entrega_detalle" class="form-textbox" placeholder="Ej.: Bodega principal, sede comunal del barrio…" />
+                <!-- Lugar de entrega: se conserva el campo lugar_entrega_detalle de las respuestas anteriores -->
+                <li class="form-line jf-required" data-type="control_textbox">
+                    <label class="form-label form-label-top">Nombre o lugar donde recibe el paquete de alimentos<span class="form-required">*</span></label>
+                    <div class="form-input-wide jf-required">
+                        <input type="text" name="lugar_entrega_detalle" class="form-textbox validate[required]" placeholder="Ej.: bodega, sede comunal, sitio de distribución…" required />
                     </div>
                 </li>
                 <li class="form-line" data-type="control_text">
                     <div class="form-input-wide">
                         <div class="form-html">
                             <p><strong>Califique según su percepción cada aspecto</strong>, siendo <strong>4</strong> el puntaje más alto y <strong>1</strong> el más bajo:</p>
-                            <p>1 Malo · 2 Regular · 3 Bueno · 4 Excelente</p>
+                            <p class="escala-opciones">1 Malo<br />2 Regular<br />3 Bueno<br />4 Excelente</p>
                         </div>
                     </div>
                 </li>
